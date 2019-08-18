@@ -1,0 +1,460 @@
+{
+  "Backup": "Backups",
+  "types": 
+    [
+      {
+        "tag": "tap",
+        "install": "brew tap ",
+        "bundle": "tap",
+        "title": "TAPS"
+      },
+      {
+        "tag": "cask",
+        "install": "brew cask install ",
+        "bundle": "cask",
+        "dependencies": "caskroom/cask",
+        "title": "HOMEBREW CASKS"
+      },
+      {
+        "tag": "brew",
+        "install": "brew install ",
+        "bundle": "brew",
+        "title": "HOMEBREW FORMULAE"
+      },
+      {
+        "tag": "mas",
+        "install": "mas install ",
+        "bundle": "mas",
+        "title": "APP STORE APPS",
+        "dependencies": "mas"
+      },
+      {
+        "tag": "bash",
+        "install": "source ",
+        "title": "BASH SCRIPTS"
+      },
+      {
+        "tag": "python3",
+        "install": "python3 ",
+        "dependencies": "python3",
+        "title": "PYTHON3 SCRIPTS" 
+      },
+      {
+        "tag": "pip3",
+        "install": "pip install ",
+        "dependencies": "python3",
+        "title": "PYTHON3 LIBRARIES" 
+      },
+      {
+        "tag": "bundle",
+        "install": "brew bundle",
+        "title": "HOMEBREW BUNDLE" 
+      }
+    ],
+  "configs": 
+    [
+      {
+        "tag": "minecraft",
+        "config": "config",
+        "configname": "Minecraft",
+        "type": "bash"
+      },
+      {
+        "tag": "spotify",
+        "config": "config",
+        "configname": "Spotify",
+        "type": "bash"
+      },
+      {
+        "tag": "slack",
+        "config": "config",
+        "configname": "Slack",
+        "type": "bash"
+      },
+      {
+        "tag": "sublime",
+        "config": "config",
+        "configname": "Sublime Text 3",
+        "type": "bash"
+      },
+      {
+        "tag": "bettertouchtool",
+        "config": "config",
+        "configname": "BetterTouchTool",
+        "type": "bash"
+      },
+      {
+        "tag": "firefox",
+        "config": "config_ff",
+        "type": "bash"
+      },
+      {
+        "tag": "openemu",
+        "config": "config_emu",
+        "type": "bash"
+      },
+      {
+        "tag": "arduino",
+        "config": "config_ino",
+        "type": "bash"
+      }
+    ],
+  "apps": [
+    {
+      "tag": "appcleaner",
+      "installType": "cask",
+      "appname": "AppCleaner"
+    },
+    {
+      "tag": "ui-browser",
+      "installType": "cask",
+      "appname": "UI Browser"
+    },
+    {
+      "tag": "Brewfile",
+      "installType": "bundle",
+      "installName": ""
+    },
+    {
+      "tag": "superinstall",
+      "dependencies": 
+        [
+          "sublime", 
+          "bettersnaptool", 
+          "unar",
+          "teensy_loader_cli", 
+          "xcode", 
+          "wipr",
+          "xctu",
+          "silicon-labs-vcp-driver",
+          "dbxcli"
+        ]
+    },
+    {
+      "tag": "homebrew/cask",
+      "installType": "tap"
+    },
+    {
+      "tag": "homebrew/cask-drivers",
+      "installType": "tap"
+    },
+    {
+      "tag": "idleberg/dbxcli",
+      "installType": "tap",
+      "dependencies": "dbxcli"
+    },
+    {
+      "tag": "appcode",
+      "installType": "cask",
+      "appname": "AppCode"
+    },
+    {
+      "tag": "arduino",
+      "installType": "cask",
+      "dependencies": "ftdi-vcp-driver",
+      "appname": "Arduino",
+      "config": true
+    },
+    {
+      "tag": "balena-cli",
+      "installType": "brew"
+    },
+    {
+      "tag": "balenaetcher",
+      "installType": "cask",
+      "appname": "balenaEtcher"
+    },
+    {
+      "tag": "bettersnaptool",
+      "installType": "mas",
+      "installName": "BetterSnapTool",
+      "id": "417375580",
+      "appname": "BetterSnapTool",
+      "config": true
+    },
+    {
+      "tag": "bettertouchtool",
+      "installType": "cask",
+      "support": "BetterTouchTool",
+      "appname": "BetterTouchTool"
+    },
+    {
+      "tag": "bitwarden",
+      "installType": "cask",
+      "appname": "Bitwarden"
+    },
+    {
+      "tag": "cleanmymac",
+      "installType": "cask",
+      "appname": "CleanMyMac X"
+    },
+    {
+      "tag": "clion",
+      "installType": "cask",
+      "appname": "CLion"
+    },
+    {
+      "tag": "coolterm",
+      "installType": "cask",
+      "appname": "CoolTerm"
+    },
+    {
+      "tag": "darkreader",
+      "installType": "mas",
+      "installName": "Dark Reader for Safari",
+      "id": "1438243180"
+    },
+    {
+      "tag": "dbxcli",
+      "installType": "brew",
+      "dependencies": "idleberg/dbxcli"
+    },
+    {
+      "tag": "docker",
+      "installType": "cask",
+      "appname": "Docker"
+    },
+    {
+      "tag": "dropbox",
+      "installType": "cask",
+      "appname": "Dropbox"
+    },
+    {
+      "tag": "dynamo",
+      "installType": "mas",
+      "installName": "Dynamo",
+      "id": "1445910651"
+    },
+    {
+      "tag": "firefox",
+      "installType": "cask",
+      "backup": "backup_ff",
+      "restore": "restore_ff",
+      "appname": "Firefox",
+      "config": true
+    },
+    {
+      "tag": "flux",
+      "installType": "cask",
+      "appname": "Flux"
+    },
+    {
+      "tag": "ftdi-vcp-driver",
+      "installType": "cask",
+      "dependencies": "homebrew/cask-drivers"
+    },
+    {
+      "tag": "geckodriver",
+      "installType": "brew"
+    },
+    {
+      "tag": "gnu-getopt",
+      "installType": "brew"
+    },
+    {
+      "tag": "gnupg",
+      "installType": "brew"
+    },
+    {
+      "tag": "imagemagick",
+      "installType": "brew"
+    },
+    {
+      "tag": "ino",
+      "installType": "brew"
+    },
+    {
+      "tag": "intellij-idea",
+      "installType": "cask",
+      "appname": "IntelliJ IDEA"
+    },
+    {
+      "tag": "iterm2",
+      "installType": "cask",
+      "appname": "iTerm"
+    },
+    {
+      "tag": "jq",
+      "installType": "brew"
+    },
+    {
+      "tag": "keyboardcleantool",
+      "installType": "cask",
+      "appname": "KeyboardCleanTool"
+    },
+    {
+      "tag": "libusb",
+      "installType": "brew"
+    },
+    {
+      "tag": "mactex-no-gui",
+      "installType": "cask"
+    },
+    {
+      "tag": "mas",
+      "installType": "brew"
+    },
+    {
+      "tag": "minecraft",
+      "installType": "cask",
+      "support": "Minecraft",
+      "appname": "Minecraft",
+      "config": true
+    },
+    {
+      "tag": "node",
+      "installType": "brew"
+    },
+    {
+      "tag": "nordvpn",
+      "installType": "cask",
+      "appname": "NordVPN"
+    },
+    {
+      "tag": "openemu",
+      "installType": "cask",
+      "support": "OpenEmu",
+      "appname": "OpenEmu",
+      "config": true
+    },
+    {
+      "tag": "openvpn",
+      "installType": "brew"
+    },
+    {
+      "tag": "paintbrush",
+      "installType": "cask",
+      "appname": "Paintbrush"
+    },
+    {
+      "tag": "pocket",
+      "installType": "mas",
+      "installName": "Pocket",
+      "id": "568494494"
+    },
+    {
+      "tag": "porting-kit",
+      "installType": "cask",
+      "appname": "Porting Kit"
+    },
+    {
+      "tag": "protonmail-bridge",
+      "installType": "cask",
+      "appname": "Protonmail Bridge"
+    },
+    {
+      "tag": "pycharm",
+      "installType": "cask",
+      "appname": "PyCharm"
+    },
+    {
+      "tag": "shazam",
+      "installType": "mas",
+      "installName": "Shazam",
+      "id": "897118787"
+    },
+    {
+      "tag": "silicon-labs-vcp-driver",
+      "installType": "cask",
+      "dependencies": "homebrew/cask-drivers"
+    },
+    {
+      "tag": "skim",
+      "installType": "cask",
+      "appname": "Skim"
+    },
+    {
+      "tag": "slack",
+      "installType": "cask",
+      "support": "Slack",
+      "appname": "Slack",
+      "config": true
+    },
+    {
+      "tag": "spotify",
+      "installType": "cask",
+      "support": "Spotify",
+      "appname": "Spotify",
+      "config": true
+    },
+    {
+      "tag": "spotify-notifications",
+      "installType": "cask",
+      "appname": "Spotify Notifications"
+    },
+    {
+      "tag": "steam",
+      "installType": "cask",
+      "appname": "Steam"
+    },
+    {
+      "tag": "sublime-merge",
+      "installType": "cask",
+      "appname": "Sublime Merge"
+    },
+    {
+      "tag": "sublime",
+      "installType": "cask",
+      "installName": "sublime-text",
+      "support": "Sublime Text 3",
+      "appname": "Sublime Text",
+      "config": true
+    },
+    {
+      "tag": "teensy_loader_cli",
+      "installType": "brew"
+    },
+    {
+      "tag": "thunderbird",
+      "installType": "cask",
+      "appname": "Thunderbird"
+    },
+    {
+      "tag": "ticktick",
+      "installType": "cask",
+      "appname": "TickTick"
+    },
+    {
+      "tag": "tor-browser",
+      "installType": "cask",
+      "appname": "Tor Browser"
+    },
+    {
+      "tag": "unar",
+      "installType": "brew"
+    },
+    {
+      "tag": "visual-studio-code",
+      "installType": "cask",
+      "appname": "Visual Studio Code"
+    },
+    {
+      "tag": "wget",
+      "installType": "brew"
+    },
+    {
+      "tag": "wipr",
+      "installType": "mas",
+      "installName": "Wipr",
+      "id": "1320666476"
+    },
+    {
+      "tag": "xcode",
+      "installType": "mas",
+      "installName": "Xcode",
+      "id": "497799835"
+    },
+    {
+      "tag": "xctu",
+      "installType": "cask",
+      "dependencies": ["silicon-labs-vcp-driver", "ftdi-vcp-driver"],
+      "appname": "XCTU"
+    },
+    {
+      "tag": "xquartz",
+      "installType": "cask",
+      "appname": "XQuartz",
+      "appdir": "/Applications/Utilities"
+    }
+  ]
+}
