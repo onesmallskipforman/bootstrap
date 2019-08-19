@@ -81,7 +81,7 @@ stage () {
       ]| sort;
 
     
-    $J | [idt("bundle"), idt("bash"), idt("python3")] | flatten | .[]
+    $J | [idt("bundle"), idt("bash"), idt("python3"), idt("pip3")] | flatten | .[]
   ' apps.json >> install.sh
 
   # populate quarantine script

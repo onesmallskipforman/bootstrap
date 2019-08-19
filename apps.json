@@ -30,7 +30,7 @@
       },
       {
         "tag": "bash",
-        "install": "source ",
+        "install": "bash ",
         "title": "BASH SCRIPTS"
       },
       {
@@ -41,7 +41,7 @@
       },
       {
         "tag": "pip3",
-        "install": "pip install ",
+        "install": "pip3 install ",
         "dependencies": "python3",
         "title": "PYTHON3 LIBRARIES" 
       },
@@ -100,6 +100,14 @@
       }
     ],
   "apps": [
+    {
+      "tag": "selenium",
+      "installType": "pip3"
+    },
+    {
+      "tag": "rsync",
+      "installType": "brew"
+    },
     {
       "tag": "appcleaner",
       "installType": "cask",
@@ -293,6 +301,17 @@
     {
       "tag": "mas",
       "installType": "brew"
+    },
+    {
+      "tag": "mathematica",
+      "installType": "bash",
+      "installName": "matlab.sh",
+      "dependencies": ["rsync", "geckodriver"]
+    },
+    {
+      "tag": "matlab",
+      "installType": "bash",
+      "installName": "matlab.sh"
     },
     {
       "tag": "minecraft",
