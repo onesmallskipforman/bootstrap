@@ -49,6 +49,11 @@
         "tag": "bundle",
         "install": "brew bundle",
         "title": "HOMEBREW BUNDLE" 
+      },
+      {
+        "tag": "npm",
+        "install": "npm install -g ",
+        "title": "NPM LIBRARIES" 
       }
     ],
   "configs": 
@@ -101,8 +106,21 @@
     ],
   "apps": [
     {
+      "tag": "npm",
+      "installType": "npm"
+    },
+    {
+      "tag": "npm",
+      "installType": "brew"
+    },
+    {
+      "tag": "trash",
+      "installType": "brew"
+    },
+    {
       "tag": "selenium",
-      "installType": "pip3"
+      "installType": "pip3",
+      "dependencies": "geckodriver"
     },
     {
       "tag": "rsync",
@@ -253,7 +271,8 @@
     },
     {
       "tag": "geckodriver",
-      "installType": "brew"
+      "installType": "brew",
+      "dependencies": "selenium"
     },
     {
       "tag": "gnu-getopt",
@@ -305,13 +324,14 @@
     {
       "tag": "mathematica",
       "installType": "bash",
-      "installName": "matlab.sh",
-      "dependencies": ["rsync", "geckodriver"]
+      "installName": "math/mathematica/mathematica.sh",
+      "dependencies": ["rsync", "geckodriver", "trash", "firefox", "selenium"]
     },
     {
       "tag": "matlab",
       "installType": "bash",
-      "installName": "matlab.sh"
+      "installName": "math/matlab/matlab.sh",
+      "dependencies": ["geckodriver", "trash", "firefox", "selenium"]
     },
     {
       "tag": "minecraft",

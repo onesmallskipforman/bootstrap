@@ -1,7 +1,6 @@
 # Don't track content of these folders
 Backups/
 dev/
-math/
 .DS_Store
 todo.txt
 

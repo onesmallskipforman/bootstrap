@@ -8,8 +8,8 @@ brew bundle
 #########################################  
 # BASH SCRIPTS                                     
 #########################################
-bash matlab.sh
-bash matlab.sh
+bash math/mathematica/mathematica.sh
+bash math/matlab/matlab.sh
 
 #########################################  
 # PYTHON3 SCRIPTS                                     
@@ -19,3 +19,8 @@ bash matlab.sh
 # PYTHON3 LIBRARIES                                     
 #########################################
 pip3 install selenium
+
+#########################################  
+# NPM LIBRARIES                                     
+#########################################
+npm install -g npm

@@ -21,7 +21,8 @@ stage () {
   # get full json of relevant installs, dependencies included
   J=$(
     jq -r --argjson J "$J" '
-    .apps as $A |
+    .apps  as $A |
+    .types as $T |
 
     def dep:
       . as $F |
@@ -37,7 +38,6 @@ stage () {
 
     $A | map(select( .tag | IN($J[]) ) ) | dep' apps.json
   )
-
   
   # populate Brewfile
   jq -r --argjson J "$J" '
@@ -81,7 +81,7 @@ stage () {
       ]| sort;
 
     
-    $J | [idt("bundle"), idt("bash"), idt("python3"), idt("pip3")] | flatten | .[]
+    $J | [idt("bundle"), idt("bash"), idt("python3"), idt("pip3"), idt("npm")] | flatten | .[]
   ' apps.json >> install.sh
 
   # populate quarantine script

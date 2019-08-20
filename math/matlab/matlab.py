@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 
-def main(): 
-  import time, os, glob
-  from selenium import webdriver
-  from selenium.webdriver.firefox.options import Options
-  from selenium.webdriver.common.by import By
-  from selenium.webdriver.support.ui import WebDriverWait
-  from selenium.webdriver.support import expected_conditions as EC
+import time, os, glob, sys, atexit
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
+def restart_line():
+    sys.stdout.write('\r\x1b[K')
+    sys.stdout.flush()
+
+def main(): 
+  
   # grab user login info
   with open('../../Backups/matlab.txt', 'r') as file:
     usr = file.readline().replace('\n', '')
@@ -26,7 +31,8 @@ def main():
 
   waitsec = 180
 
-  driver = webdriver.Firefox(options = options) 
+  driver = webdriver.Firefox(options = options)
+  atexit.register(driver.quit) # ensure hidden driver quits when there are errors
   driver.get('https://www.mathworks.com/downloads/web_downloads/select_release')
 
   try:
@@ -38,6 +44,15 @@ def main():
 
   frame = driver.find_element_by_id("me")
   driver.switch_to.frame(frame)
+  time.sleep(5) # time padding between frame switch and login 
+
+  try:
+      element = WebDriverWait(driver, waitsec).until(
+          EC.presence_of_element_located((By.ID, "userId"))
+      )
+  except:
+      driver.quit()
+
   driver.find_element_by_id("userId").send_keys(usr)
   driver.find_element_by_id("password").send_keys(pwd)
   driver.find_element_by_id("submit").click()
@@ -57,18 +72,22 @@ def main():
   ndmg = len(glob.glob("*.dmg*"))
   npart = len(glob.glob("*.part"))
 
+  dl = "button.btn:nth-child(2)"
   try:
       element = WebDriverWait(driver, waitsec).until(
-          EC.presence_of_element_located((By.XPATH, "/html/body/div[5]/div/div/div/div[2]/div[1]/div[1]/div[2]/div/div/button[2]"))
+        EC.presence_of_element_located((By.CSS_SELECTOR, dl))
       )
   except:
       driver.quit()
 
   # start download
-  driver.find_element_by_xpath("/html/body/div[5]/div/div/div/div[2]/div[1]/div[1]/div[2]/div/div/button[2]").click()
-  print("starting download")
+  driver.find_element_by_css_selector(dl).click()
+  sys.stdout.write('Downloading Installer')
+  sys.stdout.flush()
   while ( ndmg == len(glob.glob("*.dmg*")) or npart != len(glob.glob("*.part")) ): pass
-  print("download complete")
+  restart_line()
+  sys.stdout.write('Installer Downloaded\n')
+  sys.stdout.flush()
   driver.quit()
 
 
