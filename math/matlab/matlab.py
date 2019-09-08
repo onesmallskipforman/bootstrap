@@ -11,12 +11,17 @@ def restart_line():
     sys.stdout.write('\r\x1b[K')
     sys.stdout.flush()
 
-def main(): 
-  
+def main():
+
+  # login file path
+  path = sys.argv[1]
+
   # grab user login info
-  with open('../../Backups/matlab.txt', 'r') as file:
+  with open(path, 'r') as file:
     usr = file.readline().replace('\n', '')
     pwd = file.readline().replace('\n', '')
+
+  print(pwd)
 
   options = Options()
   options.set_preference("browser.download.folderList",2)
@@ -44,7 +49,7 @@ def main():
 
   frame = driver.find_element_by_id("me")
   driver.switch_to.frame(frame)
-  time.sleep(5) # time padding between frame switch and login 
+  time.sleep(5) # time padding between frame switch and login
 
   try:
       element = WebDriverWait(driver, waitsec).until(

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source config_funcs.sh
+#===================================================================
+# APP RESTORE SCRIPT
+#===================================================================
 
-config --restore "Minecraft"
-config --restore "Slack"
-config --restore "Spotify"
-config --restore "Sublime Text 3"
-config_emu --restore 
-config_ff --restore 
-config_ino --restore 
+bash Sync/sync_ff.sh --restore
+bash Sync/sync_mc.sh --restore
+bash Sync/sync_emu.sh --restore
+bash Sync/sync_slack.sh --restore
+bash Sync/sync_spotify.sh --restore

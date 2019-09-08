@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source config_funcs.sh
+#===================================================================
+# APP BACKUP SCRIPT
+#===================================================================
 
-config --backup "Minecraft"
-config --backup "Slack"
-config --backup "Spotify"
-config --backup "Sublime Text 3"
-config_emu --backup 
-config_ff --backup 
-config_ino --backup 
+bash Sync/sync_ff.sh --backup
+bash Sync/sync_mc.sh --backup
+bash Sync/sync_emu.sh --backup
+bash Sync/sync_slack.sh --backup
+bash Sync/sync_spotify.sh --backup

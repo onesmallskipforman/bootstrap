@@ -13,10 +13,16 @@ def restart_line():
 
 def main():
 
+  # login file path
+  print(sys.argv[1])
+  path = sys.argv[1]
+
   # grab user login info
-  with open('../../Backups/mathematica.txt', 'r') as file:
+  with open(path, 'r') as file:
     usr = file.readline().replace('\n', '')
     pwd = file.readline().replace('\n', '')
+
+  print(usr)
 
   options = Options()
   options.set_preference("browser.download.folderList",2)
@@ -34,7 +40,7 @@ def main():
   driver = webdriver.Firefox(options = options)
   atexit.register(driver.quit) # ensure hidden driver quits when there are errors
   driver.get('https://user.wolfram.com/portal/download.html?exec=11088&lic=31854707&lpid=4148215')
-  
+
   try:
       element = WebDriverWait(driver, waitsec).until(
           EC.presence_of_element_located((By.NAME, "j_username"))
@@ -51,8 +57,8 @@ def main():
   driver.find_element_by_name("j_username").send_keys(usr)
   driver.find_element_by_name("j_password").send_keys(pwd)
   driver.find_element_by_name("login").click()
- 
-  # start download  
+
+  # start download
   sys.stdout.write('Downloading Installer')
   sys.stdout.flush()
   while ( ndmg == len(glob.glob("*.dmg*")) or npart != len(glob.glob("*.part")) ): pass

@@ -54,7 +54,7 @@ fi
 cd $(dirname $0)
 
 # use web scraper to sign in and grab installer
-python3 matlab.py
+python3 matlab.py $1
 
 # unzip and mount dmg, copy installer, unmount, quarantine
 unar *.zip                                       >/dev/null

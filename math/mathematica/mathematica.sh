@@ -55,7 +55,7 @@ fi
 cd $(dirname $0)
 
 # use web scraper to sign in and grab installer
-python3 mathematica.py
+python3 mathematica.py $1
 
 # mount dmg, copy installer, unmount, quarantine
 hdiutil attach *.dmg -nobrowse            >/dev/null

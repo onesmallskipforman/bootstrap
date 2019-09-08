@@ -1,26 +1,21 @@
 #!/bin/bash
 
-#########################################  
-# HOMEBREW BUNDLE                                     
-#########################################
-brew bundle
+#===================================================================
+# GENERAL INSTALLATION SCRIPT
+#===================================================================
 
-#########################################  
-# BASH SCRIPTS                                     
-#########################################
-bash math/mathematica/mathematica.sh
-bash math/matlab/matlab.sh
 
-#########################################  
-# PYTHON3 SCRIPTS                                     
-#########################################
+# ttab library install
+npm install -g ttab
 
-#########################################  
-# PYTHON3 LIBRARIES                                     
-#########################################
+##################################################
+# PYTHON3 LIBRARIES
+##################################################
+pip3 install Scrapy
 pip3 install selenium
 
-#########################################  
-# NPM LIBRARIES                                     
-#########################################
-npm install -g npm
+# MATLAB install
+bash Math/mathematica/mathematica.sh "../../Backups/mathematica.txt"
+
+# Mathematica install
+bash Math/matlab/matlab.sh "../../Backups/matlab.txt"
