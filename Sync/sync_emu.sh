@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# openemu restore and backup
+# ensure app is not running
+pkill -a OpenEmu
+# osascript -e 'quit app "OpenEmu"'
 
 source Sync/sync.sh
 

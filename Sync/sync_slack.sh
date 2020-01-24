@@ -1,8 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 
-# slack restore and backup
+# ensure app is not running
+pkill -a Slack
+# osascript -e 'quit app "Slack"'
 
-source Sync/sync.sh
+# Backup Folder
+BACKUP=${2:-$PWD}
+BACKUP=${BACKUP%/}
 
-sync $1 "$HOME/Library/Application Support/Slack" "Backups/Slack"
-echo "Slack library restore done. Note that some of these changes require a logout/restart to take effect."
+CONFIG="$HOME/Library/Application Support/Slack"
+
+# TODO: encrypt/decrypt backups
+
+if [[ $1 == "--backup" ]]; then
+  mkdir -p "$BACKUP"
+  cp -f  "$CONFIG/Cookies" "$BACKUP/"
+  cp -rf "$CONFIG/storage" "$BACKUP/"
+elif [[ $1 == "--restore" ]]; then
+  mkdir -p "$CONFIG"
+  cp -f  "$BACKUP/Cookies" "$CONFIG/"
+  cp -rf "$BACKUP/storage" "$CONFIG/"
+else
+  echo "Invalid Config Option"
+fi
