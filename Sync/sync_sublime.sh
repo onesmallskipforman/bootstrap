@@ -15,8 +15,8 @@ CONFIG="$HOME/Library/Application Support/Sublime Text 3"
 
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
-  cp -f "$CONFIG/Packages/User"/*.{sublime-settings,sublime-keymap,sublime-build}   "$BACKUP/"
-  cp -f "$CONFIG/Packages/Python"/*.{sublime-settings,sublime-keymap,sublime-build} "$BACKUP/"
+  cp -f "$CONFIG/Packages/User"/*.{sublime-settings,sublime-keymap,sublime-build}   "$BACKUP/User"
+  cp -f "$CONFIG/Packages/Python"/*.{sublime-settings,sublime-keymap,sublime-build} "$BACKUP/Python"
 elif [[ $1 == "--restore" ]]; then
   mkdir -p "$CONFIG/Packages"
   mkdir -p "$CONFIG/Installed Packages"

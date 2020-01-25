@@ -1,5 +1,6 @@
 # Don't track content of these folders
-Backups/
+Backups/Firefox/
+Backups/Old/
 dev/
 .DS_Store
 todo.txt
