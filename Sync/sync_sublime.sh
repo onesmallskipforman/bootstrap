@@ -17,18 +17,20 @@ PCTRL="$HOME/Library/Application Support/Sublime Text 3/Installed Packages"
 
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
-  cp -f  "$CONFIG"/*.{sublime-settings,sublime-keymap} "$BACKUP/"
+  mkdir -p "$BACKUP/Settings"
+  cp -f  "$CONFIG"/*.{sublime-settings,sublime-keymap} "$BACKUP/Settings/"
   cp -rf "$CONFIG/Snippets"                            "$BACKUP/"
   cp -rf "$CONFIG/Builds"                              "$BACKUP/"
 elif [[ $1 == "--restore" ]]; then
   mkdir -p "$PYCACHE"
   mkdir -p "$CONFIG"
   mkdir -p "$PCTRL"
-  cp -f  "$BACKUP/Completion Rules.tmPreferences"      "$PYCACHE/"
-  cp -f  "$BACKUP/Monokai-Contrast.tmTheme"            "$CONFIG/"
-  cp -f  "$BACKUP"/*.{sublime-settings,sublime-keymap} "$CONFIG/"
-  cp -rf "$BACKUP/Snippets"                            "$CONFIG/"
-  cp -rf "$BACKUP/Builds"                              "$CONFIG/"
+  cp -f  "$BACKUP/Completion Rules.tmPreferences" "$PYCACHE/"
+  cp -f  "$BACKUP/Monokai-Contrast.tmTheme"       "$CONFIG/"
+  cp -rf "$BACKUP/Snippets"                       "$CONFIG/"
+  cp -rf "$BACKUP/Builds"                         "$CONFIG/"
+  cp -rf "$BACKUP/Settings/"                      "$CONFIG/"
+  # cp -f  "$BACKUP/CleanPreferences.sublime-settings" "$CONFIG/Preferences.sublime-settings"
 
   # Install Package Control
   wget "https://packagecontrol.io/Package%20Control.sublime-package"
