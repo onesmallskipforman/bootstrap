@@ -17,10 +17,10 @@ defaults write com.apple.terminal "Startup Window Settings" -string Homebrew
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
 
-# disable “focus follows mouse” for Terminal.app and all X11 apps
+# disable focus follows mouse for Terminal/X11 apps (both lines needed for true)
 # i.e. hover over a window and start typing in it without clicking first
 defaults write com.apple.terminal FocusFollowsMouse -bool false
-#defaults write org.x.X11 wm_ffm -bool true
+defaults write org.x.X11 wm_ffm -bool false
 
 # Enable Secure Keyboard Entry in Terminal.app
 # See: https://security.stackexchange.com/a/47786/8918
