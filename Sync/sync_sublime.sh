@@ -9,23 +9,31 @@ pkill -a Sublime
 BACKUP=${2:-$PWD}
 BACKUP=${BACKUP%/}
 
-CONFIG="$HOME/Library/Application Support/Sublime Text 3"
+CONFIG="$HOME/Library/Application Support/Sublime Text 3/Packages/User"
+PYCACHE="$HOME/Library/Application Support/Sublime Text 3/Cache/Python"
+PCTRL="$HOME/Library/Application Support/Sublime Text 3/Installed Packages"
 
 # TODO: encrypt/decrypt backups
 
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
-  cp -f "$CONFIG/Packages/User"/*.{sublime-settings,sublime-keymap,sublime-build}   "$BACKUP/User"
-  cp -f "$CONFIG/Packages/Python"/*.{sublime-settings,sublime-keymap,sublime-build} "$BACKUP/Python"
+  cp -f  "$CONFIG"/*.{sublime-settings,sublime-keymap} "$BACKUP/"
+  cp -rf "$CONFIG/Snippets"                            "$BACKUP/"
+  cp -rf "$CONFIG/Builds"                              "$BACKUP/"
 elif [[ $1 == "--restore" ]]; then
-  mkdir -p "$CONFIG/Packages"
-  mkdir -p "$CONFIG/Installed Packages"
-  cp -rf "$BACKUP/User"   "$CONFIG/Packages/"
-  cp -rf "$BACKUP/Python" "$CONFIG/Packages/"
+  mkdir -p "$PYCACHE"
+  mkdir -p "$CONFIG"
+  mkdir -p "$PCTRL"
+  cp -f  "$BACKUP/Completion Rules.tmPreferences"      "$PYCACHE/"
+  cp -f  "$BACKUP/Monokai-Contrast.tmTheme"            "$CONFIG/"
+  cp -f  "$BACKUP"/*.{sublime-settings,sublime-keymap} "$CONFIG/"
+  cp -rf "$BACKUP/Snippets"                            "$CONFIG/"
+  cp -rf "$BACKUP/Builds"                              "$CONFIG/"
 
   # Install Package Control
   wget "https://packagecontrol.io/Package%20Control.sublime-package"
-  mv "Package Control.sublime-package" "$CONFIG/Installed Packages/"
+  mv "Package Control.sublime-package" "$PCTRL" || \
+    rm -f "Package Control.sublime-package"
 else
   echo "Invalid Config Option"
 fi

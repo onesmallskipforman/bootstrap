@@ -30,6 +30,7 @@
     "FindKeyConflicts",
     "Git",
     "GitGutter",
+    "Gitignore",
     "IndentToAllBrackets",
     "LaTeX-cwl",
     "LaTeXSmartQuotes",
