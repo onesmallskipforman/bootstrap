@@ -1,47 +1,8 @@
 #!/bin/bash
 
-# firefox restore and backup function
-
-# SUPPORT="$HOME/Library/Application Support/Firefox"
-# BACKUP="Backups/Firefox"
-# CLI="/Applications/Firefox.app/Contents/MacOS/firefox"
-
-# if [[ $1 == "--backup" ]]; then
-#   # copy profile over
-#   PROFILE="$SUPPORT/Profiles"/*.default-release
-#   mkdir -p "$BACKUP/" &&
-#   cp -r "$SUPPORT/Profiles/"*.default-release "$BACKUP"
-# elif [[ $1 == "--restore" ]]; then
-#   # remove old profile folders
-#   rm -rf "$SUPPORT"
-
-#   # create profile
-#   "$CLI" -CreateProfile default-release
-#   # PROFILE="$SUPPORT/Profiles/"*.default-release
-
-#   # copy backup to profile
-#   cp -r "$BACKUP/" "$SUPPORT/Profiles/"*.default-release
-
-#   echo "Setting Up Firefox"
-
-  # # run profile headless, trigger default browser dialoge and wait 60 seconds
-  # "$CLI" -headless &>/dev/null & #-setDefaultBrowser
-  # sleep 60
-  # osascript -e 'quit app "Firefox"'
-# else
-#   echo "Invalid Config Option"
-# fi
-
-# echo "Firefox profile restore done. Note that some of these changes require a logout/restart to take effect."
-
-
-
-
-#!/bin/sh
-
 # ensure app is not running
 # osascript -e 'quit app "Firefox"'
-pkill -a firefox
+# pkill -a firefox
 
 # Backup Folder
 BACKUP=${2:-$PWD} # BACKUP=${2:-$PWD/FF}
@@ -69,11 +30,9 @@ elif [[ $1 == "--restore" ]]; then
 
   # during first open after sync, the extensions are missing
   # these are optional lines to open and close the browser headlessly
-  # TODO: Check if logout would have the same effect.
 
-  # open and wait
-  # multiple processes running seems to be sufficient for a proper open
-
+  # open and wait for multiple running processes
+  # multiple running processes  seems to be sufficient for a proper open
   "$CMD" -headless &>/dev/null & #-setDefaultBrowser
   until [ $(pgrep -f Firefox | wc -l) -gt 2 ]
   do

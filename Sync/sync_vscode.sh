@@ -1,9 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # ensure app is not running
-# TODO: figure out correct names
-# osascript -e 'quit app "Visual Studio"'
-pkill -a Vscode
+# osascript -e 'quit app "Visual Studio Code"'
+# pkill -a Code
 
 # Backup Folder
 BACKUP=${2:-$PWD}
@@ -24,7 +23,10 @@ elif [[ $1 == "--restore" ]]; then
   cp -f  "$CONFIG/keybindings.json" "$CONFIG/"
   cp -f  "$CONFIG/settings.json"    "$CONFIG/"
   cp -rf "$CONFIG/snippets"         "$CONFIG/"
-  cat plugins.txt | xargs -n 1 code --install-extension
+
+  # install plugins in list htat are not already installed
+  comm -23 <(sort -f "$BACKUP/plugins.txt") <(code --list-extensions | sort -f) \
+   | xargs -n 1 code --install-extension
 else
   echo "Invalid Config Option"
 fi

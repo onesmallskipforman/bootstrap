@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # ensure app is not running
-pkill -a Spotify
 # osascript -e 'quit app "Spotify"'
+# pkill -a Spotify
 
 # Backup Folder
 BACKUP=${2:-$PWD}

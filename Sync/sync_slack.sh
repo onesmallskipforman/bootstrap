@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # ensure app is not running
-pkill -a Slack
 # osascript -e 'quit app "Slack"'
+# pkill -a Slack
 
 # Backup Folder
 BACKUP=${2:-$PWD}

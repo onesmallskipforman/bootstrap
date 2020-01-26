@@ -1,10 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 # ensure app is not running
-pkill -a java
-pkill -a minecraft
 # osascript -e 'quit app "Minecraft"'
-
+# pkill -a java
+# pkill -a minecraft
 
 # Backup Folder
 BACKUP=${2:-$PWD}

@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 # ensure app is not running
 # osascript -e 'quit app "Sublime Text"'
-pkill -a Sublime
 # pkill -a merge
+# pkill -a Sublime
 
 # Backup Folder
 BACKUP=${2:-$PWD}
