@@ -34,7 +34,16 @@ bash install.sh
 
 # quarantine and configure some preferences
 # silencing due to 'permission denied' errors for irrelevant files
-source quarantine.sh &>/dev/null 2>&1
+echo "Removing Apple Quarantine..."
+brew cask list | xargs brew cask info | grep '(App)' \
+  | sed 's/^/"\/Applications\//;s/\.app.*/.app"/' \
+  | xargs sudo xattr -r -d com.apple.quarantine  &>/dev/null
+
+# alternatively read from textfile
+# cat casks.txt | xargs brew cask info | grep '(App)' \
+#   | sed 's/^/"\/Applications\//;s/\.app.*/.app"/' \
+#   | xargs sudo xattr -r -d com.apple.quarantine  &>/dev/null
+
 source config.sh
 
 # Homebrew Cleanup
@@ -52,5 +61,3 @@ echo "Updating Homebrew Formulae..."
 brew upgrade
 echo "Cleaning Homebrew..."
 brew cleanup
-
-

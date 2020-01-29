@@ -1,340 +1,139 @@
 {
-  "files": [
+  "tap": [
+    "homebrew/cask",
+    "homebrew/cask-drivers",
+    "idleberg/dbxcli"
+  ],
+  "brew": [
+    "balena-cli",
+    "idleberg/idleberg/dbxcli",
+    "dockutil",
+    "geckodriver",
+    "gnu-getopt",
+    "gnupg",
+    "imagemagick",
+    "ino",
+    "jq",
+    "libusb",
+    "mas",
+    "node",
+    "npm",
+    "openvpn",
+    "platformio",
+    "python3",
+    "rsync",
+    "teensy-loader-cli",
+    "tmux",
+    "trash",
+    "unar",
+    "vim",
+    "wget"
+  ],
+  "cask": [
+    "appcleaner",
+    "appcode",
+    "arduino",
+    "balenaetcher",
+    "bettertouchtool",
+    "bitwarden",
+    "cleanmymac",
+    "clion",
+    "coolterm",
+    "discord",
+    "docker",
+    "dropbox",
+    "firefox",
+    "flux",
+    "homebrew/cask-drivers/ftdi-vcp-driver",
+    "intellij-idea",
+    "iterm2",
+    "keyboardcleantool",
+    "mactex-no-gui",
+    "minecraft",
+    "nordvpn",
+    "openemu",
+    "paintbrush",
+    "porting-kit",
+    "protonmail-bridge",
+    "pycharm",
+    "homebrew/cask-drivers/silicon-labs-vcp-driver",
+    "skim",
+    "slack",
+    "spotify",
+    "spotify-notifications",
+    "steam",
+    "sublime",
+    "sublime-merge",
+    "thunderbird",
+    "ticktick",
+    "tor-browser",
+    "ui-browser",
+    "vagrant",
+    "virtualbox",
+    "visual-studio-code",
+    "xctu",
+    "xquartz"
+  ],
+  "mas": [
     {
-      "tag": "backup",
-      "fname": "backup.sh",
-      "shebang": "#!/bin/bash",
+      "name": "Dark Reader for Safari",
+      "id": "1438243180"
+    },
+    {
+      "name": "Dynamo",
+      "id": "1445910651"
+    },
+    {
+      "name": "Pocket",
+      "id": "568494494"
+    },
+    {
+      "name": "Shazam",
+      "id": "897118787"
+    },
+    {
+      "name": "Wipr",
+      "id": "1320666476"
+    },
+    {
+      "name": "Xcode",
+      "id": "497799835"
+    }
+  ],
+  "pip3": [
+    "Scrapy",
+    "selenium"
+  ],
+  "npm": [
+    "ttab"
+  ],
+  "scripts": [
+    {
+      "name": "backup.sh",
+      "shebang": "#!/bin/sh",
       "title": "APP BACKUP SCRIPT"
     },
+
     {
-      "tag": "brewfile",
-      "fname": "Brewfile",
-      "order": [
-        "tap",
-        "cask",
-        "brew",
-        "mas"
-      ],
-      "ftype": "brewfile",
-      "title": "BREW BUNDLE FILE"
-    },
-    {
-      "tag": "config",
-      "fname": "config.sh",
-      "order": [
-        "tap",
-        "cask",
-        "brew",
-        "mas",
-        "pip3"
-      ],
-      "shebang": "#!/bin/bash",
+      "name": "config.sh",
+      "shebang": "#!/bin/sh",
       "title": "APP CONFIG SCRIPT"
     },
     {
-      "tag": "install",
-      "fname": "install.sh",
-      "order": [
-        "cmd",
-        "tap",
-        "cask",
-        "brew",
-        "mas",
-        "npm",
-        "pip3",
-        "bash",
-        "python3"
-      ],
-      "shebang": "#!/bin/bash",
-      "title": "GENERAL INSTALLATION SCRIPT"
+      "name": "install.sh",
+      "shebang": "#!/bin/sh",
+      "title": "GENERAL INSTALLATION SCRIPT",
+      "types": ["pip3"]
     },
     {
-      "tag": "restore",
-      "fname": "restore.sh",
-      "shebang": "#!/bin/bash",
+      "name": "restore.sh",
+      "shebang": "#!/bin/sh",
       "title": "APP RESTORE SCRIPT"
     }
   ],
-  "types": [
-    {
-      "tag": "bash",
-      "cmd": "bash",
-      "file": "install"
-    },
-    {
-      "tag": "brew",
-      "cmd": "brew install",
-      "bundleCmd": "brew",
-      "title": "HOMEBREW FORMULAE",
-      "file": "brewfile"
-    },
-    {
-      "tag": "cask",
-      "cmd": "brew cask install",
-      "bundleCmd": "cask",
-      "title": "HOMEBREW CASKS",
-      "dependencies": "homebrew/cask",
-      "file": "brewfile"
-    },
-    {
-      "tag": "cmd",
-      "file": "install"
-    },
-    {
-      "tag": "mas",
-      "cmd": "mas install",
-      "bundleCmd": "mas",
-      "title": "APP STORE APPS",
-      "dependencies": "mas",
-      "file": "brewfile"
-    },
-    {
-      "tag": "pip3",
-      "cmd": "pip3 install",
-      "dependencies": "python3",
-      "title": "PYTHON3 LIBRARIES",
-      "file": "install"
-    },
-    {
-      "tag": "python3",
-      "cmd": "python3",
-      "dependencies": "python3",
-      "file": "install"
-    },
-    {
-      "tag": "tap",
-      "cmd": "brew tap",
-      "bundleCmd": "tap",
-      "title": "TAPS",
-      "file": "brewfile"
-    }
-  ],
-  "apps": [
-    {
-      "tag": "appcleaner",
-      "type": "cask",
-      "appname": "AppCleaner"
-    },
-    {
-      "tag": "appcode",
-      "type": "cask",
-      "appname": "AppCode"
-    },
-    {
-      "tag": "arduino",
-      "type": "cask",
-      "appname": "Arduino"
-    },
-    {
-      "tag": "arduino-backup",
-      "installName": "Sync/sync_arduino.sh --backup",
-      "type": "bash",
-      "file": "backup"
-    },
-    {
-      "tag": "arduino-restore",
-      "installName": "Sync/sync_arduino.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "balena-cli",
-      "type": "brew"
-    },
-    {
-      "tag": "balenaetcher",
-      "type": "cask",
-      "appname": "balenaEtcher"
-    },
-    {
-      "tag": "bettersnaptool",
-      "type": "mas",
-      "installName": "BetterSnapTool",
-      "id": "417375580",
-      "appname": "BetterSnapTool",
-      "rightComment": "BetterSnapTool"
-    },
-    {
-      "tag": "bettertouchtool",
-      "type": "cask",
-      "appname": "BetterTouchTool"
-    },
-    {
-      "tag": "bitwarden",
-      "type": "cask",
-      "appname": "Bitwarden"
-    },
-    {
-      "tag": "bundle",
-      "type": "cmd",
-      "installName": "brew bundle -v",
-      "topComment": "homebrew installs"
-    },
-    {
-      "tag": "cleanmymac",
-      "type": "cask",
-      "appname": "CleanMyMac X"
-    },
-    {
-      "tag": "clion",
-      "type": "cask",
-      "appname": "CLion"
-    },
-    {
-      "tag": "commandlinetools",
-      "type": "bash",
-      "installName": "clinetools.sh"
-    },
-    {
-      "tag": "coolterm",
-      "type": "cask",
-      "appname": "CoolTerm"
-    },
-    {
-      "tag": "darkreader",
-      "type": "mas",
-      "installName": "Dark Reader for Safari",
-      "id": "1438243180",
-      "rightComment": "Dark Reader"
-    },
-    {
-      "tag": "dbxcli",
-      "type": "brew",
-      "dependencies": "idleberg/dbxcli"
-    },
-    {
-      "tag": "discord",
-      "type": "cask",
-      "appname": "Discord"
-    },
-    {
-      "tag": "dock-config",
-      "installName": "Config/dock.sh",
-      "type": "bash",
-      "file": "config",
-      "dependencies": "dockutil"
-    },
-    {
-      "tag": "docker",
-      "type": "cask",
-      "appname": "Docker"
-    },
-    {
-      "tag": "dockutil",
-      "type": "brew"
-    },
-    {
-      "tag": "dropbox",
-      "type": "cask",
-      "appname": "Dropbox"
-    },
-    {
-      "tag": "dynamo",
-      "type": "mas",
-      "installName": "Dynamo",
-      "id": "1445910651",
-      "rightComment": "Dynamo"
-    },
-    {
-      "tag": "firefox",
-      "type": "cask",
-      "appname": "Firefox"
-    },
-    {
-      "tag": "firefox-backup",
-      "installName": "Sync/sync_ff.sh --backup",
-      "type": "bash",
-      "file": "backup"
-    },
-    {
-      "tag": "firefox-restore",
-      "installName": "Sync/sync_ff.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "flux",
-      "type": "cask",
-      "appname": "Flux"
-    },
-    {
-      "tag": "ftdi-vcp-driver",
-      "type": "cask",
-      "dependencies": "homebrew/cask-drivers"
-    },
-    {
-      "tag": "geckodriver",
-      "type": "brew"
-    },
-    {
-      "tag": "gnu-getopt",
-      "type": "brew"
-    },
-    {
-      "tag": "gnupg",
-      "type": "brew"
-    },
-    {
-      "tag": "homebrew/cask",
-      "type": "tap"
-    },
-    {
-      "tag": "homebrew/cask-drivers",
-      "type": "tap"
-    },
-    {
-      "tag": "idleberg/dbxcli",
-      "type": "tap"
-    },
-    {
-      "tag": "imagemagick",
-      "type": "brew"
-    },
-    {
-      "tag": "ino",
-      "type": "brew"
-    },
-    {
-      "tag": "intellij-idea",
-      "type": "cask",
-      "appname": "IntelliJ IDEA"
-    },
-    {
-      "tag": "iterm-config",
-      "installName": "Config/iterm.sh",
-      "type": "bash",
-      "file": "config"
-    },
-    {
-      "tag": "iterm2",
-      "type": "cask",
-      "appname": "iTerm"
-    },
-    {
-      "tag": "jq",
-      "type": "brew"
-    },
-    {
-      "tag": "keyboardcleantool",
-      "type": "cask",
-      "appname": "KeyboardCleanTool"
-    },
-    {
-      "tag": "libusb",
-      "type": "brew"
-    },
-    {
-      "tag": "mactex-no-gui",
-      "type": "cask"
-    },
-    {
-      "tag": "mas",
-      "type": "brew"
-    },
+  "installs": [
     {
       "tag": "mathematica",
-      "type": "bash",
-      "topComment": "MATLAB install",
       "installName": "Math/mathematica/mathematica.sh \"../../Backups/mathematica.txt\"",
       "dependencies": [
         "rsync",
@@ -347,9 +146,7 @@
     },
     {
       "tag": "matlab",
-      "type": "bash",
       "installName": "Math/matlab/matlab.sh \"../../Backups/matlab.txt\"",
-      "topComment": "Mathematica install",
       "dependencies": [
         "geckodriver",
         "trash",
@@ -358,298 +155,90 @@
         "unar",
         "python3"
       ]
+    }
+  ],
+  "bash commands": [
+    {
+      "tag": "arduino-restore",
+      "installName": "Sync/arduino.sh --restore"
     },
     {
-      "tag": "minecraft",
-      "type": "cask",
-      "appname": "Minecraft"
-    },
-    {
-      "tag": "minecraft-backup",
-      "installName": "Sync/sync_mc.sh --backup",
-      "type": "bash",
-      "file": "backup"
+      "tag": "firefox-restore",
+      "installName": "Sync/firefox.sh --restore"
     },
     {
       "tag": "minecraft-restore",
-      "installName": "Sync/sync_mc.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "node",
-      "type": "brew"
-    },
-    {
-      "tag": "nordvpn",
-      "type": "cask",
-      "appname": "NordVPN"
-    },
-    {
-      "tag": "npm",
-      "type": "brew"
-    },
-    {
-      "tag": "openemu",
-      "type": "cask",
-      "appname": "OpenEmu"
-    },
-    {
-      "tag": "openemu-backup",
-      "installName": "Sync/sync_emu.sh --backup",
-      "type": "bash",
-      "file": "backup"
+      "installName": "Sync/minecraft.sh --restore"
     },
     {
       "tag": "openemu-restore",
-      "installName": "Sync/sync_emu.sh --restore",
-      "type": "bash",
-      "file": "restore"
+      "installName": "Sync/openemu.sh --restore"
     },
     {
-      "tag": "openvpn",
-      "type": "brew"
+      "tag": "slack-restore",
+      "installName": "Sync/sync_slack.sh --restore"
+    },
+    {
+      "tag": "spotify-restore",
+      "installName": "Sync/sync_spotify.sh --restore"
+    },
+    {
+      "tag": "sublime-restore",
+      "installName": "Sync/sync_sublime.sh --restore"
+    },
+    {
+      "tag": "arduino-backup",
+      "comamnd": "Sync/arduino.sh --backup"
+    },
+    {
+      "tag": "firefox-backup",
+      "installName": "Sync/firefox.sh --backup"
+    },
+    {
+      "tag": "minecraft-backup",
+      "installName": "Sync/minecraft.sh --backup"
+    },
+    {
+      "tag": "openemu-backup",
+      "installName": "Sync/openemu.sh --backup"
+    },
+    {
+      "tag": "slack-backup",
+      "installName": "Sync/sync_slack.sh --backup"
+    },
+    {
+      "tag": "spotify-backup",
+      "installName": "Sync/sync_spotify.sh --backup"
+    },
+    {
+      "tag": "sublime-backup",
+      "installName": "Sync/sync_sublime.sh --backup"
+    },
+    {
+      "tag": "dock-config",
+      "installName": "Config/dock.sh",
+      "file": "config",
+      "dependencies": "dockutil"
     },
     {
       "tag": "osx-config",
       "installName": "Config/osx.sh",
-      "type": "bash",
       "file": "config"
     },
     {
-      "tag": "paintbrush",
-      "type": "cask",
-      "appname": "Paintbrush"
-    },
-    {
-      "tag": "platformio",
-      "type": "brew"
-    },
-    {
-      "tag": "pocket",
-      "type": "mas",
-      "installName": "Pocket",
-      "id": "568494494",
-      "rightComment": "Pocket"
-    },
-    {
-      "tag": "porting-kit",
-      "type": "cask",
-      "appname": "Porting Kit"
-    },
-    {
-      "tag": "protonmail-bridge",
-      "type": "cask",
-      "appname": "Protonmail Bridge"
-    },
-    {
-      "tag": "pycharm",
-      "type": "cask",
-      "appname": "PyCharm"
-    },
-    {
-      "tag": "python3",
-      "type": "brew",
-      "installName": "python"
-    },
-    {
-      "tag": "rsync",
-      "type": "brew"
+      "tag": "iterm-config",
+      "installName": "Config/iterm.sh",
+      "file": "config"
     },
     {
       "tag": "safari-config",
       "installName": "Config/safari.sh",
-      "type": "bash",
       "file": "config"
-    },
-    {
-      "tag": "scrapy",
-      "type": "pip3",
-      "installName": "Scrapy"
-    },
-    {
-      "tag": "selenium",
-      "type": "pip3"
-    },
-    {
-      "tag": "shazam",
-      "type": "mas",
-      "installName": "Shazam",
-      "id": "897118787",
-      "rightComment": "Shazam"
-    },
-    {
-      "tag": "silicon-labs-vcp-driver",
-      "type": "cask",
-      "dependencies": "homebrew/cask-drivers"
-    },
-    {
-      "tag": "skim",
-      "type": "cask",
-      "appname": "Skim"
-    },
-    {
-      "tag": "slack",
-      "type": "cask",
-      "appname": "Slack"
-    },
-    {
-      "tag": "slack-backup",
-      "installName": "Sync/sync_slack.sh --backup",
-      "type": "bash",
-      "file": "backup"
-    },
-    {
-      "tag": "slack-restore",
-      "installName": "Sync/sync_slack.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "spotify",
-      "type": "cask",
-      "appname": "Spotify"
-    },
-    {
-      "tag": "spotify-backup",
-      "installName": "Sync/sync_spotify.sh --backup",
-      "type": "bash",
-      "file": "backup"
-    },
-    {
-      "tag": "spotify-notifications",
-      "type": "cask",
-      "appname": "Spotify Notifications"
-    },
-    {
-      "tag": "spotify-restore",
-      "installName": "Sync/sync_spotify.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "steam",
-      "type": "cask",
-      "appname": "Steam"
-    },
-    {
-      "tag": "sublime",
-      "type": "cask",
-      "installName": "sublime-text",
-      "appname": "Sublime Text"
-    },
-    {
-      "tag": "sublime-backup",
-      "installName": "Sync/sync_sublime.sh --backup",
-      "type": "bash",
-      "file": "backup"
-    },
-    {
-      "tag": "sublime-merge",
-      "type": "cask",
-      "appname": "Sublime Merge"
-    },
-    {
-      "tag": "sublime-restore",
-      "installName": "Sync/sync_sublime.sh --restore",
-      "type": "bash",
-      "file": "restore"
-    },
-    {
-      "tag": "teensy-loader-cli",
-      "type": "brew"
     },
     {
       "tag": "terminal-config",
       "installName": "Config/terminal.sh",
-      "type": "bash",
       "file": "config"
-    },
-    {
-      "tag": "thunderbird",
-      "type": "cask",
-      "appname": "Thunderbird"
-    },
-    {
-      "tag": "ticktick",
-      "type": "cask",
-      "appname": "TickTick"
-    },
-    {
-      "tag": "tmux",
-      "type": "brew"
-    },
-    {
-      "tag": "tor-browser",
-      "type": "cask",
-      "appname": "Tor Browser"
-    },
-    {
-      "tag": "trash",
-      "type": "brew"
-    },
-    {
-      "tag": "ttab",
-      "dependencies": "npm",
-      "installName": "npm install -g ttab",
-      "topComment": "ttab library install",
-      "type": "cmd"
-    },
-    {
-      "tag": "ui-browser",
-      "type": "cask",
-      "appname": "UI Browser"
-    },
-    {
-      "tag": "unar",
-      "type": "brew"
-    },
-    {
-      "tag": "vagrant",
-      "type": "cask",
-      "appname": "Vagrant"
-    },
-    {
-      "tag": "vim",
-      "type": "brew"
-    },
-    {
-      "tag": "virtualbox",
-      "type": "cask",
-      "appname": "VirtualBox"
-    },
-    {
-      "tag": "visual-studio-code",
-      "type": "cask",
-      "appname": "Visual Studio Code"
-    },
-    {
-      "tag": "wget",
-      "type": "brew"
-    },
-    {
-      "tag": "wipr",
-      "type": "mas",
-      "installName": "Wipr",
-      "id": "1320666476",
-      "rightComment": "Wipr Adblocker"
-    },
-    {
-      "tag": "xcode",
-      "type": "mas",
-      "installName": "Xcode",
-      "id": "497799835",
-      "rightComment": "Xcode"
-    },
-    {
-      "tag": "xctu",
-      "type": "cask",
-      "appname": "XCTU"
-    },
-    {
-      "tag": "xquartz",
-      "type": "cask",
-      "appname": "Utilities/XQuartz"
     }
   ]
 }

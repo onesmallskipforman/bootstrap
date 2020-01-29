@@ -66,7 +66,7 @@ brew "vim"
 # APP STORE APPS
 ##################################################
 mas "BetterSnapTool", id: 417375580 # BetterSnapTool
-mas "Dark Reader for Safari", id: 1438243180 # Dark Reader
+mas "Dark Reader for Safari", id: 1438243180 # Dark Reader for Safari
 mas "Dynamo", id: 1445910651 # Dynamo
 mas "Pocket", id: 568494494 # Pocket
 mas "Shazam", id: 897118787 # Shazam

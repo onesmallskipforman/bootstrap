@@ -34,8 +34,10 @@ elif [[ $1 == "--restore" ]]; then
 
   # Install Package Control
   wget "https://packagecontrol.io/Package%20Control.sublime-package"
-  mv "Package Control.sublime-package" "$PCTRL" || \
-    rm -f "Package Control.sublime-package"
+  mv "Package Control.sublime-package" "$PCTRL"
+
+  # ensures backup folder stays clean of extra downloads
+  rm -f *.sublime-package
 else
   echo "Invalid Config Option"
 fi

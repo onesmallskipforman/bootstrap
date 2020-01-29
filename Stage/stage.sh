@@ -127,33 +127,4 @@ stage () {
     # echo -e "$CONTENT"
   done
 
-  # populate quarantine script
-  jq -r --argjson J "$J" '
-
-    def bigtitle(s):"\n" +
-      "#===================================================================\n" +
-      "# \(s)\n" +
-      "#===================================================================\n\n";
-
-    def idq:
-      [.[] | select(.appname) |
-      "quar \"\(.appname)\"\(if .appdir then " \"\(.appdir)\"" else "" end)"
-      ]| sort;
-
-    $J | (["#!/bin/bash\n\(bigtitle("APP QUARANTINES"))source quar.sh\n"] + [idq])
-    | flatten | .[]
-  ' apps.json > ../quarantine.sh
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
