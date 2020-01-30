@@ -5,71 +5,65 @@
     "idleberg/dbxcli"
   ],
   "brew": [
-    "balena-cli",
-    "idleberg/idleberg/dbxcli",
+    "clang-format",
+    "coreutils",
+    "idleberg/dbxcli/dbxcli",
     "dockutil",
+    "enscript",
+    "gcc",
     "geckodriver",
+    "ghostscript",
     "gnu-getopt",
     "gnupg",
+    "gstreamer",
     "imagemagick",
-    "ino",
     "jq",
     "libusb",
+    "llvm",
     "mas",
-    "node",
     "npm",
-    "openvpn",
+    "pandoc",
+    "python",
+    "perl",
     "platformio",
-    "python3",
     "rsync",
-    "teensy-loader-cli",
+    "rust",
     "tmux",
     "trash",
     "unar",
+    "verilator",
     "vim",
     "wget"
   ],
   "cask": [
-    "appcleaner",
-    "appcode",
-    "arduino",
+    "amethyst",
     "balenaetcher",
     "bettertouchtool",
     "bitwarden",
-    "cleanmymac",
-    "clion",
-    "coolterm",
+    "brave-browser",
     "discord",
     "docker",
     "dropbox",
+    "edrawmax",
+    "eqmac",
     "firefox",
     "flux",
     "homebrew/cask-drivers/ftdi-vcp-driver",
-    "intellij-idea",
+    "google-chrome",
     "iterm2",
     "keyboardcleantool",
     "mactex-no-gui",
     "minecraft",
     "nordvpn",
     "openemu",
-    "paintbrush",
-    "porting-kit",
-    "protonmail-bridge",
-    "pycharm",
-    "homebrew/cask-drivers/silicon-labs-vcp-driver",
+    "rectangle",
     "skim",
     "slack",
     "spotify",
-    "spotify-notifications",
     "steam",
-    "sublime",
     "sublime-merge",
-    "thunderbird",
+    "sublime-text",
     "ticktick",
-    "tor-browser",
-    "ui-browser",
-    "vagrant",
-    "virtualbox",
     "visual-studio-code",
     "xctu",
     "xquartz"
@@ -101,8 +95,18 @@
     }
   ],
   "pip3": [
-    "Scrapy",
-    "selenium"
+    "autopep8",
+    "bandit",
+    "flake8",
+    "jedi",
+    "pycodestyle",
+    "pylint",
+    "selenium",
+    "matplotlib",
+    "numpy",
+    "kivy",
+    "jupyter",
+    "beautifulsoup4"
   ],
   "npm": [
     "ttab"
@@ -134,7 +138,7 @@
   "installs": [
     {
       "tag": "mathematica",
-      "installName": "Math/mathematica/mathematica.sh \"../../Backups/mathematica.txt\"",
+      "command": "Math/mathematica/mathematica.sh \"../../Backups/mathematica.txt\"",
       "dependencies": [
         "rsync",
         "geckodriver",
@@ -146,7 +150,7 @@
     },
     {
       "tag": "matlab",
-      "installName": "Math/matlab/matlab.sh \"../../Backups/matlab.txt\"",
+      "command": "Math/matlab/matlab.sh \"../../Backups/matlab.txt\"",
       "dependencies": [
         "geckodriver",
         "trash",
@@ -157,88 +161,111 @@
       ]
     }
   ],
-  "bash commands": [
+  "bash_commands": [
     {
       "tag": "arduino-restore",
-      "installName": "Sync/arduino.sh --restore"
+      "command": "Sync/arduino.sh --restore"
     },
     {
       "tag": "firefox-restore",
-      "installName": "Sync/firefox.sh --restore"
+      "command": "Sync/firefox.sh --restore"
     },
     {
       "tag": "minecraft-restore",
-      "installName": "Sync/minecraft.sh --restore"
+      "command": "Sync/minecraft.sh --restore"
     },
     {
       "tag": "openemu-restore",
-      "installName": "Sync/openemu.sh --restore"
+      "command": "Sync/openemu.sh --restore"
     },
     {
       "tag": "slack-restore",
-      "installName": "Sync/sync_slack.sh --restore"
+      "command": "Sync/sync_slack.sh --restore"
     },
     {
       "tag": "spotify-restore",
-      "installName": "Sync/sync_spotify.sh --restore"
+      "command": "Sync/sync_spotify.sh --restore"
     },
     {
       "tag": "sublime-restore",
-      "installName": "Sync/sync_sublime.sh --restore"
+      "command": "Sync/sync_sublime.sh --restore"
     },
     {
       "tag": "arduino-backup",
-      "comamnd": "Sync/arduino.sh --backup"
+      "command": "Sync/arduino.sh --backup"
     },
     {
       "tag": "firefox-backup",
-      "installName": "Sync/firefox.sh --backup"
+      "command": "Sync/firefox.sh --backup"
     },
     {
       "tag": "minecraft-backup",
-      "installName": "Sync/minecraft.sh --backup"
+      "command": "Sync/minecraft.sh --backup"
     },
     {
       "tag": "openemu-backup",
-      "installName": "Sync/openemu.sh --backup"
+      "command": "Sync/openemu.sh --backup"
     },
     {
       "tag": "slack-backup",
-      "installName": "Sync/sync_slack.sh --backup"
+      "command": "Sync/sync_slack.sh --backup"
     },
     {
       "tag": "spotify-backup",
-      "installName": "Sync/sync_spotify.sh --backup"
+      "command": "Sync/sync_spotify.sh --backup"
     },
     {
       "tag": "sublime-backup",
-      "installName": "Sync/sync_sublime.sh --backup"
+      "command": "Sync/sync_sublime.sh --backup"
     },
     {
       "tag": "dock-config",
-      "installName": "Config/dock.sh",
+      "command": "Config/dock.sh",
       "file": "config",
       "dependencies": "dockutil"
     },
     {
       "tag": "osx-config",
-      "installName": "Config/osx.sh",
+      "command": "Config/osx.sh",
       "file": "config"
     },
     {
       "tag": "iterm-config",
-      "installName": "Config/iterm.sh",
+      "command": "Config/iterm.sh",
       "file": "config"
     },
     {
       "tag": "safari-config",
-      "installName": "Config/safari.sh",
+      "command": "Config/safari.sh",
       "file": "config"
     },
     {
       "tag": "terminal-config",
-      "installName": "Config/terminal.sh",
+      "command": "Config/terminal.sh",
       "file": "config"
     }
-  ]
+  ],
+  "noted_but_ignored": {
+    "cask": [
+      "anaconda",
+      "vagrant",
+      "protonmail-bridge",
+      "porting-kit",
+      "virtualbox",
+      "tor-browser",
+      "thunderbird",
+      "homebrew/cask-drivers/silicon-labs-vcp-driver",
+      "appcleaner",
+      "coolterm"
+    ],
+    "brew": [
+      "sdl2",
+      "sdl2_image",
+      "sdl2_mixer",
+      "sdl2_ttf",
+      "portaudio",
+      "pulseaudio",
+      "dbus"
+    ]
+  }
 }

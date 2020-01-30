@@ -18,6 +18,12 @@ if [[ $1 == "--backup" ]]; then
   cp -f  "$CONFIG/settings.json"     "$BACKUP/"
   cp -rf "$CONFIG/snippets"          "$BACKUP/"
   code --list-extensions >           "$BACKUP/plugins.txt"
+
+  # setup so latexindent will work
+  sudo cpan install Log::Log4perl
+  sudo cpan install Log::Dispatch::File
+  sudo cpan install YAML::Tiny
+  sudo cpan install File::HomeDir
 elif [[ $1 == "--restore" ]]; then
   mkdir -p "$CONFIG"
   cp -f  "$CONFIG/keybindings.json" "$CONFIG/"
