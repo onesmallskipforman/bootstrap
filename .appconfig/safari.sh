@@ -4,11 +4,14 @@
 # Safari & WebKit Config
 #===================================================================
 
-
-# Thank you to mathiasbynens/dotfiles/osx.sh for finding most of these macos preferences commands
-
 # Close any open System Preferences panes
-osascript -e 'tell application "System Preferences" to quit'
+osascript -e 'quit app "System Preferences"'
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Set Safari’s home page to `about:blank` for faster loading
 defaults write com.apple.Safari HomePage -string "about:blank"

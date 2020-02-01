@@ -6,7 +6,6 @@
   ],
   "brew": [
     "clang-format",
-    "coreutils",
     "idleberg/dbxcli/dbxcli",
     "dockutil",
     "enscript",
@@ -40,6 +39,7 @@
     "balenaetcher",
     "bettertouchtool",
     "bitwarden",
+    "coolterm",
     "brave-browser",
     "discord",
     "docker",
@@ -60,7 +60,6 @@
     "skim",
     "slack",
     "spotify",
-    "steam",
     "sublime-merge",
     "sublime-text",
     "ticktick",
@@ -95,6 +94,7 @@
     }
   ],
   "pip3": [
+    "selenium",
     "autopep8",
     "bandit",
     "flake8",
@@ -111,145 +111,12 @@
   "npm": [
     "ttab"
   ],
-  "scripts": [
-    {
-      "name": "backup.sh",
-      "shebang": "#!/bin/sh",
-      "title": "APP BACKUP SCRIPT"
-    },
-
-    {
-      "name": "config.sh",
-      "shebang": "#!/bin/sh",
-      "title": "APP CONFIG SCRIPT"
-    },
-    {
-      "name": "install.sh",
-      "shebang": "#!/bin/sh",
-      "title": "GENERAL INSTALLATION SCRIPT",
-      "types": ["pip3"]
-    },
-    {
-      "name": "restore.sh",
-      "shebang": "#!/bin/sh",
-      "title": "APP RESTORE SCRIPT"
-    }
-  ],
-  "installs": [
-    {
-      "tag": "mathematica",
-      "command": "Math/mathematica/mathematica.sh \"../../Backups/mathematica.txt\"",
-      "dependencies": [
-        "rsync",
-        "geckodriver",
-        "trash",
-        "firefox",
-        "selenium",
-        "python3"
-      ]
-    },
-    {
-      "tag": "matlab",
-      "command": "Math/matlab/matlab.sh \"../../Backups/matlab.txt\"",
-      "dependencies": [
-        "geckodriver",
-        "trash",
-        "firefox",
-        "selenium",
-        "unar",
-        "python3"
-      ]
-    }
-  ],
-  "bash_commands": [
-    {
-      "tag": "arduino-restore",
-      "command": "Sync/arduino.sh --restore"
-    },
-    {
-      "tag": "firefox-restore",
-      "command": "Sync/firefox.sh --restore"
-    },
-    {
-      "tag": "minecraft-restore",
-      "command": "Sync/minecraft.sh --restore"
-    },
-    {
-      "tag": "openemu-restore",
-      "command": "Sync/openemu.sh --restore"
-    },
-    {
-      "tag": "slack-restore",
-      "command": "Sync/sync_slack.sh --restore"
-    },
-    {
-      "tag": "spotify-restore",
-      "command": "Sync/sync_spotify.sh --restore"
-    },
-    {
-      "tag": "sublime-restore",
-      "command": "Sync/sync_sublime.sh --restore"
-    },
-    {
-      "tag": "arduino-backup",
-      "command": "Sync/arduino.sh --backup"
-    },
-    {
-      "tag": "firefox-backup",
-      "command": "Sync/firefox.sh --backup"
-    },
-    {
-      "tag": "minecraft-backup",
-      "command": "Sync/minecraft.sh --backup"
-    },
-    {
-      "tag": "openemu-backup",
-      "command": "Sync/openemu.sh --backup"
-    },
-    {
-      "tag": "slack-backup",
-      "command": "Sync/sync_slack.sh --backup"
-    },
-    {
-      "tag": "spotify-backup",
-      "command": "Sync/sync_spotify.sh --backup"
-    },
-    {
-      "tag": "sublime-backup",
-      "command": "Sync/sync_sublime.sh --backup"
-    },
-    {
-      "tag": "dock-config",
-      "command": "Config/dock.sh",
-      "file": "config",
-      "dependencies": "dockutil"
-    },
-    {
-      "tag": "osx-config",
-      "command": "Config/osx.sh",
-      "file": "config"
-    },
-    {
-      "tag": "iterm-config",
-      "command": "Config/iterm.sh",
-      "file": "config"
-    },
-    {
-      "tag": "safari-config",
-      "command": "Config/safari.sh",
-      "file": "config"
-    },
-    {
-      "tag": "terminal-config",
-      "command": "Config/terminal.sh",
-      "file": "config"
-    }
-  ],
-  "noted_but_ignored": {
+  "ignored": {
     "cask": [
       "anaconda",
       "vagrant",
       "protonmail-bridge",
+      "steam",
       "porting-kit",
       "virtualbox",
       "tor-browser",

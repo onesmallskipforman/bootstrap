@@ -4,11 +4,14 @@
 # General UI/UX
 #===================================================================
 
-
-# Thank you to mathiasbynens/dotfiles/osx.sh for finding most of these macos preferences commands
-
 # Close any open System Preferences panes
-osascript -e 'tell application "System Preferences" to quit'
+osascript -e 'quit app "System Preferences"'
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Turn Dark mode on (unfortunately have to disable system identity protection to use defaults)
 osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
@@ -44,9 +47,6 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Set a custom wallpaper image
-# osascript -e 'tell application "Finder" to set desktop picture to POSIX file "Wallpaper/neon.jpg"'
+osascript -e 'tell application "Finder" to set desktop picture to POSIX file "Backup/neon.jpg"'
 
 echo "OSX UI/UX Config Done. Note that some of these changes require a logout/restart to take effect."
-
-
-

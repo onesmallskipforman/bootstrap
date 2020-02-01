@@ -4,11 +4,14 @@
 # Dock and Dashboard Config (Requires brew dockutil)
 #===================================================================
 
-
-# Thank you to mathiasbynens/dotfiles/osx.sh for finding most of these macos preferences commands
-
 # Close any open System Preferences panes
-osascript -e 'tell application "System Preferences" to quit'
+osascript -e 'quit app "System Preferences"'
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `.macos` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Enable highlight hover effect for the grid view of a stack (Dock)
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
@@ -17,13 +20,13 @@ defaults write com.apple.dock mouse-over-hilite-stack -bool true
 defaults write com.apple.dock tilesize -int 36
 
 # move dock orientation (options are left, bottom, right)
-# defaults write com.apple.dock orientation -string "left"
+defaults write com.apple.dock orientation -string "bottom"
 
 # Change minimize/maximize window effect
 defaults write com.apple.dock mineffect -string "scale"
 
 # Minimize windows into their application’s icon
-# defaults write com.apple.dock minimize-to-application -bool true
+defaults write com.apple.dock minimize-to-application -bool false
 
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool false
@@ -49,7 +52,7 @@ dockutil --no-restart --add "/Applications/Mail.app"
 dockutil --no-restart --add "/Applications/Messages.app"
 dockutil --no-restart --add "/Applications/Firefox.app"
 dockutil --no-restart --add "/Applications/Safari.app"
-dockutil --no-restart --add "/Applications/MATLAB_R2019a.app"
+dockutil --no-restart --add "/Applications/MATLAB_R2019b.app"
 dockutil --no-restart --add "/Applications/Mathematica.app"
 dockutil --no-restart --add "/Applications/Visual Studio Code.app"
 dockutil --no-restart --add "/Applications/Sublime Text.app"
@@ -63,6 +66,3 @@ dockutil --no-restart --add "/Applications/Minecraft.app"
 # reset dock
 killall Dock
 echo "Dock Config Done. Note that some of these changes require a logout/restart to take effect."
-
-
-
