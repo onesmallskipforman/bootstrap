@@ -4,13 +4,13 @@
 # VS CODE USER SUPPORT INSTALL
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # ensure app is not running
 osascript -e 'quit app "Visual Studio Code"'
 
 # Folders
-BACKUP="./"
+BACKUP="$PWD"
 CONFIG="$HOME/Library/Application Support/Code/User"
 
 # make support folders and move over

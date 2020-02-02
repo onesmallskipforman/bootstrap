@@ -26,5 +26,5 @@ defaults write com.apple.Safari ShowSidebarInTopSites -bool false
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 
-killall "Safari"
+killall "Safari" &> /dev/null
 echo "Safari Config Done. Note that some of these changes require a logout/restart to take effect."

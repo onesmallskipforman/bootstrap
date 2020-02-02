@@ -4,7 +4,9 @@
 # iTerm 2 Config
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
+
+BACKUP="$PWD"
 
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
@@ -16,11 +18,11 @@ sudo -v
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # iterm2 pref plist
-PLIST="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+# PLIST="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
 
 # rows and columns for new windows
-/usr/libexec/PlistBuddy -c 'Set :"New Bookmarks":0:Rows 20' "$PLIST"
-/usr/libexec/PlistBuddy -c 'Set :"New Bookmarks":0:Columns 80' "$PLIST"
+# /usr/libexec/PlistBuddy -c 'Set :"New Bookmarks":0:Rows 20' "$PLIST"
+# /usr/libexec/PlistBuddy -c 'Set :"New Bookmarks":0:Columns 80' "$PLIST"
 
 start_if_needed() {
   local grep_name="[${1:0:1}]${1:1}"
@@ -39,10 +41,12 @@ start_if_needed() {
 }
 
 # import homebrew theme from termcolors for iterm2 (from mbadolato/iTerm2-Color-Schemes)
-start_if_needed iTerm
-open "${HOME}/Backup/Homebrew.itermcolors"
+# start_if_needed iTerm
+open "$BACKUP/Homebrew.itermcolors"
 
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+
+defaults write com.apple.Terminal ShowLineMarks -int 0
 
 echo "iTerm Config Done. Note that some of these changes require a logout/restart to take effect."

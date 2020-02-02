@@ -4,7 +4,7 @@
 # Terminal Config
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
@@ -33,7 +33,7 @@ tell application "Terminal"
     (* Open the custom theme so that it gets added to the list
        of available terminal themes (note: this will open two
        additional terminal windows). *)
-    do shell script "open '$HOME/Backup/" & themeName & ".terminal'"
+    do shell script "open '$PWD/" & themeName & ".terminal'"
 
     (* Wait a little bit to ensure that the custom theme is added. *)
     delay 1
@@ -68,8 +68,11 @@ EOD
 defaults write com.apple.terminal FocusFollowsMouse -bool false
 defaults write org.x.X11 wm_ffm -bool false
 
+# Disable the line marks (square brackets)
+defaults write com.apple.Terminal ShowLineMarks -int 0
+
 # Enable Secure Keyboard Entry in Terminal.app
-See: https://security.stackexchange.com/a/47786/8918
+# See: https://security.stackexchange.com/a/47786/8918
 defaults write com.apple.terminal SecureKeyboardEntry -bool true
 
 echo "Terminal Config Done. Note that some of these changes require a logout/restart to take effect."

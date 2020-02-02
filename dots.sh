@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 function runDots() {
   # Ask for the administrator password upfront
@@ -16,7 +16,7 @@ function runDots() {
       echo "Syncing the dotfiles repo to home "
       echo "------------------------------"
       echo ""
-      ./bootstrap.sh
+      "./bootstrap.sh" -f
       cd ~/.dotfiles
     fi
     if [ $ARG == "osxprep" ] || [ $ARG == "all" ]; then
@@ -25,7 +25,7 @@ function runDots() {
       echo "Updating OSX and installing Xcode command line tools"
       echo "------------------------------"
       echo ""
-      ./OSX/osxprep.sh
+      "./OSX/osxprep.sh"
     fi
     if [ $ARG == "brew" ] || [ $ARG == "all" ]; then
       echo ""
@@ -34,7 +34,7 @@ function runDots() {
       echo "This might take a while to complete, as some formulae need to be installed from source."
       echo "------------------------------"
       echo ""
-      ./Brew/brew.sh
+      "./Brew/brew.sh"
     fi
     if [ $ARG == "osx" ] || [ $ARG == "all" ]; then
       echo ""
@@ -42,7 +42,7 @@ function runDots() {
       echo "Configuring OSX UI"
       echo "------------------------------"
       echo ""
-      ./OSX/osx.sh
+      "./OSX/osx.sh"
     fi
     if [ $ARG == "dock" ] || [ $ARG == "all" ]; then
       echo ""
@@ -50,7 +50,7 @@ function runDots() {
       echo "Configuring Dock"
       echo "------------------------------"
       echo ""
-      ./OSX/dock.sh
+      "./OSX/dock.sh"
     fi
     if [ $ARG == "pip" ] || [ $ARG == "all" ]; then
       echo ""
@@ -58,7 +58,7 @@ function runDots() {
       echo "Setting up Python Global pip Packages"
       echo "------------------------------"
       echo ""
-      ./Pip/pip.sh
+      "./Pip/pip.sh"
     fi
     if [ $ARG == "npm" ] || [ $ARG == "all" ]; then
       echo ""
@@ -66,7 +66,7 @@ function runDots() {
       echo "Setting up Global npm Packages"
       echo "------------------------------"
       echo ""
-      ./Npm/npm.sh
+      "./Npm/npm.sh"
     fi
     if [ $ARG == "terminal" ] || [ $ARG == "all" ]; then
       echo ""
@@ -74,7 +74,7 @@ function runDots() {
       echo "Configuring Terminal App"
       echo "------------------------------"
       echo ""
-      ./Terminals/terminal.sh
+      "./Terminals/terminal.sh"
     fi
     if [ $ARG == "iterm" ] || [ $ARG == "all" ]; then
       echo ""
@@ -82,7 +82,7 @@ function runDots() {
       echo "Configuring iTerm App"
       echo "------------------------------"
       echo ""
-      ./Terminals/iterm.sh
+      "./Terminals/iterm.sh"
     fi
     if [ $ARG == "sublime" ] || [ $ARG == "all" ]; then
       echo ""
@@ -90,7 +90,7 @@ function runDots() {
       echo "Setting Up Sublime"
       echo "------------------------------"
       echo ""
-      ./Sublime/sublime.sh
+      "./Sublime/sublime.sh"
     fi
     if [ $ARG == "vscode" ] || [ $ARG == "all" ]; then
       echo ""
@@ -98,7 +98,7 @@ function runDots() {
       echo "Configuring VS Code"
       echo "------------------------------"
       echo ""
-      ./VS Code/VS Code.sh
+      "./VS Code/vscode.sh"
     fi
     if [ $ARG == "firefox" ] || [ $ARG == "all" ]; then
       echo ""
@@ -106,7 +106,7 @@ function runDots() {
       echo "Setting Up Firefox"
       echo "------------------------------"
       echo ""
-      ./Browsers/firefox.sh
+      "./Browsers/firefox.sh"
     fi
     if [ $ARG == "safari" ] || [ $ARG == "all" ]; then
       echo ""
@@ -114,7 +114,7 @@ function runDots() {
       echo "Configuring Safari"
       echo "------------------------------"
       echo ""
-      ./Browsers/safari.sh
+      "./Browsers/safari.sh"
     fi
     if [ $ARG == "minecraft" ] || [ $ARG == "all" ]; then
       echo ""
@@ -122,7 +122,7 @@ function runDots() {
       echo "Setting Up Minecraft"
       echo "------------------------------"
       echo ""
-      ./Minecraft/minecraft.sh
+      "./Minecraft/minecraft.sh"
     fi
     if [ $ARG == "openemu" ] || [ $ARG == "all" ]; then
       echo ""
@@ -130,7 +130,7 @@ function runDots() {
       echo "Setting Up OpenEmu"
       echo "------------------------------"
       echo ""
-      ./OpenEmu/openemu.sh
+      "./OpenEmu/openemu.sh"
     fi
     if [ $ARG == "slack" ] || [ $ARG == "all" ]; then
       echo ""
@@ -138,7 +138,7 @@ function runDots() {
       echo "Setting Up Slack"
       echo "------------------------------"
       echo ""
-      ./Slack/slack.sh
+      "./Slack/slack.sh"
     fi
     if [ $ARG == "spotify" ] || [ $ARG == "all" ]; then
       echo ""
@@ -146,7 +146,7 @@ function runDots() {
       echo "Setting Up Spotify"
       echo "------------------------------"
       echo ""
-      ./Spotify/spotify.sh
+      "./Spotify/spotify.sh"
     fi
     if [ $ARG == "docker" ] || [ $ARG == "all" ]; then
       echo ""
@@ -154,7 +154,7 @@ function runDots() {
       echo "Sign In To Docker Account"
       echo "------------------------------"
       echo ""
-      ./Docker/dockerlogin.sh
+      "./Docker/dockerlogin.sh"
     fi
     if [ $ARG == "github" ] || [ $ARG == "all" ]; then
       echo ""
@@ -162,15 +162,7 @@ function runDots() {
       echo "Sign In To Github Account"
       echo "------------------------------"
       echo ""
-      ./Github/gitlogin.sh
-    fi
-    if [ $ARG == "matlab" ] || [ $ARG == "all" ]; then
-      echo ""
-      echo "------------------------------"
-      echo "Installing Matlab"
-      echo "------------------------------"
-      echo ""
-      ./Matlab/matlab.sh
+      "./Github/gitlogin.sh"
     fi
     if [ $ARG == "mathematica" ] || [ $ARG == "all" ]; then
       echo ""
@@ -178,7 +170,15 @@ function runDots() {
       echo "Installing Mathematica"
       echo "------------------------------"
       echo ""
-      ./Mathematica/mathematica.sh
+      "./Mathematica/mathematica.sh"
+    fi
+    if [ $ARG == "matlab" ] || [ $ARG == "all" ]; then
+      echo ""
+      echo "------------------------------"
+      echo "Installing Matlab"
+      echo "------------------------------"
+      echo ""
+      "./Matlab/matlab.sh"
     fi
   done
 
@@ -187,7 +187,7 @@ function runDots() {
   echo "------------------------------"
 }
 
-read -p "This script may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
+read -p "This script may overwrite existing files across your computer. Are you sure? (y/n) " -n 1;
 echo "";
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     runDots $@

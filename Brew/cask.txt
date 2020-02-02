@@ -3,6 +3,7 @@ balenaetcher
 bettertouchtool
 bitwarden
 brave-browser
+coolterm
 discord
 docker
 dropbox
@@ -10,7 +11,7 @@ edrawmax
 eqmac
 firefox
 flux
-homebrew/cask-drivers/ftdi-vcp-driver
+ftdi-vcp-driver
 google-chrome
 iterm2
 keyboardcleantool

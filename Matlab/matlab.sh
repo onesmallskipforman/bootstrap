@@ -4,7 +4,7 @@
 # MATLAB DOWNLOAD AND INSTALLATION
 #===============================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # variables based on versioning
 version="R2019b"
@@ -36,9 +36,8 @@ echo "\nRunning Matlab Install Script"
 mkdir -p "$ipath"
 
 # check if app is installed and exit
-if [ -d "/Applications/MATLAB_$version.app"] && ["$1" != "--force" -o "$1" == "-f"]
+if [[ ! -d "/Applications/MATLAB_$version.app" || ("$1" == "--force" || "$1" == "-f")]]
 then
-  echo "MATLAB_$version Already Installed. Run with --force to reinstall"
 
   # check if installer already downloaded, use web scraper otherwise
   if [[ -f "$ipath/$pkgname.dmg.zip" ]]
@@ -61,10 +60,12 @@ then
   # open and wait for close
   open -g -W "$mntpath/$installer"
 
+else
+  echo "MATLAB_$version Already Installed. Run with --force to reinstall"
 fi
 
 # add symlinks for matlab and mlint
-sudo ln -s /Applications/MATLAB_R2019a.app/bin/matlab /usr/local/bin/matlab
-sudo ln -s /Applications/MATLAB_R2019a.app/bin/maci64/mlint /usr/local/bin/mlint
+sudo ln -sf /Applications/MATLAB_R2019b.app/bin/matlab /usr/local/bin/matlab
+sudo ln -sf /Applications/MATLAB_R2019b.app/bin/maci64/mlint /usr/local/bin/mlint
 
 echo 'Install Script Completed!'

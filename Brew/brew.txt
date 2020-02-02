@@ -11,7 +11,6 @@ gnupg
 gstreamer
 imagemagick
 jq
-libusb
 llvm
 mas
 npm
@@ -26,4 +25,5 @@ trash
 unar
 verilator
 vim
+vitorgalvao/tiny-scripts/cask-repair
 wget

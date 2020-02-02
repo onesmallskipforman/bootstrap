@@ -125,13 +125,18 @@
       "coolterm"
     ],
     "brew": [
+      "libusb",
       "sdl2",
       "sdl2_image",
       "sdl2_mixer",
       "sdl2_ttf",
       "portaudio",
       "pulseaudio",
-      "dbus"
+      "dbus",
+      "m-cli",
+      "mackup",
+      "node",
+      "brew install https://raw.githubusercontent.com/mklement0/ttab/master/ttab.rb"
     ]
   }
 }

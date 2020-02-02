@@ -4,7 +4,7 @@
 # General UI/UX
 #===============================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
@@ -70,20 +70,19 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 # Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
 
-for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-    "Dock" "Finder" "Google Chrome" "Google Chrome Canary" "Mail" "Messages" \
-    "Opera" "SizeUp" "Spectacle" "SystemUIServer" \
-    "Transmission" "Twitter" "iCal"; do
-    killall "${app}" > /dev/null 2>&1
-done
 
+###############################################################################
+# Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
+###############################################################################
+
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+# defaults write -g KeyRepeat -int 1
 
 ###############################################################################
 # Kill affected applications                                                  #
 ###############################################################################
-defaults write NSGlobalDomain InitialKeyRepeat -int 15
-defaults write NSGlobalDomain KeyRepeat -int 50
-defaults write -g KeyRepeat -int 10
+
 for app in "Activity Monitor" \
 	"Address Book" \
 	"Calendar" \
@@ -94,16 +93,15 @@ for app in "Activity Monitor" \
 	"Mail" \
 	"Messages" \
 	"Photos" \
-	# "Safari" \
 	"SizeUp" \
 	"Spectacle" \
 	"SystemUIServer" \
-	# "Terminal" \
 	"Transmission" \
 	"iCal"; do
 	killall "${app}" &> /dev/null
 done
 
-
+# "Safari" \
+# "Terminal" \
 
 echo "OSX Config Done. Note that some of these changes require a logout/restart to take effect."

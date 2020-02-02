@@ -1,16 +1,22 @@
 #!/bin/sh
 
 # to go project dir and update
-cd $(dirname $0);
-git pull origin master;
+cd "$(dirname $0)";
+# git pull origin master;
 
 function doIt() {
-  rsync --exclude ".git/" \
-        --exclude ".DS_Store" \
-        --exclude "bootstrap.sh" \
-        --exclude "Experimental/" \
-        --exclude "README.md" \
-        -avh --no-perms . ~/.dotfiles;
+  rsync -a --delete --delete-excluded --info=progress2 \
+    --exclude ".git/" \
+    --exclude ".gitignore" \
+    --exclude ".DS_Store" \
+    --exclude "Experimental/" \
+    --exclude "README.md" \
+    --exclude "todo.txt" \
+    --exclude ".zshrc" \
+    . ~/.dotfiles/;
+
+  rsync -a --delete --info=progress2 \
+    --no-perms .zshrc ~/.zshrc;
   source ~/.zshrc;
 }
 

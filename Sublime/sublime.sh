@@ -4,13 +4,13 @@
 # SUBLIME USER SUPPORT INSTALL
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # ensure app is not running
 osascript -e 'quit app "Sublime Text"'
 
 # Folders
-BACKUP="./"
+BACKUP="$PWD"
 CONFIG="$HOME/Library/Application Support/Sublime Text 3/Packages/User"
 PYCACHE="$HOME/Library/Application Support/Sublime Text 3/Cache/Python"
 PCTRL="$HOME/Library/Application Support/Sublime Text 3/Installed Packages"

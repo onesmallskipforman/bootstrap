@@ -4,7 +4,7 @@
 # MATHEMATICA DOWNLOAD AND INSTALLATION
 #===============================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # variables based on versioning
 version="12.0.0"
@@ -39,10 +39,8 @@ echo "\nRunning Mathematica Install Script"
 mkdir -p "$ipath"
 
 # check if app is installed and exit
-if [[ -d "/Applications/Mathematica.app" && ("$1" != "--force" && "$1" != "-f")]]
+if [[ ! -d "/Applications/Mathematica.app" || ("$1" == "--force" || "$1" == "-f")]]
 then
-  echo "Mathematica Already Installed. Run with --force to reinstall"
-
 
   # check if installer already downloaded, use web scraper otherwise
   if [[ -f "$ipath/$pkgname.dmg.zip" ]]
@@ -67,19 +65,20 @@ then
 
   echo 'Copying Mathematica to /Applications'
   hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse >/dev/null
-  sudo rsync -a --delete --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications/ # 2>/dev/null
+  sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications # 2>/dev/null
+  # --delete
 
   # echo 'Opening Mathematica for Sign In'
   # echo "User: $USER"
   # echo "Pass: $PASS"
   # echo "Key:  $KEY"
   # open -g -W -a "Mathematica.app"
-
+else
+  echo "Mathematica Already Installed. Run with --force to reinstall"
 fi
 
 # add symlink for wolframscript
-sudo ln -s /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
-
+sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
 
 echo 'Install Script Completed!'
 
@@ -150,7 +149,7 @@ echo 'Install Script Completed!'
 # fi
 
 # # change to directory of script
-# cd $(dirname $0)
+# cd "$(dirname $0)"
 
 # # use web scraper to sign in and grab installer
 # python3 mathematica.py $1

@@ -4,7 +4,7 @@
 # Dock and Dashboard Config (Requires brew dockutil)
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
@@ -45,13 +45,13 @@ find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -dele
 
 # set dock apps
 dockutil --no-restart --remove all
-dockutil --no-restart --add "/Applications/Launchpad.app"
-dockutil --no-restart --add "/Applications/System Preferences.app"
+dockutil --no-restart --add "/System/Applications/Launchpad.app"
+dockutil --no-restart --add "/System/Applications/System Preferences.app"
 dockutil --no-restart --add "/Applications/Bitwarden.app"
 dockutil --no-restart --add "/Applications/TickTick.app"
-dockutil --no-restart --add "/Applications/Notes.app"
-dockutil --no-restart --add "/Applications/Mail.app"
-dockutil --no-restart --add "/Applications/Messages.app"
+dockutil --no-restart --add "/System/Applications/Notes.app"
+dockutil --no-restart --add "/System/Applications/Mail.app"
+dockutil --no-restart --add "/System/Applications/Messages.app"
 dockutil --no-restart --add "/Applications/Firefox.app"
 dockutil --no-restart --add "/Applications/Safari.app"
 dockutil --no-restart --add "/Applications/MATLAB_R2019b.app"
@@ -59,7 +59,7 @@ dockutil --no-restart --add "/Applications/Mathematica.app"
 dockutil --no-restart --add "/Applications/Visual Studio Code.app"
 dockutil --no-restart --add "/Applications/Sublime Text.app"
 dockutil --no-restart --add "/Applications/Sublime Merge.app"
-dockutil --no-restart --add "/Applications/Utilities/Terminal.app"
+dockutil --no-restart --add "/System/Applications/Utilities/Terminal.app"
 dockutil --no-restart --add "/Applications/iTerm.app"
 dockutil --no-restart --add "/Applications/XCTU.app"
 dockutil --no-restart --add "/Applications/Spotify.app"

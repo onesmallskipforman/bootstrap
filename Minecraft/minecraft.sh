@@ -4,7 +4,7 @@
 # MINECRAFT USER SUPPORT INSTALL
 #===================================================================
 
-cd $(dirname $0)
+cd "$(dirname $0)"
 
 # ensure app is not running
 osascript -e 'quit app "Minecraft"'

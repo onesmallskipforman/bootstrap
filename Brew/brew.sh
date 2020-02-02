@@ -1,10 +1,10 @@
-#!/usr/bin/env zsh
+#!/bin/zsh
 
 #===============================================================================
 # HOMEBREW AND MAS INSTALLATION
 #===============================================================================
 
-cd $(dirname $0);
+cd "$(dirname $0)";
 
 # Install command-line tools using Homebrew.
 
@@ -37,12 +37,17 @@ mas upgrade
 
 # app installations
 # brew bundle -v --file Brewfile
-xargs -n 1 brew tap     < tap.txt
-# xargs brew fetch        < brew.txt
-# xargs brew cask fetch   < cask.txt
-xargs brew install      < brew.txt
-xargs brew cask install < cask.txt
-xargs mas install       < mas.txt
+# xargs -n 1 brew tap     < tap.txt
+# # xargs brew fetch        < brew.txt
+# # xargs brew cask fetch   < cask.txt
+# xargs brew install      < brew.txt
+# xargs brew cask install < cask.txt
+# xargs mas install       < mas.txt
+
+comm -23 <(sort "tap.txt") <(brew tap | sort) | xargs -n 1 brew tap
+comm -23 <(sort "brew.txt") <(brew leaves | sort) | xargs brew install
+comm -23 <(sort "cask.txt") <(brew cask list | sort) | xargs brew cask install
+comm -23 <(sort "mas.txt") <(sort mas.txt | sed 's/\s.*$//' | sort) | xargs mas install
 
 # remove outdated versions from the cellar
 echo "Cleaning Homebrew..."

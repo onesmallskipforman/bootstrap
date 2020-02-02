@@ -1,11 +1,19 @@
-Todo:
-  full run:
-    bootstrap
-    dots
-    matlab with force
-    mathematica with force
-  finalize homebrew utils stuff
+Test Terminal Theme Changes
+move git credentials to way dev-setup has it
 
+
+
+
+Todo:
+  resolve iterm "replace existing colors" popup
+  matlab: consider detaching installer process since it's manual
+  run matlab with force
+  run mathematica with force
+  finalize homebrew utils stuff
+  standardize where apps are quit or killed
+  use grep to brew install only uninstalled packages
+  manage apps that start at startup: flux, nord, steam, dropbox
+  ln: /usr/local/bin/wolframscript: File exists
 
   cracking the coding interview
   zsh customization
@@ -30,6 +38,7 @@ Later:
   handling dependencies (ttab in terminal, dockutil in dock, homebrew for ... everything lol)
   list what installs i have and why
   after all of the above, reorganize
+  configure launchpad
 
 
 Backup/Restore Plan:
