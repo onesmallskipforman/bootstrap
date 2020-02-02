@@ -1,4 +1,0 @@
-{
-  "show_errors": false,
-  "clang_binary" : "clang"  // /usr/local/bin/clang // /usr/local/opt/llvm/bin/clang
-}

@@ -1,0 +1,27 @@
+{
+  "color_scheme": "Monokai Pro/Monokai Pro.sublime-color-scheme",
+  "extensions":
+  [
+    "md",
+    "mdown",
+    "markdown",
+  ],
+  "tab_size": 2,
+  "word_wrap": false,
+  "wrap_width": 80,
+  "line_numbers": true,
+  "draw_centered": false,
+  "highlight_line": false,
+  "line_padding_top": 0,
+  "line_padding_bottom": 0,
+  "caret_style": "blink",
+  "caret_extra_top": 2,
+  "caret_extra_bottom": 2,
+  "block_caret": false,
+  "match_brackets": false,         // BracketHighlighter
+  "match_brackets_angle": false,   // BracketHighlighter
+  "match_brackets_braces": false,  // BracketHighlighter
+  "match_brackets_content": false, // BracketHighlighter
+  "match_brackets_square": false,  // BracketHighlighter
+  "match_tags": false              // BracketHighlighter
+}

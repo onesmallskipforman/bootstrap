@@ -1,3 +1,0 @@
-homebrew/cask
-homebrew/cask-drivers
-idleberg/dbxcli

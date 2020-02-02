@@ -1,0 +1,5 @@
+{
+  "scopes":["text - meta.environment.math", "comment", "string.quoted - source.c++"],
+  "insert original": "before",
+  "maximum results": 10
+}

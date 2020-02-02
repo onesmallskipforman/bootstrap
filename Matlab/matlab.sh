@@ -1,0 +1,67 @@
+#!/bin/zsh
+
+#===============================================================================
+# MATLAB DOWNLOAD AND INSTALLATION
+#===============================================================================
+
+cd $(dirname $0)
+
+# variables based on versioning
+version="R2019b"
+pkgname="matlab_${version}_maci64"
+ipath="Private"
+mntpath="/Volumes/$pkgname"
+installer="InstallForMacOSX.app"
+
+USER="$(sed '1q;d' "Private/login.txt")"
+PASS="$(sed '2q;d' "Private/login.txt")"
+
+# cleanup function
+set -e
+function cleanup {
+  rm -f "$ipath/$pkgname.dmg"
+  diskutil unmount force "$mntpath" &>/dev/null
+}
+trap cleanup EXIT
+
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until the script has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+echo "\nRunning Matlab Install Script"
+
+# make directory for installer
+mkdir -p "$ipath"
+
+# check if app is installed and exit
+if [ -d "/Applications/MATLAB_$version.app"] && ["$1" != "--force" -o "$1" == "-f"]
+then
+  echo "MATLAB_$version Already Installed. Run with --force to reinstall"
+  exit
+fi
+
+# check if installer already downloaded, use web scraper otherwise
+if [[ -f "$ipath/$pkgname.dmg.zip" ]]
+then
+  echo "MATLAB Installer Already Downloaded."
+else
+  python3 matlab.py "$USER" "$PASS" "$ipath" "$version"
+fi
+
+# unzip and mount dmg, quarantine installer
+unzip "$ipath/$pkgname.dmg.zip" >/dev/null
+hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
+# sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
+
+# run installer and prompt user with login
+echo 'Starting Installer...'
+echo "User: $USER"
+echo "Pass: $PASS"
+
+# open and wait for close
+sudo "$mntpath/$installer"
+open -g -W "$mntpath/$installer"
+
+echo 'Install Script Completed!'

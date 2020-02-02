@@ -1,0 +1,13 @@
+
+VERSION="R2019b"
+rm -rf "/Applications/MATLAB_${VERSION}.app"
+rm -rf ~/"Library/Application Support/MathWorks"
+
+
+
+
+rm -rf "/Applications/Mathematica"
+rm -rf ~/"Library/Wolfram/"
+rm -rf ~/"Library/Mathematica/"
+rm -rf ~/"Library/Application Support/Wolfram/"
+rm -rf ~/"Library/Application Support/Wolfram Research/"

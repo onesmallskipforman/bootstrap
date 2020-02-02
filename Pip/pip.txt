@@ -1,0 +1,12 @@
+autopep8
+bandit
+flake8
+jedi
+pycodestyle
+pylint
+selenium
+matplotlib
+numpy
+kivy
+jupyter
+beautifulsoup4
