@@ -16,7 +16,7 @@ installer="Download Manager for Wolfram Mathematica 12.app"
 
 USER="$(sed '1q;d' "Private/login.txt")"
 PASS="$(sed '2q;d' "Private/login.txt")"
-KEY="$(sed '3q;d' "Private/login.txt")"
+# KEY="$(sed '3q;d' "Private/login.txt")"
 
 # cleanup function
 set -e
@@ -39,51 +39,49 @@ echo "\nRunning Mathematica Install Script"
 mkdir -p "$ipath"
 
 # check if app is installed and exit
-if [[ -d "/Applications/Mathematica.app"]] && [["$1" != "--force"]] && [["$1" != "-f"]]
+if [[ -d "/Applications/Mathematica.app" && ("$1" != "--force" && "$1" != "-f")]]
 then
   echo "Mathematica Already Installed. Run with --force to reinstall"
-  exit
+
+
+  # check if installer already downloaded, use web scraper otherwise
+  if [[ -f "$ipath/$pkgname.dmg.zip" ]]
+  then
+    echo "Mathematica Installer Already Downloaded."
+  else
+    python3 mathematica.py "$USER" "$PASS" "$ipath"
+  fi
+
+  # unzip and mount dmg, quarantine installer
+  unzip "$ipath/$pkgname.dmg.zip" >/dev/null
+  hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
+  # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" >/dev/null
+
+  # run installer and prompt user with login
+  echo 'Starting Installer...'
+
+  # open and wait for app dmg containter to install
+  sudo open "$mntpath/$installer" &>/dev/null
+  until ls ~/Downloads/M-OSX*/*.dmg; do sleep 1; done &>/dev/null
+  killall "${installer%.*}" &>/dev/null
+
+  echo 'Copying Mathematica to /Applications'
+  hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse >/dev/null
+  sudo rsync -a --delete --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications/ # 2>/dev/null
+
+  # echo 'Opening Mathematica for Sign In'
+  # echo "User: $USER"
+  # echo "Pass: $PASS"
+  # echo "Key:  $KEY"
+  # open -g -W -a "Mathematica.app"
+
 fi
 
-# check if installer already downloaded, use web scraper otherwise
-if [[ -f "$ipath/$pkgname.dmg.zip" ]]
-then
-  echo "Mathematica Installer Already Downloaded."
-else
-  python3 mathematica.py "$USER" "$PASS" "$ipath"
-fi
-
-# unzip and mount dmg, quarantine installer
-unzip "$ipath/$pkgname.dmg.zip" >/dev/null
-hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
-# sudo xattr -rd com.apple.quarantine "$mntpath/$installer" >/dev/null
-
-# run installer and prompt user with login
-echo 'Starting Installer...'
-
-# open and wait for app dmg containter to install
-sudo open "$mntpath/$installer" &>/dev/null
-until ls ~/Downloads/M-OSX*/*.dmg; do sleep 1; done &>/dev/null
-killall "${installer%.*}" &>/dev/null
-
-echo 'Copying Mathematica to /Applications'
-hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse >/dev/null
-sudo rsync -a --delete --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications/ # 2>/dev/null
-
-echo 'Opening Mathematica for Signin.'
-echo "User: $USER"
-echo "Pass: $PASS"
-echo "Key:  $KEY"
-
-open -a "Mathematica.app"
-open -g -W "Mathematica.app"
+# add symlink for wolframscript
+sudo ln -s /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
 
 
 echo 'Install Script Completed!'
-
-# FILE="$HOME/Downloads/*M-OSX*/*.dmg"
-# hdiutil attach $FILE -nobrowse >/dev/null
-
 
 
 

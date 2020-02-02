@@ -10,7 +10,7 @@ cd $(dirname $0)
 osascript -e 'quit app "Sublime Text"'
 
 # Folders
-BACKUP="Private"
+BACKUP="./"
 CONFIG="$HOME/Library/Application Support/Sublime Text 3/Packages/User"
 PYCACHE="$HOME/Library/Application Support/Sublime Text 3/Cache/Python"
 PCTRL="$HOME/Library/Application Support/Sublime Text 3/Installed Packages"

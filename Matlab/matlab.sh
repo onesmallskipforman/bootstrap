@@ -39,29 +39,32 @@ mkdir -p "$ipath"
 if [ -d "/Applications/MATLAB_$version.app"] && ["$1" != "--force" -o "$1" == "-f"]
 then
   echo "MATLAB_$version Already Installed. Run with --force to reinstall"
-  exit
+
+  # check if installer already downloaded, use web scraper otherwise
+  if [[ -f "$ipath/$pkgname.dmg.zip" ]]
+  then
+    echo "MATLAB Installer Already Downloaded."
+  else
+    python3 matlab.py "$USER" "$PASS" "$ipath" "$version"
+  fi
+
+  # unzip and mount dmg, quarantine installer
+  unzip "$ipath/$pkgname.dmg.zip" >/dev/null
+  hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
+  # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
+
+  # run installer and prompt user with login
+  echo 'Starting Installer...'
+  echo "User: $USER"
+  echo "Pass: $PASS"
+
+  # open and wait for close
+  open -g -W "$mntpath/$installer"
+
 fi
 
-# check if installer already downloaded, use web scraper otherwise
-if [[ -f "$ipath/$pkgname.dmg.zip" ]]
-then
-  echo "MATLAB Installer Already Downloaded."
-else
-  python3 matlab.py "$USER" "$PASS" "$ipath" "$version"
-fi
-
-# unzip and mount dmg, quarantine installer
-unzip "$ipath/$pkgname.dmg.zip" >/dev/null
-hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
-# sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
-
-# run installer and prompt user with login
-echo 'Starting Installer...'
-echo "User: $USER"
-echo "Pass: $PASS"
-
-# open and wait for close
-sudo "$mntpath/$installer"
-open -g -W "$mntpath/$installer"
+# add symlinks for matlab and mlint
+sudo ln -s /Applications/MATLAB_R2019a.app/bin/matlab /usr/local/bin/matlab
+sudo ln -s /Applications/MATLAB_R2019a.app/bin/maci64/mlint /usr/local/bin/mlint
 
 echo 'Install Script Completed!'

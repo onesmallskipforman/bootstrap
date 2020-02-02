@@ -10,7 +10,7 @@ cd $(dirname $0)
 osascript -e 'quit app "Visual Studio Code"'
 
 # Folders
-BACKUP="VS Code"
+BACKUP="./"
 CONFIG="$HOME/Library/Application Support/Code/User"
 
 # make support folders and move over

@@ -53,4 +53,57 @@ WALLPAPER="Wallpapers/neon.jpg"
 osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
 osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
 
-echo "OSX UI/UX Config Done. Note that some of these changes require a logout/restart to take effect."
+# alternative that requires disabled SIP
+# Set a custom wallpaper image. `DefaultDesktop.jpg` is already a symlink, and
+# all wallpapers are in `/Library/Desktop Pictures/`. The default is `Wave.jpg`.
+#rm -rf ~/Library/Application Support/Dock/desktoppicture.db
+#sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
+#sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
+
+###############################################################################
+# Finder                                                                      #
+###############################################################################
+
+# Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
+# defaults write com.apple.finder QuitMenuItem -bool true
+
+# Finder: show hidden files by default
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
+    "Dock" "Finder" "Google Chrome" "Google Chrome Canary" "Mail" "Messages" \
+    "Opera" "SizeUp" "Spectacle" "SystemUIServer" \
+    "Transmission" "Twitter" "iCal"; do
+    killall "${app}" > /dev/null 2>&1
+done
+
+
+###############################################################################
+# Kill affected applications                                                  #
+###############################################################################
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
+defaults write NSGlobalDomain KeyRepeat -int 50
+defaults write -g KeyRepeat -int 10
+for app in "Activity Monitor" \
+	"Address Book" \
+	"Calendar" \
+	"cfprefsd" \
+	"Contacts" \
+	"Dock" \
+	"Finder" \
+	"Mail" \
+	"Messages" \
+	"Photos" \
+	# "Safari" \
+	"SizeUp" \
+	"Spectacle" \
+	"SystemUIServer" \
+	# "Terminal" \
+	"Transmission" \
+	"iCal"; do
+	killall "${app}" &> /dev/null
+done
+
+
+
+echo "OSX Config Done. Note that some of these changes require a logout/restart to take effect."
