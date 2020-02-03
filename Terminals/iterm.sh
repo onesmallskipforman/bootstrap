@@ -42,11 +42,9 @@ start_if_needed() {
 
 # import homebrew theme from termcolors for iterm2 (from mbadolato/iTerm2-Color-Schemes)
 # start_if_needed iTerm
-open "$BACKUP/Homebrew.itermcolors"
+open "$BACKUP/Homebrew.itermcolors" # -gj
 
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
-
-defaults write com.apple.Terminal ShowLineMarks -int 0
 
 echo "iTerm Config Done. Note that some of these changes require a logout/restart to take effect."

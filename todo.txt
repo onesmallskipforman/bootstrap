@@ -12,7 +12,7 @@ Todo:
   finalize homebrew utils stuff
   standardize where apps are quit or killed
   use grep to brew install only uninstalled packages
-  manage apps that start at startup: flux, nord, steam, dropbox
+  manage apps that start at startup: f.lux, nord, steam, dropbox (check plist files and application support)
   ln: /usr/local/bin/wolframscript: File exists
 
   cracking the coding interview
@@ -31,6 +31,8 @@ OSX:
   terminal, safari, finder, dock, mail, ui/ux, etc
 
 Later:
+  check safariplist issue on mathias' page
+  go through mackup to figure out what else you can backup
   Add customizations along the way: zsh, keymap, vim, tmux, window manager, aliases, paths, exports, custom functions, bitwarden/pass, etc
   Move Backup/Restore To Some Syncing Protocol (just keep settings synced and use github to backup and restore [have script run on each git push/pull that requires plugin list to update])
   Use Virtualenvs for Pip Instead of Global
@@ -39,6 +41,7 @@ Later:
   list what installs i have and why
   after all of the above, reorganize
   configure launchpad
+  reconsider how scripts wait for iterm and matlab
 
 
 Backup/Restore Plan:

@@ -19,10 +19,11 @@ PASS="$(sed '2q;d' "Private/login.txt")"
 # cleanup function
 set -e
 function cleanup {
+  killall "${installer%.*}"         &>/dev/null ||
+  diskutil unmount force "$mntpath" &>/dev/null ||
   rm -f "$ipath/$pkgname.dmg"
-  diskutil unmount force "$mntpath" &>/dev/null
 }
-trap cleanup EXIT
+trap cleanup INT TERM EXIT
 
 # Ask for the administrator password upfront
 sudo -v
@@ -48,7 +49,7 @@ then
   fi
 
   # unzip and mount dmg, quarantine installer
-  unzip "$ipath/$pkgname.dmg.zip" >/dev/null
+  unzip -o "$ipath/$pkgname.dmg.zip" -d "$ipath/" >/dev/null
   hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
   # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
 
@@ -58,7 +59,7 @@ then
   echo "Pass: $PASS"
 
   # open and wait for close
-  open -g -W "$mntpath/$installer"
+  open -W "$mntpath/$installer" # -g
 
 else
   echo "MATLAB_$version Already Installed. Run with --force to reinstall"

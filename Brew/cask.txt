@@ -23,7 +23,6 @@ rectangle
 skim
 slack
 spotify
-steam
 sublime-merge
 sublime-text
 ticktick

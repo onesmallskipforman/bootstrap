@@ -178,7 +178,7 @@ function runDots() {
       echo "Installing Matlab"
       echo "------------------------------"
       echo ""
-      "./Matlab/matlab.sh"
+      "./Matlab/matlab.sh" # ttab
     fi
   done
 

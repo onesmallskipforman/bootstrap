@@ -14,7 +14,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # ensure zsh is the default shell
 echo "Changing User Shell to ZSH"
-chsh -s /bin/zsh
+sudo chsh -s /bin/zsh
 
 # Update OS
 echo "Updating OSX"

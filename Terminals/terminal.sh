@@ -18,7 +18,14 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
 
-# Use Homebrew theme by default in Terminal.app
+# terminal pref plist
+# PLIST="$HOME/Library/Preferences/com.apple.Terminal.plist"
+
+#set window width to 120
+# sudo /usr/libexec/PlistBuddy -c "Add :Window\ Settings:Homebrew:columnCount integer 120" $PLIST
+# defaults write $PLIST "NSWindow Frame TTWindow Homebrew" "97 302 1075 366 0 0 1280 777 "
+
+# install saved homebrew theme
 osascript <<EOD
 tell application "Terminal"
 
@@ -62,6 +69,10 @@ tell application "Terminal"
 
 end tell
 EOD
+
+# Ensure Homebrew Theme is the Default
+defaults write com.apple.terminal "Default Window Settings" -string Homebrew
+defaults write com.apple.terminal "Startup Window Settings" -string Homebrew
 
 # disable focus follows mouse for Terminal/X11 apps (both lines needed for true)
 # i.e. hover over a window and start typing in it without clicking first

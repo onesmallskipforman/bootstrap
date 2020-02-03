@@ -54,24 +54,28 @@ class Mathematica():
     )
 
   def signIn(self):
-    sys.stdout.write('Signing In....\n')
-    sys.stdout.flush()
+    try:
+      sys.stdout.write('Signing In....\n')
+      sys.stdout.flush()
 
-    self.driver.get('https://account.wolfram.com/auth/sign-in')
+      self.driver.get('https://account.wolfram.com/auth/sign-in')
 
-    # enter fields and click
-    self.waitFor(By.NAME, "j_username")
-    self.driver.find_element_by_name("j_username").send_keys(self.user)
-    self.driver.find_element_by_name("j_password").send_keys(self.pwd)
+      # enter fields and click
+      self.waitFor(By.NAME, "j_username")
+      self.driver.find_element_by_name("j_username").send_keys(self.user)
+      self.driver.find_element_by_name("j_password").send_keys(self.pwd)
 
-    # grab current url before signin
-    current = self.driver.current_url
-    self.driver.find_element_by_name("login").click()
+      # grab current url before signin
+      current = self.driver.current_url
+      self.driver.find_element_by_name("login").click()
 
-    # wait for new url
-    element = WebDriverWait(self.driver, self.waitsec).until_not(
-        EC.url_to_be(current)
-    )
+      # wait for new url
+      element = WebDriverWait(self.driver, self.waitsec).until_not(
+          EC.url_to_be(current)
+      )
+    except:
+      self.restart()
+      self.signIn()
 
   def authenticate(self):
     sys.stdout.write('Authenitcating....\n')
@@ -91,46 +95,46 @@ class Mathematica():
     sys.stdout.write('Restarting driver....\n')
     sys.stdout.flush()
     self.driver.quit()
+    self.activate()
     self.signIn()
-    self.authenticate()
 
   def download(self):
+    try:
+      self.driver.get('https://user.wolfram.com/portal/myProducts.html')
+      downloadspage = ".even > td:nth-child(7)"
+      self.waitFor(By.CSS_SELECTOR, downloadspage)
+      # .even > td:nth-child(7) > a:nth-child(1)
+      self.driver.find_element_by_css_selector(downloadspage).click()
 
-    self.driver.get('https://user.wolfram.com/portal/myProducts.html')
-    downloadspage = ".even > td:nth-child(7)"
-    self.waitFor(By.CSS_SELECTOR, downloadspage)
-    # .even > td:nth-child(7) > a:nth-child(1)
-    self.driver.find_element_by_css_selector(downloadspage).click()
+      # click download manager for mac, tr:nth-child(1)
+      dl = "#downloadtable > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)"
+      # install direct download for mac, tr:nth-child(3)
+      # dl = "#downloadtable > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)"
 
-    # click download manager for mac, tr:nth-child(1)
-    dl = "#downloadtable > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(4)"
-    # install direct download for mac, tr:nth-child(3)
-    # dl = "#downloadtable > tbody:nth-child(2) > tr:nth-child(3) > td:nth-child(4)"
+      self.waitFor(By.CSS_SELECTOR, dl)
+      self.driver.find_element_by_css_selector(dl).click()
 
-    self.waitFor(By.CSS_SELECTOR, dl)
-    self.driver.find_element_by_css_selector(dl).click()
-
-    # grab number of .part files
-    os.chdir(os.getcwd())
-    ndmg = len(glob.glob(self.cache + "/*.dmg*"))
-    npart = len(glob.glob(self.cache + "/*.part"))
+      # grab number of .part files
+      os.chdir(os.getcwd())
+      ndmg = len(glob.glob(self.cache + "/*.dmg*"))
+      npart = len(glob.glob(self.cache + "/*.part"))
 
     # start download window is finnicky, so wait for visibility
-    try:
       self.waitFor(By.ID, "ddstart")
       WebDriverWait(self.driver, self.waitsec).until(
         EC.visibility_of(self.driver.find_element_by_id("ddstart"))
       )
       self.driver.find_element_by_id("ddstart").click()
+
+      sys.stdout.write('Downloading Installer...\n')
+      sys.stdout.flush()
+      while ( ndmg == len(glob.glob(self.cache + "/*.dmg*")) or npart != len(glob.glob(self.cache + "/*.part")) ): pass
+      sys.stdout.write('Installer Downloaded...\n')
+      sys.stdout.flush()
+
     except:
       self.restart()
       self.download()
-
-    sys.stdout.write('Downloading Installer...\n')
-    sys.stdout.flush()
-    while ( ndmg == len(glob.glob(self.cache + "/*.dmg*")) or npart != len(glob.glob(self.cache + "/*.part")) ): pass
-    sys.stdout.write('Installer Downloaded...\n')
-    sys.stdout.flush()
 
 
 def main():
@@ -146,7 +150,7 @@ def main():
 
   dmg = glob.glob(args[2] + "/*.dmg")[0]
   with zipfile.ZipFile(dmg + ".zip", 'w') as zip_ref:
-    zip_ref.write(dmg, arcname = dmg)
+    zip_ref.write(dmg, arcname = os.path.basename(dmg))
   os.remove(dmg)
 
 if __name__== "__main__":
