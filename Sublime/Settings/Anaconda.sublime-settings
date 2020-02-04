@@ -1,7 +1,0 @@
-{
-  "complete_parameters": true,
-  "complete_all_parameters": false,
-  "parameters_completion_on_keypress": true,
-  "anaconda_linting": false,
-  "python_interpreter": "/usr/local/bin/python3"
-}

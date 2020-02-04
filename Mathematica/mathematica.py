@@ -12,7 +12,7 @@ import pickle
 import zipfile
 class Mathematica():
 
-  def __init__(self, user, pwd, cache=os.getcwd(), waitsec=180, headless=False):
+  def __init__(self, user, pwd, cache, waitsec=180, headless=False):
     self.waitsec = waitsec
     self.headless = headless
     self.user = user
@@ -115,7 +115,7 @@ class Mathematica():
       self.driver.find_element_by_css_selector(dl).click()
 
       # grab number of .part files
-      os.chdir(os.getcwd())
+      os.chdir(self.cache)
       ndmg = len(glob.glob(self.cache + "/*.dmg*"))
       npart = len(glob.glob(self.cache + "/*.part"))
 

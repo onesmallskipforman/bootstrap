@@ -4,15 +4,17 @@
 # SLACK USER SUPPORT INSTALL
 #===================================================================
 
-cd "$(dirname $0)"
-
 # ensure app is not running
 osascript -e 'quit app "Slack"'
 
 # Folders
-BACKUP="Private"
+BACKUP=~/"Dropbox/Backup/Slack"
 CONFIG="$HOME/Library/Application Support/Slack"
 
 mkdir -p "$CONFIG"
-cp -f  "$BACKUP/Cookies" "$CONFIG/"
-cp -rf "$BACKUP/storage" "$CONFIG/"
+
+rm -rf "$CONFIG/Cookies"
+rm -rf "$CONFIG/storage"
+
+ln -sf "$BACKUP/Cookies" "$CONFIG"
+ln -sf "$BACKUP/storage" "$CONFIG"

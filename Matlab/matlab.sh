@@ -4,17 +4,15 @@
 # MATLAB DOWNLOAD AND INSTALLATION
 #===============================================================================
 
-cd "$(dirname $0)"
-
 # variables based on versioning
 version="R2019b"
 pkgname="matlab_${version}_maci64"
-ipath="Private"
+ipath=~/"Dropbox/Backup/Matlab"
 mntpath="/Volumes/$pkgname"
 installer="InstallForMacOSX.app"
 
-USER="$(sed '1q;d' "Private/login.txt")"
-PASS="$(sed '2q;d' "Private/login.txt")"
+USER="$(sed '1q;d' "$ipath/login.txt")"
+PASS="$(sed '2q;d' "$ipath/login.txt")"
 
 # cleanup function
 function cleanup {
@@ -45,6 +43,7 @@ then
     echo "MATLAB Installer Already Downloaded."
   else
     python3 matlab.py "$USER" "$PASS" "$ipath" "$version"
+    exit
   fi
 
   # unzip and mount dmg, quarantine installer

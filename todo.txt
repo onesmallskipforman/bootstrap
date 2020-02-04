@@ -1,20 +1,21 @@
-Test Terminal Theme Changes
+you might want to use the firefox model for app dotfiles. if apps delete and replaces files
+regularly, you dont have to worry about broken symlinks.
+
+
+check that git pull does not break firefox
+
+standardize where apps are quit or killed
+
+initializing dropbox
+Mathstuffs:
+  maybe provide means for downloading zip without isntalling matlab (check brew cask behavior)
+  if user and pass arent provided, prompt user, or at least tell them a file is required
+
+
+Test Terminal Theme Changes, make sure it can handle your changing it manually?
 move git credentials to way dev-setup has it
 
-
-
-
-Todo:
-  finalize homebrew utils stuff
-  go through mathias, donnen, and awesome-macos-command-line osx defaults
-
-
-  standardize where apps are quit or killed
-
-
-
-
-  manage apps that start at startup: f.lux, nord, steam, dropbox (check plist files and application support)
+manage apps that start at startup: f.lux, nord, steam, dropbox (check plist files and application support)
 
 
 
@@ -25,6 +26,38 @@ Todo:
   minimalist csv editor
   document/pdf viewer
   pass/bitwarden
+
+
+
+
+Next Hurdles:
+  syncing across operating systems
+  grand final plan:
+    giant json file tracking all settings including defaults
+    scripts run based on json settings (with defaults)
+    backup, restore, and syncing of settings:
+      keep symlink to defaults files and use that to update the grand json file
+    easier: keep defaults plist files, and have defaults files read from those plists
+    idk this is
+
+  concerns:
+    enough space for dropbox
+    trying to use the same dropbox across different OSs might be a problem (we can figure this out later)
+
+  homebrew utils stuff
+  go through mathias, donnen, and awesome-macos-command-line osx defaults
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 OSX:

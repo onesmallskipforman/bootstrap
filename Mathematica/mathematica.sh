@@ -4,19 +4,16 @@
 # MATHEMATICA DOWNLOAD AND INSTALLATION
 #===============================================================================
 
-cd "$(dirname $0)"
-
 # variables based on versioning
 version="12.0.0"
 pkgname="Mathematica_${version}_MAC_DM"
-ipath="Private"
+ipath=~/"Dropbox/Backup/Mathematica"
 mntpath="/Volumes/Download Manager for Wolfram Mathematica 12"
 mntpath2="/Volumes/Download Manager for Wolfram Mathematica 12"
 installer="Download Manager for Wolfram Mathematica 12.app"
 
-USER="$(sed '1q;d' "Private/login.txt")"
-PASS="$(sed '2q;d' "Private/login.txt")"
-# KEY="$(sed '3q;d' "Private/login.txt")"
+USER="$(sed '1q;d' "$ipath/login.txt")"
+PASS="$(sed '2q;d' "$ipath/login.txt")"
 
 # cleanup function
 function cleanup {
@@ -48,6 +45,7 @@ then
     echo "Mathematica Installer Already Downloaded."
   else
     python3 mathematica.py "$USER" "$PASS" "$ipath"
+    exit
   fi
 
   # unzip and mount dmg, quarantine installer
@@ -71,7 +69,6 @@ then
   # echo 'Opening Mathematica for Sign In'
   # echo "User: $USER"
   # echo "Pass: $PASS"
-  # echo "Key:  $KEY"
   # open -g -W -a "Mathematica.app"
 else
   echo "Mathematica Already Installed. Run with --force to reinstall"

@@ -1,18 +1,17 @@
 #!/bin/zsh
 
 #===================================================================
-# FIREFOX USER SUPPORT INSTALL
+# SPOTIFY USER SUPPORT INSTALL
 #===================================================================
-
-cd "$(dirname $0)"
 
 # ensure app is not running
 osascript -e 'quit app "Spotify"'
 
 # Folders
-BACKUP="Private"
+BACKUP=~/"Dropbox/Backup/Spotify"
 CONFIG="$HOME/Library/Application Support/Spotify"
 
 # make support folders and move over
 mkdir -p "$CONFIG"
-cp -f "$BACKUP/prefs" "$CONFIG/"
+rm -rf "$CONFIG/prefs"
+ln -sf "$BACKUP/prefs" "$CONFIG"

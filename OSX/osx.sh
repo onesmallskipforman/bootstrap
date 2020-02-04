@@ -50,7 +50,7 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Set a custom wallpaper image
-WALLPAPER="Wallpapers/neon.jpg"
+WALLPAPER="neon.jpg"
 osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
 osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
 
