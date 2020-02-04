@@ -5,15 +5,18 @@ move git credentials to way dev-setup has it
 
 
 Todo:
-  resolve iterm "replace existing colors" popup
-  matlab: consider detaching installer process since it's manual
-  run matlab with force
-  run mathematica with force
   finalize homebrew utils stuff
+  go through mathias, donnen, and awesome-macos-command-line osx defaults
+
+
   standardize where apps are quit or killed
-  use grep to brew install only uninstalled packages
+
+
+
+
   manage apps that start at startup: f.lux, nord, steam, dropbox (check plist files and application support)
-  ln: /usr/local/bin/wolframscript: File exists
+
+
 
   cracking the coding interview
   zsh customization

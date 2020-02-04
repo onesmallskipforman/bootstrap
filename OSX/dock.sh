@@ -37,7 +37,8 @@ defaults write com.apple.dock autohide -bool false
 defaults write com.apple.dock show-recents -bool false
 
 # Reset Launchpad, but keep the desktop wallpaper intact
-find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete
+# find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete; killall Dock
+defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock
 
 # Add iOS & Watch Simulator to Launchpad
 # sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
@@ -64,6 +65,8 @@ dockutil --no-restart --add "/Applications/iTerm.app"
 dockutil --no-restart --add "/Applications/XCTU.app"
 dockutil --no-restart --add "/Applications/Spotify.app"
 dockutil --no-restart --add "/Applications/Minecraft.app"
+
+dockutil --no-restart --add "~/Downloads" --view fan --display stack --sort dateadded
 
 # reset dock
 killall Dock

@@ -19,14 +19,13 @@ PASS="$(sed '2q;d' "Private/login.txt")"
 # KEY="$(sed '3q;d' "Private/login.txt")"
 
 # cleanup function
-set -e
 function cleanup {
-  killall "${installer%.*}"                      &>/dev/null ||
-  diskutil unmount force "$mntpath"              &>/dev/null ||
-  diskutil unmount force "/Volumes/Mathematica/" &>/dev/null ||
+  if pgrep "${installer%.*}"; then killall "${installer%.*}"; fi >/dev/null
+  if [[ -d  "$mntpath" ]]; then diskutil unmount force "$mntpath"; fi >/dev/null
+  if [[ -d  "/Volumes/Mathematica/" ]]; then diskutil unmount force "/Volumes/Mathematica/"; fi >/dev/null
   rm -f "$ipath/$pkgname.dmg"
 }
-trap cleanup INT TERM EXIT
+trap cleanup INT ERR TERM EXIT
 
 # Ask for the administrator password upfront
 sudo -v

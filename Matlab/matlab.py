@@ -11,7 +11,7 @@ import pickle
 import zipfile
 class Matlab():
 
-  def __init__(self, waitsec=180, headless=False, cache=os.getcwd(), user, pwd):
+  def __init__(self, user, pwd, cache=os.getcwd(), waitsec=180, headless=False):
     self.waitsec = waitsec
     self.headless = headless
     self.user = user

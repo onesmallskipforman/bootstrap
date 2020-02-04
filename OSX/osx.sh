@@ -15,7 +15,8 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# Turn Dark mode on (unfortunately have to disable system identity protection to use defaults)
+# Turn Dark mode on
+# defaults write "Apple Global Domain" "AppleInterfaceStyle" "dark"
 osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
 
 # Set computer name (as done via System Preferences → Sharing)
@@ -78,6 +79,15 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 defaults write NSGlobalDomain KeyRepeat -int 1
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 # defaults write -g KeyRepeat -int 1
+
+
+#===============================================================================
+# SCREEN
+#===============================================================================
+
+
+
+
 
 ###############################################################################
 # Kill affected applications                                                  #

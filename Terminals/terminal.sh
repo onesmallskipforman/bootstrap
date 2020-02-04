@@ -69,6 +69,10 @@ tell application "Terminal"
 
 end tell
 EOD
+# change terminal theme to Homebrew (requires logout and log back in)
+# defaults write com.apple.terminal "Default Window Settings" -string Homebrew
+# defaults write com.apple.terminal "Startup Window Settings" -string Homebrew
+
 
 # Ensure Homebrew Theme is the Default
 defaults write com.apple.terminal "Default Window Settings" -string Homebrew

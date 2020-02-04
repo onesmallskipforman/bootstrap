@@ -17,13 +17,12 @@ USER="$(sed '1q;d' "Private/login.txt")"
 PASS="$(sed '2q;d' "Private/login.txt")"
 
 # cleanup function
-set -e
 function cleanup {
-  killall "${installer%.*}"         &>/dev/null ||
-  diskutil unmount force "$mntpath" &>/dev/null ||
+  if pgrep "${installer%.*}"; then killall "${installer%.*}"; fi >/dev/null
+  if [[ -d  "$mntpath" ]]; then diskutil unmount force "$mntpath"; fi >/dev/null
   rm -f "$ipath/$pkgname.dmg"
 }
-trap cleanup INT TERM EXIT
+trap cleanup INT TERM EXIT ERR
 
 # Ask for the administrator password upfront
 sudo -v
@@ -50,6 +49,8 @@ then
 
   # unzip and mount dmg, quarantine installer
   unzip -o "$ipath/$pkgname.dmg.zip" -d "$ipath/" >/dev/null
+
+  sudo xattr -rd com.apple.quarantine "$ipath/$pkgname.dmg" &>/dev/null
   hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
   # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
 
