@@ -10,8 +10,6 @@ BACKUP=${BACKUP%/}
 
 CONFIG="$HOME/Library/Application Support/Slack"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   cp -f  "$CONFIG/Cookies" "$BACKUP/"

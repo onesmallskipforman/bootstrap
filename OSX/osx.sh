@@ -46,6 +46,9 @@ defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 # Disable smart quotes as they’re annoying when typing code
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 
+# Disable the “Are you sure you want to open this application?” dialog
+#defaults write com.apple.LaunchServices LSQuarantine -bool false
+
 # Disable auto-correct
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
@@ -61,9 +64,9 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
-###############################################################################
-# Finder                                                                      #
-###############################################################################
+#===============================================================================
+# Finder
+#===============================================================================
 
 # Finder: allow quitting via ⌘ + Q; doing so will also hide desktop icons
 # defaults write com.apple.finder QuitMenuItem -bool true
@@ -71,42 +74,28 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 # Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
 
-
-###############################################################################
-# Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
-###############################################################################
+#===============================================================================
+# Trackpad, mouse, keyboard, Bluetooth accessories, and input
+#===============================================================================
 
 defaults write NSGlobalDomain KeyRepeat -int 1
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 # defaults write -g KeyRepeat -int 1
 
-
 #===============================================================================
-# SCREEN
+# Kill affected applications
 #===============================================================================
-
-
-
-
-
-###############################################################################
-# Kill affected applications                                                  #
-###############################################################################
 
 for app in "Activity Monitor" \
 	"Address Book" \
 	"Calendar" \
 	"cfprefsd" \
 	"Contacts" \
-	"Dock" \
 	"Finder" \
 	"Mail" \
 	"Messages" \
 	"Photos" \
-	"SizeUp" \
-	"Spectacle" \
 	"SystemUIServer" \
-	"Transmission" \
 	"iCal"; do
 	killall "${app}" &> /dev/null
 done

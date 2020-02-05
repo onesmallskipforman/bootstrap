@@ -4,7 +4,7 @@
 # SETUP BACKUP STORAGE
 #===============================================================================
 
-$REPO=https://github.com/onesmallskipforman/Backup.git
+REPO="https://github.com/onesmallskipforman/Backup.git"
 mkdir -p "$BACKUP"
 
 git -C "$BACKUP" init

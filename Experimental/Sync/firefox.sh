@@ -11,8 +11,6 @@ BACKUP=${BACKUP%/}
 CONFIG="$HOME/Library/Application Support/Firefox"
 CMD="/Applications/Firefox.app/Contents/MacOS/firefox"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   cp -f  "$CONFIG/Profiles"/*.default-release/*.json            "$BACKUP/"

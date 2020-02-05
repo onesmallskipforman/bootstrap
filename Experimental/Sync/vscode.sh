@@ -10,8 +10,6 @@ BACKUP=${BACKUP%/}
 
 CONFIG="$HOME/Library/Application Support/Code/User"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   cp -f  "$CONFIG/keybindings.json"  "$BACKUP/"

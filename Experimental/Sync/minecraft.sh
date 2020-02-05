@@ -11,8 +11,6 @@ BACKUP=${BACKUP%/}
 
 CONFIG="$HOME/Library/Application Support/Minecraft"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   cp -f  "$CONFIG/launcher_profiles.json" "$BACKUP/"

@@ -52,37 +52,41 @@ class Matlab():
     )
 
   def signIn(self):
-    sys.stdout.write('Signing In....\n')
-    sys.stdout.flush()
+    try:
+      sys.stdout.write('Signing In....\n')
+      sys.stdout.flush()
 
-    self.driver.get('https://www.mathworks.com/login')
+      self.driver.get('https://www.mathworks.com/login')
 
-    # wait for frame and switch to it
-    # WebDriverWait(self.driver, self.waitsec).until(
-    #   EC.frame_to_be_available_and_switch_to_it((By.CLASS_NAME,'embeddedForm'))
-    # )
-    self.waitFor(By.CLASS_NAME, "embeddedForm")
-    frame = self.driver.find_element_by_class_name("embeddedForm")
-    self.driver.switch_to.frame(frame)
+      # wait for frame and switch to it
+      # WebDriverWait(self.driver, self.waitsec).until(
+      #   EC.frame_to_be_available_and_switch_to_it((By.CLASS_NAME,'embeddedForm'))
+      # )
+      self.waitFor(By.CLASS_NAME, "embeddedForm")
+      frame = self.driver.find_element_by_class_name("embeddedForm")
+      self.driver.switch_to.frame(frame)
 
-    # this website's login fields are finnicky, so wait for visibility
-    self.waitFor(By.ID, "userId")
-    WebDriverWait(self.driver, self.waitsec).until(
-      EC.visibility_of(self.driver.find_element_by_id("userId"))
-    )
+      # this website's login fields are finnicky, so wait for visibility
+      self.waitFor(By.ID, "userId")
+      WebDriverWait(self.driver, self.waitsec).until(
+        EC.visibility_of(self.driver.find_element_by_id("userId"))
+      )
 
-    self.driver.find_element_by_id("userId").send_keys(self.user)
-    self.driver.find_element_by_id("password").send_keys(self.pwd)
+      self.driver.find_element_by_id("userId").send_keys(self.user)
+      self.driver.find_element_by_id("password").send_keys(self.pwd)
 
-    # grab current url before signin
-    current = self.driver.current_url
-    self.driver.find_element_by_id("submit").click()
-    self.driver.switch_to.default_content()
+      # grab current url before signin
+      current = self.driver.current_url
+      self.driver.find_element_by_id("submit").click()
+      self.driver.switch_to.default_content()
 
-    # wait for new url
-    element = WebDriverWait(self.driver, self.waitsec).until_not(
-        EC.url_to_be(current)
-    )
+      # wait for new url
+      element = WebDriverWait(self.driver, self.waitsec).until_not(
+          EC.url_to_be(current)
+      )
+    except:
+      self.restart()
+      self.signIn()
 
   def authenticate(self):
     sys.stdout.write('Authenitcating....\n')
@@ -104,31 +108,34 @@ class Matlab():
     self.authenticate()
 
   def download(self, version='latest'):
+    try:
+      if version == 'latest':
+        self.driver.get('https://www.mathworks.com/downloads/web_downloads')
+        self.waitFor(By.ID, "download_btn")
+        self.driver.find_element_by_id("download_btn").click()
+      else:
+        self.driver.get('https://www.mathworks.com/downloads/web_downloads/download_release?release=' + version)
 
-    if version == 'latest':
-      self.driver.get('https://www.mathworks.com/downloads/web_downloads')
-      self.waitFor(By.ID, "download_btn")
-      self.driver.find_element_by_id("download_btn").click()
-    else:
-      self.driver.get('https://www.mathworks.com/downloads/web_downloads/download_release?release=' + version)
+      # grab number of .part files
+      os.chdir(self.cache)
+      ndmg = len(glob.glob(self.cache + "/*.dmg*"))
+      npart = len(glob.glob(self.cache + "/*.part"))
 
-    # grab number of .part files
-    os.chdir(self.cache)
-    ndmg = len(glob.glob(self.cache + "/*.dmg*"))
-    npart = len(glob.glob(self.cache + "/*.part"))
+      # install for mac (2)
+      # TODO: make struct for mac, linux, maybe windows
+      dl = "button.btn:nth-child(2)"
+      self.waitFor(By.CSS_SELECTOR, dl)
 
-    # install for mac (2)
-    # TODO: make struct for mac, linux, maybe windows
-    dl = "button.btn:nth-child(2)"
-    self.waitFor(By.CSS_SELECTOR, dl)
-
-    # start download
-    self.driver.find_element_by_css_selector(dl).click()
-    sys.stdout.write('Downloading Installer...\n')
-    sys.stdout.flush()
-    while ( ndmg == len(glob.glob(self.cache + "/*.dmg*")) or npart != len(glob.glob(self.cache + "/*.part")) ): pass
-    sys.stdout.write('Installer Downloaded...\n')
-    sys.stdout.flush()
+      # start download
+      self.driver.find_element_by_css_selector(dl).click()
+      sys.stdout.write('Downloading Installer...\n')
+      sys.stdout.flush()
+      while ( ndmg == len(glob.glob(self.cache + "/*.dmg*")) or npart != len(glob.glob(self.cache + "/*.part")) ): pass
+      sys.stdout.write('Installer Downloaded...\n')
+      sys.stdout.flush()
+    except:
+      self.restart()
+      self.download()
 
 def main():
   args = sys.argv[1:]

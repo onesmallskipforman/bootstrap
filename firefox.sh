@@ -37,21 +37,3 @@ done
 # close and wait for close
 osascript -e 'quit app "Firefox"'
 open -g -W /Applications/Firefox.app
-
-# git -C "$BACKUP" clean -fdx               \
-#   -e "$BACKUP/prefs.js"                   \
-#   -e "$BACKUP/compatibility.ini"          \
-#   -e "$BACKUP/extensions"                 \
-#   -e "$BACKUP/broadcast-listeners.json"   \
-#   -e "$BACKUP/containers.json"            \
-#   -e "$BACKUP/extension-preferences.json" \
-#   -e "$BACKUP/extension-settings.json"    \
-#   -e "$BACKUP/handlers.json"              \
-#   -e "$BACKUP/logins.json"                \
-#   -e "$BACKUP/signedInUser.json"          \
-#   -e "$BACKUP/times.json"                 \
-#   -e "$BACKUP/addons.json"                \
-#   -e "$BACKUP/extensions.json"            \
-#   -e "$BACKUP/sessionCheckpoints.json"    \
-#   -e "$BACKUP/xulstore.json"
-#   # -e "$BACKUP"/*.json

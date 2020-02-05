@@ -13,8 +13,6 @@ CONFIG="$HOME/Library/Application Support/Sublime Text 3/Packages/User"
 PYCACHE="$HOME/Library/Application Support/Sublime Text 3/Cache/Python"
 PCTRL="$HOME/Library/Application Support/Sublime Text 3/Installed Packages"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   mkdir -p "$BACKUP/Settings"

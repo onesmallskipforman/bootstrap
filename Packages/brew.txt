@@ -1,6 +1,5 @@
 clang-format
 coreutils
-idleberg/dbxcli/dbxcli
 dockutil
 enscript
 gcc

@@ -10,8 +10,6 @@ BACKUP=${BACKUP%/}
 
 CONFIG="$HOME/Library/Application Support/OpenEmu"
 
-# TODO: encrypt/decrypt backups
-
 if [[ $1 == "--backup" ]]; then
   mkdir -p "$BACKUP"
   cp -rf "$CONFIG/Bindings"     "$BACKUP/"

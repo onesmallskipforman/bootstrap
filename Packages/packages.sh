@@ -47,7 +47,7 @@ mas upgrade
 comm -23 <(sort "tap.txt") <(brew tap | sort) | xargs -n 1 brew tap
 comm -23 <(sort "brew.txt") <(brew leaves | sort) | xargs brew install
 comm -23 <(sort "cask.txt") <(brew cask list | sort) | xargs brew cask install
-comm -23 <(sort "mas.txt") <(mas list | sed 's/[[:space:]].*$//' | sort) | xargs mas install # TODO: fix sed. it's not filtering
+comm -23 <(sort "mas.txt") <(mas list | sed 's/[[:space:]].*$//' | sort) | xargs mas install
 
 # remove outdated versions from the cellar
 echo "Cleaning Homebrew..."
@@ -135,5 +135,9 @@ sudo cpan install Log::Log4perl
 sudo cpan install Log::Dispatch::File
 sudo cpan install YAML::Tiny
 sudo cpan install File::HomeDir
+
+# open dropbox to sign in and sync backups
+open "/Applications/Dropbox.app"
+open "/Applications/Docker.app"
 
 echo "Package Manager Setup Complete"

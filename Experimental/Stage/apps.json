@@ -1,12 +1,10 @@
 {
   "tap": [
     "homebrew/cask",
-    "homebrew/cask-drivers",
-    "idleberg/dbxcli"
+    "homebrew/cask-drivers"
   ],
   "brew": [
     "clang-format",
-    "idleberg/dbxcli/dbxcli",
     "dockutil",
     "enscript",
     "gcc",
@@ -111,6 +109,9 @@
     "ttab"
   ],
   "ignored": {
+    "taps": [
+      "idleberg/dbxcli"
+    ],
     "cask": [
       "anaconda",
       "vagrant",
@@ -130,6 +131,7 @@
       "sdl2_image",
       "sdl2_mixer",
       "sdl2_ttf",
+      "idleberg/dbxcli/dbxcli",
       "portaudio",
       "pulseaudio",
       "dbus",
