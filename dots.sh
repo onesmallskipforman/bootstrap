@@ -36,6 +36,14 @@ function runDots() {
     #   echo ""
     #   "./Brew/brew.sh"
     # fi
+    if [ $ARG == "backups" ] || [ $ARG == "all" ]; then
+      echo ""
+      echo "------------------------------"
+      echo "Pulling Private Backup Storage"
+      echo "------------------------------"
+      echo ""
+      "./backups.sh"
+    fi
     if [ $ARG == "packages" ] || [ $ARG == "all" ]; then
       echo ""
       echo "------------------------------"

@@ -1,21 +1,16 @@
-you might want to use the firefox model for app dotfiles. if apps delete and replaces files
-regularly, you dont have to worry about broken symlinks.
-
-
-check that git pull does not break firefox
-
+remove dbxcli
+dev setup storage of git credentials
+bitwarden cli to get github password
+osx keychain on clean computer
 standardize where apps are quit or killed
-
-initializing dropbox
-Mathstuffs:
-  maybe provide means for downloading zip without isntalling matlab (check brew cask behavior)
-  if user and pass arent provided, prompt user, or at least tell them a file is required
-
-
+open dropbox after install
+Mathstuffs: maybe provide means for downloading zip without isntalling matlab (just minic brew cask behavior)
 Test Terminal Theme Changes, make sure it can handle your changing it manually?
 move git credentials to way dev-setup has it
-
-manage apps that start at startup: f.lux, nord, steam, dropbox (check plist files and application support)
+alias or easy place to put projects
+desktop and documents cloud storage and sync to computer (probably use icloud)
+make sure icloud works as legitimate storage
+manage apps that start at startup: f.lux, nord, dropbox (check plist files and application support)
 
 
 

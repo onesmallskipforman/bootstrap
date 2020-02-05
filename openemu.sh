@@ -8,7 +8,7 @@
 osascript -e 'quit app "OpenEmu"'
 
 # Folders
-BACKUP=~/"Dropbox/Backup/OpenEmu"
+BACKUP="$BACKUP/OpenEmu"
 CONFIG="$HOME/Library/Application Support/OpenEmu"
 
 mkdir -p "$CONFIG"

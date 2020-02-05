@@ -8,7 +8,7 @@
 osascript -e 'quit app "Visual Studio Code"'
 
 # Folders
-BACKUP=~/"Dropbox/Backup/VS Code"
+BACKUP="$BACKUP/VS Code"
 CONFIG="$HOME/Library/Application Support/Code/User"
 
 # make support folders and move over

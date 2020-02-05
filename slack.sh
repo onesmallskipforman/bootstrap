@@ -8,7 +8,7 @@
 osascript -e 'quit app "Slack"'
 
 # Folders
-BACKUP=~/"Dropbox/Backup/Slack"
+BACKUP="$BACKUP/Slack"
 CONFIG="$HOME/Library/Application Support/Slack"
 
 mkdir -p "$CONFIG"

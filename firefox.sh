@@ -8,19 +8,20 @@
 killall firefox &> /dev/null
 
 # Folders
-BACKUP=~/"Dropbox/Backup/Firefox"
+BACKUP="$BACKUP/Firefox"
 CONFIG="$HOME/Library/Application Support/Firefox"
 CMD="/Applications/Firefox.app/Contents/MacOS/firefox"
 
 # make support and profile folders
 rm -rf "$CONFIG"
 mkdir -p "$CONFIG"
+git -C "$BACKUP" clean -fdX
 "$CMD" -CreateProfile default-release
 
 # grab profile name, wipe, and make symlink
 PROFILE=$(realpath "$CONFIG/Profiles"/*.default-release)
 rm -rf "$PROFILE"
-git -C "$BACKUP" clean -fdX
+
 ln -sf "$BACKUP" "$PROFILE"
 
 # open and close the browser headlessly, ensuring first user open isnt buggy

@@ -8,7 +8,7 @@
 osascript -e 'quit app "Spotify"'
 
 # Folders
-BACKUP=~/"Dropbox/Backup/Spotify"
+BACKUP="$BACKUP/Spotify"
 CONFIG="$HOME/Library/Application Support/Spotify"
 
 # make support folders and move over

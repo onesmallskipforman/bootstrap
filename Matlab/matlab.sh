@@ -7,18 +7,18 @@
 # variables based on versioning
 version="R2019b"
 pkgname="matlab_${version}_maci64"
-ipath=~/"Dropbox/Backup/Matlab"
+BACKUP="$BACKUP/Matlab"
 mntpath="/Volumes/$pkgname"
 installer="InstallForMacOSX.app"
 
-USER="$(sed '1q;d' "$ipath/login.txt")"
-PASS="$(sed '2q;d' "$ipath/login.txt")"
+USER="$(sed '1q;d' "$BACKUP/login.txt")"
+PASS="$(sed '2q;d' "$BACKUP/login.txt")"
 
 # cleanup function
 function cleanup {
   if pgrep "${installer%.*}"; then killall "${installer%.*}"; fi >/dev/null
   if [[ -d  "$mntpath" ]]; then diskutil unmount force "$mntpath"; fi >/dev/null
-  rm -f "$ipath/$pkgname.dmg"
+  rm -f "$BACKUP/$pkgname.dmg"
 }
 trap cleanup INT TERM EXIT ERR
 
@@ -31,26 +31,26 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 echo "\nRunning Matlab Install Script"
 
 # make directory for installer
-mkdir -p "$ipath"
+mkdir -p "$BACKUP"
 
 # check if app is installed and exit
 if [[ ! -d "/Applications/MATLAB_$version.app" || ("$1" == "--force" || "$1" == "-f")]]
 then
 
   # check if installer already downloaded, use web scraper otherwise
-  if [[ -f "$ipath/$pkgname.dmg.zip" ]]
+  if [[ -f "$BACKUP/$pkgname.dmg.zip" ]]
   then
     echo "MATLAB Installer Already Downloaded."
   else
-    python3 matlab.py "$USER" "$PASS" "$ipath" "$version"
+    python3 matlab.py "$USER" "$PASS" "$BACKUP" "$version"
     exit
   fi
 
   # unzip and mount dmg, quarantine installer
-  unzip -o "$ipath/$pkgname.dmg.zip" -d "$ipath/" >/dev/null
+  unzip -o "$BACKUP/$pkgname.dmg.zip" -d "$BACKUP/" >/dev/null
 
-  sudo xattr -rd com.apple.quarantine "$ipath/$pkgname.dmg" &>/dev/null
-  hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
+  sudo xattr -rd com.apple.quarantine "$BACKUP/$pkgname.dmg" &>/dev/null
+  hdiutil attach "$BACKUP/$pkgname.dmg" -nobrowse >/dev/null
   # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" &>/dev/null
 
   # run installer and prompt user with login

@@ -7,20 +7,20 @@
 # variables based on versioning
 version="12.0.0"
 pkgname="Mathematica_${version}_MAC_DM"
-ipath=~/"Dropbox/Backup/Mathematica"
+BACKUP="$BACKUP/Mathematica"
 mntpath="/Volumes/Download Manager for Wolfram Mathematica 12"
 mntpath2="/Volumes/Download Manager for Wolfram Mathematica 12"
 installer="Download Manager for Wolfram Mathematica 12.app"
 
-USER="$(sed '1q;d' "$ipath/login.txt")"
-PASS="$(sed '2q;d' "$ipath/login.txt")"
+USER="$(sed '1q;d' "$BACKUP/login.txt")"
+PASS="$(sed '2q;d' "$BACKUP/login.txt")"
 
 # cleanup function
 function cleanup {
   if pgrep "${installer%.*}"; then killall "${installer%.*}"; fi >/dev/null
   if [[ -d  "$mntpath" ]]; then diskutil unmount force "$mntpath"; fi >/dev/null
   if [[ -d  "/Volumes/Mathematica/" ]]; then diskutil unmount force "/Volumes/Mathematica/"; fi >/dev/null
-  rm -f "$ipath/$pkgname.dmg"
+  rm -f "$BACKUP/$pkgname.dmg"
 }
 trap cleanup INT ERR TERM EXIT
 
@@ -33,24 +33,24 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 echo "\nRunning Mathematica Install Script"
 
 # make directory for installer
-mkdir -p "$ipath"
+mkdir -p "$BACKUP"
 
 # check if app is installed and exit
 if [[ ! -d "/Applications/Mathematica.app" || ("$1" == "--force" || "$1" == "-f")]]
 then
 
   # check if installer already downloaded, use web scraper otherwise
-  if [[ -f "$ipath/$pkgname.dmg.zip" ]]
+  if [[ -f "$BACKUP/$pkgname.dmg.zip" ]]
   then
     echo "Mathematica Installer Already Downloaded."
   else
-    python3 mathematica.py "$USER" "$PASS" "$ipath"
+    python3 mathematica.py "$USER" "$PASS" "$BACKUP"
     exit
   fi
 
   # unzip and mount dmg, quarantine installer
-  unzip -o "$ipath/$pkgname.dmg.zip" -d "$ipath/" >/dev/null
-  hdiutil attach "$ipath/$pkgname.dmg" -nobrowse >/dev/null
+  unzip -o "$BACKUP/$pkgname.dmg.zip" -d "$BACKUP/" >/dev/null
+  hdiutil attach "$BACKUP/$pkgname.dmg" -nobrowse >/dev/null
   # sudo xattr -rd com.apple.quarantine "$mntpath/$installer" >/dev/null
 
   # run installer and prompt user with login

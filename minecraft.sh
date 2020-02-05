@@ -8,7 +8,7 @@
 osascript -e 'quit app "Minecraft"'
 
 # Folders
-BACKUP=~/"Dropbox/Backup/Minecraft"
+BACKUP="$BACKUP/Minecraft"
 CONFIG="$HOME/Library/Application Support/Minecraft"
 
 # make support folders and move over
