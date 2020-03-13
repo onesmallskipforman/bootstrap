@@ -1,4 +1,3 @@
-amethyst
 balenaetcher
 bettertouchtool
 bitwarden
@@ -13,13 +12,11 @@ firefox
 flux
 ftdi-vcp-driver
 google-chrome
-iterm2
 keyboardcleantool
 mactex-no-gui
 minecraft
 nordvpn
 openemu
-rectangle
 skim
 slack
 spotify
@@ -29,3 +26,7 @@ ticktick
 visual-studio-code
 xctu
 xquartz
+elsorino/homebrew-elso/macfeh
+iina
+alacritty
+kitty

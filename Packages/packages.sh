@@ -29,6 +29,9 @@ which mas &>/dev/null 2>&1 || (
 brew update
 brew upgrade mas
 
+# disable services
+brew services stop --all
+
 # upgrade existing installs
 echo "Updating Various Installs..."
 brew upgrade
@@ -69,6 +72,10 @@ echo "Removing Apple Quarantine..."
 brew cask list | xargs brew cask info | grep '(App)' \
   | sed 's/^/"\/Applications\//;s/\.app.*/.app"/' \
   | xargs sudo xattr -r -d com.apple.quarantine  &>/dev/null
+
+
+# reenable services
+brew services start --all
 
 echo "Brew Setup Complete!"
 

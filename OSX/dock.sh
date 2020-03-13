@@ -21,6 +21,20 @@ defaults write com.apple.dock mouse-over-hilite-stack -bool true
 # Set the icon size of Dock items to 36 pixels
 defaults write com.apple.dock tilesize -int 36
 
+# Don’t animate opening applications from the Dock
+defaults write com.apple.dock launchanim -bool false
+
+# Remove the auto-hiding Dock delay
+defaults write com.apple.dock autohide-delay -float 0
+# Remove the animation when hiding/showing the Dock
+defaults write com.apple.dock autohide-time-modifier -float 0
+
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
+
+# Don’t show recent applications in Dock
+defaults write com.apple.dock show-recents -bool false
+
 # move dock orientation (options are left, bottom, right)
 defaults write com.apple.dock orientation -string "bottom"
 
@@ -30,15 +44,15 @@ defaults write com.apple.dock mineffect -string "scale"
 # Minimize windows into their application’s icon
 defaults write com.apple.dock minimize-to-application -bool false
 
-# Automatically hide and show the Dock
-defaults write com.apple.dock autohide -bool false
-
-# Don’t show recent applications in Dock
-defaults write com.apple.dock show-recents -bool false
-
 # Reset Launchpad, but keep the desktop wallpaper intact
 # find "${HOME}/Library/Application Support/Dock" -name "*-*.db" -maxdepth 1 -delete; killall Dock
 defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock
+
+# Minimize windows into their application’s icon
+defaults write com.apple.dock minimize-to-application -bool true
+
+# Change minimize/maximize window effect
+defaults write com.apple.dock mineffect -string "scale"
 
 # Add iOS & Watch Simulator to Launchpad
 # sudo ln -sf "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app" "/Applications/Simulator.app"
@@ -48,7 +62,6 @@ defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock
 dockutil --no-restart --remove all
 dockutil --no-restart --add "/System/Applications/Launchpad.app"
 dockutil --no-restart --add "/System/Applications/System Preferences.app"
-dockutil --no-restart --add "/Applications/Bitwarden.app"
 dockutil --no-restart --add "/Applications/TickTick.app"
 dockutil --no-restart --add "/System/Applications/Notes.app"
 dockutil --no-restart --add "/System/Applications/Mail.app"
@@ -58,10 +71,8 @@ dockutil --no-restart --add "/Applications/Safari.app"
 dockutil --no-restart --add "/Applications/MATLAB_R2019b.app"
 dockutil --no-restart --add "/Applications/Mathematica.app"
 dockutil --no-restart --add "/Applications/Visual Studio Code.app"
-dockutil --no-restart --add "/Applications/Sublime Text.app"
-dockutil --no-restart --add "/Applications/Sublime Merge.app"
-dockutil --no-restart --add "/System/Applications/Utilities/Terminal.app"
-dockutil --no-restart --add "/Applications/iTerm.app"
+dockutil --no-restart --add "/Applications/kitty.app"
+dockutil --no-restart --add "/Applications/Alacritty.app"
 dockutil --no-restart --add "/Applications/XCTU.app"
 dockutil --no-restart --add "/Applications/Spotify.app"
 dockutil --no-restart --add "/Applications/Minecraft.app"

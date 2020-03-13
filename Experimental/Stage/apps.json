@@ -1,7 +1,11 @@
 {
   "tap": [
     "homebrew/cask",
-    "homebrew/cask-drivers"
+    "homebrew/cask-drivers",
+    "zegervdv/zathura",
+    "koekeishiya/formulae",
+    "idleberg/dbxcli",
+    "elsorino/homebrew-elso"
   ],
   "brew": [
     "clang-format",
@@ -30,11 +34,25 @@
     "unar",
     "verilator",
     "vim",
-    "wget"
+    "wget",
+    "neofetch",
+    "ranger",
+    "youtube-dl",
+    "figlet",
+    "koekeishiya/formulae/skhd",
+    "koekeishiya/formulae/yabai",
+    "pipes-sh",
+    "zathura",
+    "zathura-pdf-poppler",
+    "sc-im",
+    "balena-cli",
+    "tty-clock",
+    "gotop",
+    "asciiquarium",
+    "htop",
+    "lf"
   ],
   "cask": [
-    "amethyst",
-    "balenaetcher",
     "bitwarden",
     "coolterm",
     "brave-browser",
@@ -47,13 +65,11 @@
     "flux",
     "homebrew/cask-drivers/ftdi-vcp-driver",
     "google-chrome",
-    "iterm2",
     "keyboardcleantool",
     "mactex-no-gui",
     "minecraft",
     "nordvpn",
     "openemu",
-    "rectangle",
     "skim",
     "slack",
     "spotify",
@@ -62,7 +78,11 @@
     "ticktick",
     "visual-studio-code",
     "xctu",
-    "xquartz"
+    "xquartz",
+    "elsorino/homebrew-elso/macfeh",
+    "iina",
+    "alacritty",
+    "kitty"
   ],
   "mas": [
     {
@@ -106,7 +126,6 @@
     "beautifulsoup4"
   ],
   "npm": [
-    "ttab"
   ],
   "ignored": {
     "taps": [
@@ -123,7 +142,11 @@
       "thunderbird",
       "homebrew/cask-drivers/silicon-labs-vcp-driver",
       "appcleaner",
-      "coolterm"
+      "balenaetcher",
+      "amethyst",
+      "rectangle",
+      "iterm2",
+      "qutebrowser"
     ],
     "brew": [
       "libusb",

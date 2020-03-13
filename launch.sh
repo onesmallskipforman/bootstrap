@@ -139,53 +139,6 @@ function destroydesktop () {
 
 
 
-
-
-# function kittylaunch_i () {
-#   # relearn how to insert variables into titles
-#   prelen="$(yabai -m query --windows | jq '. | map(select(.title == "kitty")) | length')"
-#   parentid="$(yabai -m query --windows --window | jq .id)"
-#   # displayindex="$(yabai -m query --displays --display | jq .index)"
-#   # kitty --single-instance zsh -is eval "$1" # with zshrc setup
-#   # /Applications/kitty.app/Contents/MacOS/kitty -o allow_remote_control=yes --single-instance -d ~ "$1" &
-#   /Applications/kitty.app/Contents/MacOS/kitty -o allow_remote_control=yes --single-instance -d ~ "$1" &
-
-#   postlen="$(yabai -m query --windows | jq '. | map(select(.title == "kitty")) | length')"
-#   yabai -m --focus "${index}"
-#   while [ $prelen -ge $postlen ]
-#   do
-#     postlen="$(yabai -m query --windows | jq '. | map(select(.title == "kitty")) | length')"
-#     yabai -m --focus "${index}"
-#   done
-#   yabai -m window --warp "${parentid}"
-# }
-
-# yabai -m query --spaces --space | jq .index
-
-# function kittylaunch_i () {
-#   prelen="$(yabai -m query --spaces --window | jq '.[].windows | length')"
-#   index="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')"
-#   # kitty --single-instance zsh -is eval "$1" # with zshrc setup
-#   /Applications/kitty.app/Contents/MacOS/kitty -o allow_remote_control=yes --single-instance -d ~ zsh -c "$1; zsh -i" &
-#   postlen="$(yabai -m query --spaces --window | jq '.[].windows | length')"
-#   yabai -m --focus "${index}"
-#   while [ $prelen -ge $postlen ]
-#   do
-#     postlen="$(yabai -m query --spaces --window | jq '.[].windows | length')"
-#     yabai -m --focus "${index}"
-#   done
-# }
-
-
-# # add in mechanism to focus to last launched kitty between these to prevent clicking elsewhere from being a problem
-# kittylaunch_i asciiquarium
-# kittylaunch_i gotop
-# kittylaunch_i "tty-clock -ct"
-# kittylaunch_i pipes.sh
-
-
-
-
 # yabai -m window --focus recent
 # yabai -m window --focus first
 # yabai -m window --focus last

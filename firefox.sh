@@ -37,3 +37,6 @@ done
 # close and wait for close
 osascript -e 'quit app "Firefox"'
 open -g -W /Applications/Firefox.app
+
+# make alias for firefox command
+echo 'alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox"' >> ~/.zshrc && source ~/.zshrc

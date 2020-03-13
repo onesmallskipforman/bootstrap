@@ -1,7 +1,0 @@
-xterm*background: black
-xterm*foreground: lightgray
-xterm*faceName: Andale Mono
-xterm*faceSize: 11
-Sxiv.foreground: black
-Sxiv.background: #383737
-

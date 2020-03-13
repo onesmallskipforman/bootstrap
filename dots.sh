@@ -197,6 +197,70 @@ function runDots() {
       echo ""
       "./Matlab/matlab.sh" # ttab
     fi
+    if [[ $ARG == "alacritty" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Configuring Alacritty"
+      echo "------------------------------"
+      echo ""
+      "./Alacritty/alacritty.sh" # ttab
+    fi
+    if [[ $ARG == "kitty" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Setting Up Kitty"
+      echo "------------------------------"
+      echo ""
+      "./Kitty/kitty.sh"
+    fi
+    if [[ $ARG == "ranger" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Configuring Ranger"
+      echo "------------------------------"
+      echo ""
+      "./Ranger/ranger.sh" # ttab
+    fi
+    if [[ $ARG == "refind" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Setting Up rEFInd"
+      echo "------------------------------"
+      echo ""
+      "./rEFInd/refind.sh" # ttab
+    fi
+    if [[ $ARG == "skhd" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Setting Up Skhd"
+      echo "------------------------------"
+      echo ""
+      "./Skhd/skhd.sh" # ttab
+    fi
+    if [[ $ARG == "yabai" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Setting Up Yabai"
+      echo "------------------------------"
+      echo ""
+      "./Yabai/yabai.sh" # ttab
+    fi
+    if [[ $ARG == "zathura" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Configuring Zathura"
+      echo "------------------------------"
+      echo ""
+      "./Zathura/zathura.sh" # ttab
+    fi
+    if [[ $ARG == "termpdf" ]] || [[ $ARG == "all" ]]; then
+      echo ""
+      echo "------------------------------"
+      echo "Installing Termpdf"
+      echo "------------------------------"
+      echo ""
+      "./termpdf.sh" # ttab
+    fi
   done
 
   echo "------------------------------"
