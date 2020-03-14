@@ -50,7 +50,8 @@
     "gotop",
     "asciiquarium",
     "htop",
-    "lf"
+    "lf",
+    "zsh-syntax-highlighting"
   ],
   "cask": [
     "bitwarden",

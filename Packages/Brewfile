@@ -51,6 +51,7 @@ brew "gotop"
 brew "asciiquarium"
 brew "htop"
 brew "lf"
+brew "zsh-syntax-highlighting"
 
 
 cask "bitwarden"

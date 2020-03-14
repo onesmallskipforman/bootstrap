@@ -42,3 +42,4 @@ gotop
 asciiquarium
 htop
 lf
+zsh-syntax-highlighting

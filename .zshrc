@@ -16,3 +16,6 @@ then
     "$@"
 set --
 fi
+
+# Load zsh-syntax-highlighting; should be last.
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
