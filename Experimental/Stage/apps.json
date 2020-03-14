@@ -51,7 +51,9 @@
     "asciiquarium",
     "htop",
     "lf",
-    "zsh-syntax-highlighting"
+    "zsh-syntax-highlighting",
+    "zsh-autosuggestions",
+    "autojump"
   ],
   "cask": [
     "bitwarden",

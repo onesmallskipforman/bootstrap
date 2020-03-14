@@ -43,3 +43,5 @@ asciiquarium
 htop
 lf
 zsh-syntax-highlighting
+zsh-autosuggestions
+autojump
