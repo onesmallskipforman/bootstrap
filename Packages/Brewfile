@@ -4,6 +4,7 @@ tap "idleberg/dbxcli"
 tap "zegervdv/zathura"
 tap "koekeishiya/formulae"
 tap "elsorino/homebrew-elso"
+tap "vitorgalvao/tiny-scripts"
 
 brew "clang-format"
 brew "coreutils"

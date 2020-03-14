@@ -18,7 +18,6 @@ function doIt() {
 
   rsync -a --delete --info=progress2 \
     --no-perms .zshrc ~/.zshrc;
-  source ~/.zshrc;
 }
 
 if [[ "$1" == "--force" ]] || [[ "$1" == "-f" ]]; then

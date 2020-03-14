@@ -17,7 +17,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # configure from backup
 mkdir -p "$CONFIG"
 rm -rf "$CONFIG/.yabairc"
-ln -sf "$BACKUP/.yabairc" "$CONFIG"
+cp "$BACKUP/.yabairc" "$CONFIG"
 
 # restart yabai
 brew services restart yabai

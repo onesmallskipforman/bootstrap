@@ -4,10 +4,14 @@
 # Skhd Config
 #===============================================================================
 
-cd "$(dirname $0)"
+# Folders
+BACKUP="$(dirname $0)"
+CONFIG="$HOME"
 
-# copy config
-cp .skhdrc ~/
+# configure from backup
+mkdir -p "$CONFIG"
+rm -rf "$CONFIG/.skhdrc"
+cp "$BACKUP/.skhdrc" "$CONFIG"
 
 # restart service
 brew services restart skhd

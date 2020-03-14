@@ -4,3 +4,4 @@ zegervdv/zathura
 koekeishiya/formulae
 idleberg/dbxcli
 elsorino/homebrew-elso
+vitorgalvao/tiny-scripts

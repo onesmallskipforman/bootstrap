@@ -15,4 +15,4 @@ ln -s $(brew --prefix zathura-pdf-poppler)/libpdf-poppler.dylib $(brew --prefix 
 # configure from backup
 mkdir -p "$CONFIG"
 rm -rf "$CONFIG/zathurarc"
-ln -sf "$BACKUP/zathurarc" "$CONFIG"
+cp "$BACKUP/zathurarc" "$CONFIG"

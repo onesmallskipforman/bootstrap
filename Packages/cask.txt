@@ -1,5 +1,3 @@
-balenaetcher
-bettertouchtool
 bitwarden
 brave-browser
 coolterm

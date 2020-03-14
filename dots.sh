@@ -85,22 +85,6 @@ function runDots() {
     #   echo ""
     #   "./Npm/npm.sh"
     # fi
-    if [[ $ARG == "terminal" ]] || [[ $ARG == "all" ]]; then
-      echo ""
-      echo "------------------------------"
-      echo "Configuring Terminal App"
-      echo "------------------------------"
-      echo ""
-      "./OSX/terminal.sh"
-    fi
-    if [[ $ARG == "iterm" ]] || [[ $ARG == "all" ]]; then
-      echo ""
-      echo "------------------------------"
-      echo "Configuring iTerm App"
-      echo "------------------------------"
-      echo ""
-      "./iTerm/iterm.sh"
-    fi
     if [[ $ARG == "sublime" ]] || [[ $ARG == "all" ]]; then
       echo ""
       echo "------------------------------"
