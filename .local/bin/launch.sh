@@ -220,11 +220,11 @@ function superff () {
 function showoff () {
   # yabai -m space --create && \
   # yabai -m space --focus last && \
-  superkitty "neofetch --kitty ~/Projects/Dotfiles/sunman.jpeg --size 300px && figlet Hello, Skipper; zsh -i"
-  superkitty "gotop; zsh -i"
-  superkitty "asciiquarium; zsh -i"
-  superkitty "tty-clock -ct; zsh -i"
-  superkitty "pipes.sh; zsh -i"
+  superkitty "zsh -is eval neofetch --kitty ~/Projects/Dotfiles/sunman.jpeg --size 300px && figlet Hello, Skipper"
+  superkitty "zsh -is eval gotop"
+  superkitty "zsh -is eval asciiquarium"
+  superkitty "zsh -is eval tty-clock -ct"
+  superkitty "zsh -is eval pipes.sh"
   yabai -m window --focus first
   # sleep 1
   superkitty "ranger"

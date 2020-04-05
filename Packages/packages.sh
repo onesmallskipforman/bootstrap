@@ -110,8 +110,8 @@ echo "Pip Setup Complete!"
 
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-# brew install coreutils
-# sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
+brew install coreutils
+sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
 
 # setup so latexindent (part of mactex-no-gui) will work
 sudo cpan install Log::Log4perl
@@ -125,6 +125,9 @@ sudo cpan install File::HomeDir
 # wget -O "dmenu-mac.zip" https://github.com/oNaiPs/dmenu-mac/releases/download/0.5.0/dmenu-mac.zip
 # unzip -o "dmenu-mac.zip" -d "/Applications/"
 # rm -f "dmenu-mac.zip"
+
+# set up vim directories
+# mkdir -p "$XDG_DATA_HOME"/vim/{undo,swap,backup} # TODO: move this
 
 # setup yabai
 # (re)install the scripting addition, load the scripting addition

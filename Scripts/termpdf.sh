@@ -1,10 +1,9 @@
-#!/bin/zsh
+#!/bin/sh
 
 #===================================================================
 # termpdf.py Install
 #===================================================================
 
-cd "$(dirname $0)"
 git clone https://github.com/dsanson/termpdf.py
 cd termpdf.py
 pip3 install -r requirements.txt

@@ -147,7 +147,7 @@ function runDots() {
       echo "Sign In To Docker Account"
       echo "------------------------------"
       echo ""
-      "./Packages/Special/dockerlogin.sh"
+      "./Scripts/dockerlogin.sh"
     fi
     # if [[ $ARG == "mathematica" ]] || [[ $ARG == "all" ]]; then
     #   echo ""
@@ -171,7 +171,7 @@ function runDots() {
       echo "Setting Up Kitty Theme"
       echo "------------------------------"
       echo ""
-      "./Packages/Special/kittycolors.sh"
+      "./Scripts/kittycolors.sh"
     fi
     if [[ $ARG == "refind" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -179,7 +179,7 @@ function runDots() {
       echo "Setting Up rEFInd"
       echo "------------------------------"
       echo ""
-      "./Packages/Special/refind.sh" # ttab
+      "./Scripts/refind.sh" # ttab
     fi
     if [[ $ARG == "yabai" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -187,7 +187,7 @@ function runDots() {
       echo "Setting Up Yabai"
       echo "------------------------------"
       echo ""
-      "./Packages/Special/yabai.sh" # ttab
+      "./Scripts/yabai.sh" # ttab
     fi
     if [[ $ARG == "termpdf" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -195,7 +195,7 @@ function runDots() {
       echo "Installing Termpdf"
       echo "------------------------------"
       echo ""
-      "./Packages/Special/termpdf.sh" # ttab
+      "./Scripts/termpdf.sh" # ttab
     fi
   done
 

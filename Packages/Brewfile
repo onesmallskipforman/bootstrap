@@ -46,6 +46,8 @@ brew "lf"
 brew "zsh-syntax-highlighting"
 brew "zsh-autosuggestions"
 brew "autojump"
+brew "calcurse"
+brew "neovim"
 
 cask "bitwarden"
 cask "brave-browser"
