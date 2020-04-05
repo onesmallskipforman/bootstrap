@@ -1,0 +1,11 @@
+" keeps vim files in .config
+set runtimepath+=~/.config/vim,~/.config/vim/after
+set viminfo+=n~/.config/vim/viminfo
+
+" different option for ordering
+" let rtp=&runtimepath
+" set runtimepath=~/.config/vim
+" let &runtimepath.=','.rtp.',~/.config/vim/after'
+
+set number
+set backspace=indent,eol,start

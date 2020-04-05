@@ -1,0 +1,344 @@
+#===============================================================================
+# SPACE (DESKTOP) CONTROLS
+#===============================================================================
+
+ctrl - p : echo "$PATH"
+
+# # clear all empty spaces
+ctrl + alt + cmd - d : source launch.sh && clearemptydesktops
+
+# # create a new space
+ctrl - n : source launch.sh && newspace
+
+# create new space and move window to it
+alt - n : source launch.sh && newspace_window
+
+# create new space, and move focused window
+ctrl + shift - n : source launch.sh && newspace_window
+
+# focus space
+ctrl - h : source launch.sh; focus_space prev
+ctrl - l : source launch.sh; focus_space next
+ctrl - j : source launch.sh; focus_space last
+ctrl - k : source launch.sh; focus_space first
+ctrl - 1 : source launch.sh; focus_space 1
+ctrl - 2 : source launch.sh; focus_space 2
+ctrl - 3 : source launch.sh; focus_space 3
+ctrl - 4 : source launch.sh; focus_space 4
+ctrl - 5 : source launch.sh; focus_space 5
+ctrl - 6 : source launch.sh; focus_space 6
+ctrl - 7 : source launch.sh; focus_space 7
+ctrl - 8 : source launch.sh; focus_space 8
+ctrl - 9 : source launch.sh; focus_space 9
+# TODO: add option to focus recent
+
+# send window to space
+ctrl + shift - h : source launch.sh; space_window prev
+ctrl + shift - l : source launch.sh; space_window next
+ctrl + shift - j : source launch.sh; space_window last
+ctrl + shift - k : source launch.sh; space_window first
+ctrl + shift - 1 : source launch.sh; space_window 1
+ctrl + shift - 2 : source launch.sh; space_window 2
+ctrl + shift - 3 : source launch.sh; space_window 3
+ctrl + shift - 4 : source launch.sh; space_window 4
+ctrl + shift - 5 : source launch.sh; space_window 5
+ctrl + shift - 6 : source launch.sh; space_window 6
+ctrl + shift - 7 : source launch.sh; space_window 7
+ctrl + shift - 8 : source launch.sh; space_window 8
+ctrl + shift - 9 : source launch.sh; space_window 9
+
+# send window to space and focus
+# - left  : source launch.sh; focus_space_window prev
+# - right : source launch.sh; focus_space_window next
+# - h     : source launch.sh; focus_space_window prev
+# - l     : source launch.sh; focus_space_window next
+# - 1     : source launch.sh; focus_space_window 1
+# - 2     : source launch.sh; focus_space_window 2
+# - 3     : source launch.sh; focus_space_window 3
+# - 4     : source launch.sh; focus_space_window 4
+# - 5     : source launch.sh; focus_space_window 5
+# - 6     : source launch.sh; focus_space_window 6
+# - 7     : source launch.sh; focus_space_window 7
+# - 8     : source launch.sh; focus_space_window 8
+# - 9     : source launch.sh; focus_space_window 9
+
+#===============================================================================
+# WINDOW CONTROLS
+#===============================================================================
+
+# swap managed window
+# shift + alt - h : yabai -m window --swap north
+
+# move managed window
+# shift + cmd - h : yabai -m window --warp east
+
+
+# focus window cardinally directional
+# ctrl + alt - h     : yabai -m window --focus west
+# ctrl + alt - j     : yabai -m window --focus north
+# ctrl + alt - k     : yabai -m window --focus south
+# ctrl + alt - l     : yabai -m window --focus east
+# ctrl + alt - left  : yabai -m window --focus west
+# ctrl + alt - up    : yabai -m window --focus north
+# ctrl + alt - down  : yabai -m window --focus south
+# ctrl + alt - right : yabai -m window --focus east
+
+# rotate left (ccw) and right (cw) by 90 degrees
+alt - a : yabai -m space --rotate 90 # ; yabai -m space --balance
+alt - d : yabai -m space --rotate 270
+alt - s : yabai -m space --rotate 180
+
+# flip horizontally, vertically
+alt - q : yabai -m space --mirror x-axis
+alt - e : yabai -m space --mirror y-axis # this is the same as 180 rotation
+
+# toggle split
+alt - x : yabai -m window --toggle split
+
+# toggle fullscreen
+alt - f : yabai -m window --toggle zoom-fullscreen
+
+# focus display
+alt - l : source launch.sh; focus_display next
+alt - h : source launch.sh; focus_display prev
+alt - j : source launch.sh; focus_display last
+alt - k : source launch.sh; focus_display first
+alt - 1 : source launch.sh; focus_display 1
+alt - 2 : source launch.sh; focus_display 2
+alt - 3 : source launch.sh; focus_display 3
+
+# move window to display
+shift + alt - l : source launch.sh; display_window next
+shift + alt - h : source launch.sh; display_window prev
+shift + alt - j : source launch.sh; display_window last
+shift + alt - k : source launch.sh; display_window first
+shift + alt - 1 : source launch.sh; display_window 1
+shift + alt - 2 : source launch.sh; display_window 2
+shift + alt - 3 : source launch.sh; display_window 3
+
+# move window to display and focus
+# shift + alt - l : source launch.sh && focus_display_window next
+# shift + alt - h : source launch.sh && focus_display_window prev
+# shift + alt - j : source launch.sh && focus_display_window last
+# shift + alt - k : source launch.sh && focus_display_window first
+# shift + alt - 1 : source launch.sh && focus_display_window 1
+# shift + alt - 2 : source launch.sh && focus_display_window 2
+# shift + alt - 3 : source launch.sh && focus_display_window 3
+
+#===============================================================================
+# DISPLAY CONTROLS
+#===============================================================================
+
+# focus display directional
+shift + alt + cmd - left  : yabai -m display --focus prev || yabai -m display --focus last
+shift + alt + cmd - right : yabai -m display --focus next || yabai -m display --focus first
+shift + alt + cmd - h     : yabai -m display --focus prev || yabai -m display --focus last
+shift + alt + cmd - l     : yabai -m display --focus next || yabai -m display --focus first
+
+# focus display by number
+shift + alt + cmd - 1 : yabai -m display --focus 1
+shift + alt + cmd - 2 : yabai -m display --focus 2
+shift + alt + cmd - 3 : yabai -m display --focus 3
+
+# yabai -m window --toggle split && yabai -m space --balance
+
+
+
+
+# focusing display issues
+
+
+
+
+
+
+
+# create new desktop to the right and focus on it
+shift + alt - p : index="$(yabai -m query --spaces --space | jq .index)" && \
+                    nextind="$(($index+1))" && \
+                    yabai -m space --create && \
+                    newind="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')" && \
+                    yabai -m space --focus "${newind}" && \
+                    yabai -m space --move "${nextind}" && \
+                    yabai -m space --focus "${nextind}"
+
+# create new desktop to the left and focus on it
+shift + alt - o : index="$(yabai -m query --spaces --space | jq .index)" && \
+                    yabai -m space --create && \
+                    newind="$(yabai -m query --spaces --display | jq 'map(select(."native-fullscreen" == 0))[-1].index')" && \
+                    yabai -m space --focus "${newind}" && \
+                    yabai -m space --move "${index}" && \
+                    yabai -m space --focus "${index}"
+
+
+
+# open terminal
+cmd - return : source launch.sh && superkitty "zsh -i"
+
+# flex
+ctrl + alt - f : source launch.sh && showoff
+
+# time for battle
+ctrl + alt - b : source launch.sh && battlestation
+
+# theres a healthy way to do this
+
+
+
+# window management: new display and send to new display and focus
+# display management: new display and focusk
+
+
+
+# osascript tell terminal emulator to focus and cmd n
+
+
+# kitty --single-instance -d ~ -o allow_remote_control=yes --listen-on unix:/tmp/mykitty
+
+
+
+
+# move window to display
+
+
+
+
+
+
+
+# pipes-sh
+# tty-clock
+# neofetch
+# asciiquarium
+# gotop
+# glances
+
+# gtop
+# vtop
+# htop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# open terminal and move to current focused window
+
+# open terminal window and move to current focused window
+
+# open terminal in new desktop on currently focused dispslay
+
+
+# mission control:
+# open neofetch window
+# open
+
+
+
+
+
+
+
+
+
+
+
+# shift + alt - o : yabai -m space --move 2
+
+
+# warp (move but keep dimensions)
+
+# swap (switch position and with another window)
+
+
+# move window directional
+# move window to different desktop
+# move window to different desktop and focus desktop
+# move window to different display
+# move window to different desktop and focus display
+# swap desktops
+# swap displays
+# move desktop
+# move displays
+# open terminal
+# focus display with window for focused/opened app
+# create desktop and move to it
+# create move window to new desktop
+# mouse follows focus
+
+# change folder colors
+
+# rules for setup of several windows
+
+# create new desktop to the left of current desktop
+
+
+
+# full screen
+
+# minimize
+
+# maximize
+
+
+
+
+
+# # Balance out all windows both horizontally and vertically
+# #   to occupy the same space
+# yabai -m space --balance
+
+# # Flip the tree horizontally
+# yabai -m space --mirror x-axis
+
+# # Flip the tree vertically
+# yabai -m space --mirror y-axis
+
+# # Rotate the window tree clock-wise (options: 90, 180, 270 degree)
+# yabai -m space --rotate 90
+
+
+
+# learn apple window management shortcuts
+# learn vscode osx commands for moving lines and such
+
+
+# ############################################################### #
+# THE FOLLOWING SECTION CONTAIN SIMPLE MAPPINGS DEMONSTRATING HOW #
+# TO INTERACT WITH THE YABAI WM. THESE ARE SUPPOSED TO BE USED AS #
+# A REFERENCE ONLY, WHEN MAKING YOUR OWN CONFIGURATION..          #
+# ############################################################### #
+
+
+
+# balance size of windows
+# shift + alt - 0 : yabai -m space --balance
+
+# increase window size
+shift + alt - a : yabai -m window --resize left:-20:0
+shift + alt - w : yabai -m window --resize top:0:-20
+
+# decrease window size
+# shift + cmd - s : yabai -m window --resize bottom:0:-20
+# shift + cmd - w : yabai -m window --resize top:0:20
+
+
+
+
+
+
+#===============================================================================
+# OTHER
+#===============================================================================
+
+# restart yabai and skhd
+ctrl + alt + cmd - r : launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai" && skhd --reload

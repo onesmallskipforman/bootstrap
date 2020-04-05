@@ -9,7 +9,6 @@ eqmac
 firefox
 flux
 ftdi-vcp-driver
-google-chrome
 keyboardcleantool
 mactex-no-gui
 minecraft

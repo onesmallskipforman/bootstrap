@@ -14,7 +14,7 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until the script has finished.
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# check for homebrew, mas, pip3, and npm, and install if missing
+# check for homebrew, mas, and pip3, and install if missing
 which brew &>/dev/null 2>&1 || (
   echo "Installing homebrew..." &&
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -79,29 +79,6 @@ brew services start --all
 
 echo "Brew Setup Complete!"
 
-
-#===============================================================================
-# NPM
-#===============================================================================
-
-# check that npm is installed
-which npm &>/dev/null 2>&1 || (
-  echo "Installing npm..." &&
-  brew install npm
-)
-
-# Make sure we’re using the latest npm
-brew upgrade npm # npm install -g npm
-
-# upgrade existing packages
-npm update
-
-# package installations
-xargs npm -g install < npm.txt
-
-echo "Npm Setup Complete!"
-
-
 #===============================================================================
 # PIP
 #===============================================================================
@@ -120,7 +97,6 @@ pip3 list --outdated --format=freeze \
   | grep -v '^\-e' \
   | cut -d = -f 1  \
   | xargs -n1 pip3 install -U
-npm update
 
 # install packages
 xargs pip3 install < pip.txt
@@ -142,6 +118,19 @@ sudo cpan install Log::Log4perl
 sudo cpan install Log::Dispatch::File
 sudo cpan install YAML::Tiny
 sudo cpan install File::HomeDir
+
+# install dmenu-mac
+## TODO: disable spotlight
+# rm -f "dmenu-mac.zip"
+# wget -O "dmenu-mac.zip" https://github.com/oNaiPs/dmenu-mac/releases/download/0.5.0/dmenu-mac.zip
+# unzip -o "dmenu-mac.zip" -d "/Applications/"
+# rm -f "dmenu-mac.zip"
+
+# setup yabai
+# (re)install the scripting addition, load the scripting addition
+sudo yabai --uninstall-sa
+sudo yabai --install-sa
+killall Dock
 
 # open dropbox to sign in and sync backups
 open "/Applications/Dropbox.app"

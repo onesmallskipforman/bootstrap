@@ -1,0 +1,5 @@
+#!/bin/sh
+
+VERSION="R2019b"
+rm -rf "/Applications/MATLAB_${VERSION}.app"
+rm -rf ~/"Library/Application Support/MathWorks"

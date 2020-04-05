@@ -4,8 +4,6 @@
 # Dock and Dashboard Config (Requires brew dockutil)
 #===================================================================
 
-cd "$(dirname $0)"
-
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
 

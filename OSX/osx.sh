@@ -64,6 +64,9 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 #sudo rm -rf /System/Library/CoreServices/DefaultDesktop.jpg
 #sudo ln -s /path/to/your/image /System/Library/CoreServices/DefaultDesktop.jpg
 
+# When switching to an application, switch to a space with open windows for the application
+defaults write com.apple.dock workspaces-auto-swoosh -boolean YES
+
 #===============================================================================
 # Finder
 #===============================================================================
