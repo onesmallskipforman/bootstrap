@@ -8,6 +8,8 @@
 # [ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
 alias icat="kitty +kitten icat"
 
+# export PATH="$PATH:$(du "$HOME/.local/bin/" | cut -f2 | tr '\n' ':' | sed 's/:*$//')"
+
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.cache"
 
@@ -25,6 +27,7 @@ export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
 LESSHISTFILE="$XDG_DATA_HOME/less/lesshst"
+
 
 # prompt management
 # eval "$(starship init zsh)"

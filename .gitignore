@@ -3,3 +3,6 @@
 .DS_Store
 .vscode
 todo.txt
+.config/kitty/themes
+.config/kitty/theme.conf
+.config/termpdf.py/cache

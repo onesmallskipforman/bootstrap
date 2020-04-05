@@ -1,0 +1,4 @@
+{
+  "TINT_COLOR": "antiquewhite2",
+  "KITTYCMD": "kitty --single-instance --instance-group=1"
+}

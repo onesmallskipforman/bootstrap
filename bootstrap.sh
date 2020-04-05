@@ -13,11 +13,18 @@ function doIt() {
   # remove old files
   rm -rf "$HOME/.config"
   rm -rf "$HOME/.local"
+  rm -rf "$HOME/.zshrc"
+  rm -rf "$HOME/.zshenv"
 
   # symlink (or copy) .config, .local and .zshrc
   ln -sf "$PWD/.config" "$HOME"
   ln -sf "$PWD/.local"  "$HOME"
   ln -sf "$PWD/.zshrc"  "$HOME"
+  ln -sf "$PWD/.zshenv" "$HOME"
+
+  # cp -r "$PWD/.config" "$HOME"
+  # cp -r "$PWD/.local"  "$HOME"
+  # cp -r "$PWD/.zshrc"  "$HOME"
 
   # move application support
 

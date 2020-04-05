@@ -2,10 +2,9 @@
 # SPACE (DESKTOP) CONTROLS
 #===============================================================================
 
-ctrl - p : echo "$PATH"
-
-# # clear all empty spaces
+# clear all empty spaces
 ctrl + alt + cmd - d : source launch.sh && clearemptydesktops
+# source ~/.local/bin/launch.sh && clearemptydesktops
 
 # # create a new space
 ctrl - n : source launch.sh && newspace
