@@ -8,7 +8,15 @@ cd "$(dirname $0)";
 
 function doIt() {
 
-  # download dotfiles from github
+  # # download files from github
+  # REPO="https://github.com/onesmallskipforman/Backup.git"
+  # BACKUP="$XDG_DATA_HOME"
+  # mkdir -p "$BACKUP"
+
+  # git -C "$BACKUP" init
+  # git -C "$BACKUP" remote add origin "$REPO"
+  # git -C "$BACKUP" pull origin master
+  # git -C "$BACKUP" clean -fdX
 
   # remove old files
   rm -rf "$HOME/.config"
