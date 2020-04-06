@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+DIR=$(dirname $0)
+
 function bootstrap() {
   mkdir -p "$1"
   git -C "$1" init
@@ -10,20 +12,22 @@ function bootstrap() {
 
 function doIt() {
 
+  echo $DIR
+
   # boostrap scripts
-  boostrap $PWD "https://github.com/onesmallskipforman/bootstrap.git"
+  bootstrap $DIR "https://github.com/onesmallskipforman/bootstrap.git"
 
   # public dotfiles
-  PUBLIC="$PWD/Filesystem"
-  boostrap "$PUBLIC" "https://github.com/onesmallskipforman/dotfiles.git"
+  PUBLIC="$DIR/Filesystem"
+  bootstrap "$PUBLIC" "https://github.com/onesmallskipforman/dotfiles.git"
 
   # private dotfiles
   PRIVATE="$PUBLIC/.local/share"
-  boostrap "$PRIVATE" "https://github.com/onesmallskipforman/userdata.git"
+  bootstrap "$PRIVATE" "https://github.com/onesmallskipforman/userdata.git"
 
   # remove old files, then symlink (or copy)
   rm -rf "$HOME"/{.config,.local,.zshenv}
-  ln -sf "$PWD/Filesystem"/* "$HOME"
+  ln -sf "$DIR/Filesystem"/{.config,.local,.zshenv} "$HOME"
   # cp -r "$PWD/.config"/* "$HOME"
 
 }
