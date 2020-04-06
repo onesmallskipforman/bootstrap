@@ -1,6 +1,6 @@
 # Skipper's Boostrapping Scripts
 
-A Set of Scripts for Configurin OSX
+A Set of Scripts for Configuring OSX
 
 ## Config Files
 
