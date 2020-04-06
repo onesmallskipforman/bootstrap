@@ -5,7 +5,7 @@
 #===================================================================
 
 # Folders
-XDG="$XDG_CONFIG_HOME/slack"
+XDG="$XDG_DATA_HOME/slack"
 OSX="$HOME/Library/Application Support/Slack"
 
 # prep directories

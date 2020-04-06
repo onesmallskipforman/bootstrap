@@ -5,7 +5,7 @@
 #===================================================================
 
 # Folders
-XDG="$XDG_CONFIG_HOME/spotify"
+XDG="$XDG_DATA_HOME/spotify"
 OSX="$HOME/Library/Application Support/Spotify"
 
 # prep directories
