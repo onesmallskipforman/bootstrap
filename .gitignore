@@ -15,7 +15,7 @@
 .config/termpdf.py/cache
 
 # private data files
-.local/share/pass
+.local/share
 
 # private dev files
 *Private/
