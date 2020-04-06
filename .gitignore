@@ -2,30 +2,11 @@
 .DS_Store
 .vscode
 
-# private config files
-.config/gnupg
-.config/kitty/themes
-.config/kitty/theme.conf
-.config/minecraft/launcher_profiles.json
-.config/platformio
-.config/slack
-.config/spotify
-.config/spotify-tui
-.config/spotifyd
+# extraneous nonconfig files
 .config/termpdf.py/cache
 
 # private data files
-.local/share/
+.local/share
 
 # private dev files
-*Private/
 todo.txt
-
-# .config/minecraft/saves
-# .config/sublie-text-3/Packages/User/*
-# !.config/sublie-text-3/Packages/User/*.sublime-settings
-# !.config/sublie-text-3/Packages/User/*.sublime-keymap
-# !.config/sublie-text-3/Packages/User/*.tmTheme
-# !.config/sublie-text-3/Packages/User/Builds
-# !.config/sublie-text-3/Packages/User/Snippets
-# !.config/sublie-text-3/Packages/User/Snippets

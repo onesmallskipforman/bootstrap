@@ -4,8 +4,6 @@
 # General UI/UX
 #===============================================================================
 
-cd "$(dirname $0)"
-
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
 
@@ -53,7 +51,7 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 # Set a custom wallpaper image
-WALLPAPER="Wallpapers/beams.jpeg"
+WALLPAPER="$XDG_DATA_HOME/wallpapers/beams.jpeg"
 osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
 osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
 

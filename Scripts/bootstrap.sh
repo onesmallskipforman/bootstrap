@@ -1,10 +1,8 @@
 #!/bin/zsh
 
-# TODO: find way to login to github without osxkeychain
-
-# # to go project dir and update
-cd "$(dirname $0)";
 # git pull origin master;
+
+# git clean -dfX
 
 function doIt() {
 
