@@ -2,11 +2,8 @@
 .DS_Store
 .vscode
 
-# extraneous nonconfig files
-.config/termpdf.py/cache
-
-# private data files
-.local/share
+# filesystem repo
+Filesystem
 
 # private dev files
 todo.txt

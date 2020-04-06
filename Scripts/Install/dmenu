@@ -1,0 +1,14 @@
+#!/bin/sh
+
+killall dmenu-mac
+rm -rf "/Applications/dmenu-mac.app"
+
+curl -s https://api.github.com/repos/oNaiPs/dmenu-mac/releases/latest \
+  | grep browser_download_url \
+  | cut -d ":" -f 2,3 \
+  | tr -d \" \
+  | wget -qi - --hsts-file="$XDG_CACHE_HOME/wget-hsts"
+
+unzip  "dmenu-mac.zip" -d "/Applications"
+rm -rf "dmenu-mac.zip"
+open "/Applications/dmenu-mac.app"

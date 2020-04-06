@@ -1,0 +1,24 @@
+#!/bin/sh
+
+#===============================================================================
+# KITTY THEMES INSTALL
+#===============================================================================
+
+# build themes directory
+DATA="$XDG_DATA_HOME/kitty"
+CONFIG="$XDG_CONFIG_HOME/kitty"
+rm -rf "$DATA/themes"
+mkdir -p "$DATA/themes"
+
+git clone https://github.com/dexpota/kitty-themes "$DATA/kitty-themes"
+git clone https://github.com/kdrag0n/base16-kitty "$DATA/base16-kitty"
+cp "$DATA/kitty-themes/themes"/* "$DATA/base16-kitty/colors"/* "$DATA/themes/"
+
+rm -rf "$DATA/kitty-themes" "$DATA/base16-kitty"
+
+# set theme (copy or link)
+rm -rf "$CONFIG/theme.conf"
+cp "$DATA/themes/Monokai_Pro_(Filter_Octagon).conf" "$CONFIG/theme.conf"
+
+# for testing themes
+# kitty @ set-colors -a "$DATA/themes/<theme>.conf"

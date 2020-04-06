@@ -1,8 +1,0 @@
-{
-	"extensions":
-	[
-    "sublime-settings",
-    "sublime-keymap",
-    "sublime-build"
-	]
-}
