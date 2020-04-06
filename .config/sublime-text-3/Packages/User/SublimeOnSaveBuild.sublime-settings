@@ -1,0 +1,4 @@
+{
+  "filename_filter": "\\.(tex)$",
+  "build_on_save": 0
+}

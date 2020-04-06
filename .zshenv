@@ -28,6 +28,7 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME"/pass          # pass
 export PLATFORMIO_CORE_DIR="$XDG_CONFIG_HOME/platformio" # platformio
 export PYLINTHOME="$XDG_CACHE_HOME/pylint"               # pylint
 export VIMINIT="source $XDG_CONFIG_HOME/vim/vimrc"       # vim
+export WGETRC="$XDG_CONFIG_HOME/wgetrc"                  # wget
 export ZDOTDIR="$HOME/.config/zsh"                       # zsh
 
 # other

@@ -24,6 +24,7 @@ echo $1
 # aliases
 # [ -f "$HOME/.config/aliasrc" ] && source "$HOME/.config/aliasrc"
 alias icat="kitty +kitten icat"
+alias wget="wget --hsts-file="$XDG_CACHE_HOME/wget-hsts""
 
 #===============================================================================
 # PROMPT

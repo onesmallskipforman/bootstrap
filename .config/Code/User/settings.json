@@ -1,0 +1,342 @@
+{
+  //==========================================================================
+  // Text Editor
+  //==========================================================================
+
+  // General
+  "editor.autoIndent": "full",
+  "editor.detectIndentation": false,
+  "editor.dragAndDrop": false,
+  "editor.emptySelectionClipboard": true,
+  "editor.foldingStrategy": "auto",
+  "editor.highlightActiveIndentGuide": true,
+  "editor.insertSpaces": true,
+  "editor.renderIndentGuides": true,
+  "editor.renderLineHighlight": "gutter",
+  "editor.renderWhitespace": "selection",
+  "editor.rulers": [80],
+  "editor.scrollBeyondLastLine": true,
+  "editor.tabCompletion": "off",
+  "editor.tabSize": 2,
+  "editor.useTabStops": true,
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+  "editor.wordWrap": "off",
+  "editor.wordWrapColumn": 80,
+  "editor.wrappingIndent": "same",
+  "editor.lineHeight": 0, // 15
+
+  // Cursor
+  "editor.cursorBlinking": "blink",
+  "editor.cursorStyle": "line",
+
+  // Find
+  "editor.find.autoFindInSelection": "multiline",
+  "editor.find.seedSearchStringFromSelection": true,
+
+  // Font
+  "editor.fontFamily": "Menlo",
+  "editor.fontSize": 12,
+
+  // Diff Editor
+  "diffEditor.renderSideBySide": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+
+  // Suggestions
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.quickSuggestions": {
+    "comments": true,
+    "other"   : true,
+    "strings" : true
+  },
+  "editor.quickSuggestionsDelay": 10,
+  "editor.snippetSuggestions": "top",
+  "editor.suggest.snippetsPreventQuickSuggestions": true,
+  "editor.suggest.shareSuggestSelections": false,
+  "editor.suggest.localityBonus": false,
+  "editor.suggestSelection": "first",
+
+  // Files
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    "*.sublime-settings": "jsonc",
+    "*.sublime-keymap": "jsonc",
+    "*.sublime-build": "jsonc",
+    "*.m": "matlab",
+    "*.wl": "wolfram",
+    "*.wls": "wolfram",
+    "Brewfile": "ruby",
+    "*.s": "arm",
+    "*.md": "markdown",
+    "*.txt": "plaintext",
+    ".gitignore": "gitignore",
+    ".*": "shellscript"
+  },
+  "files.hotExit": "off",
+
+  // Formatting
+  "editor.formatOnSave": false,
+
+  //==========================================================================
+  // Workbench
+  //==========================================================================
+
+  // General
+  "workbench.startupEditor": "newUntitledFile",
+
+  // Appearance
+  "workbench.colorCustomizations" : {
+    // "terminal.foreground" : "#00FD61",
+    // "terminal.background" : "#383737"
+  },
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+  "workbench.statusBar.visible": true,
+  "workbench.activityBar.visible": true,
+
+  // Breadcrumbs
+  "breadcrumbs.enabled": true,
+
+  // Editor management
+  "workbench.editor.closeEmptyGroups": false,
+  "workbench.editor.enablePreview": true,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+
+  //==========================================================================
+  // Window
+  //==========================================================================
+
+  // General
+  "window.closeWhenEmpty": false,
+  "window.openFilesInNewWindow": "off",
+  "window.restoreWindows": "none",
+  "window.title": "${activeEditorShort}${separator}${rootName}",
+  "window.titleBarStyle": "native",
+  "window.zoomLevel": 0,
+
+  //==========================================================================
+  // Feautres
+  //==========================================================================
+
+  // Explorer
+  "explorer.confirmDelete": true,
+  "explorer.compactFolders": false,
+
+  // Terminal
+  "terminal.external.osxExec": "/Applications/Utilities/Terminal.app",
+  "terminal.integrated.fontFamily": "Menlo",
+  "terminal.integrated.fontWeightBold": "bold",
+  "terminal.integrated.shell.osx": "/bin/zsh",
+  "terminal.integrated.fontSize": 12,
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.fontWeight": "normal",
+  "terminal.integrated.letterSpacing": 0,
+  "terminal.integrated.lineHeight": 1,
+
+  //==========================================================================
+  // Application
+  //==========================================================================
+
+  // Telemetry
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+
+  //==========================================================================
+  // Syntax-Specific Editor Config Override
+  //==========================================================================
+
+  // LaTeX
+  "[latex]": {"editor.wordWrap": "wordWrapColumn", "editor.wordWrapColumn": 80},
+
+  // Markdown
+  "[markdown]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 80,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // YAML
+  "[yaml]":  {"editor.autoIndent": "advanced"},
+
+  // Plaintext
+  "[plaintext]": {"editor.wordWrap": "wordWrapColumn", "editor.wordWrapColumn": 80},
+
+  //==========================================================================
+  // Extensions
+  //==========================================================================
+
+  // All Autocomplete
+  "AllAutocomplete.cycleOpenDocumentsOnLaunch": false,
+
+  // C/C++
+  "C_Cpp.clang_format_path": "/usr/local/bin/clang-format", // /usr/local/opt/llvm/bin/clang-format
+  "C_Cpp.default.compilerPath": "/usr/bin/clang", // /usr/local/opt/llvm/bin/clang // /usr/bin/gcc
+  "C_Cpp.default.macFrameworkPath": ["/System/Library/Frameworks", "/Library/Frameworks"],
+  "C_Cpp.default.cStandard": "c11",
+  "C_Cpp.default.cppStandard": "c++17",
+  "C_Cpp.default.intelliSenseMode": "clang-x64", // gcc-x64
+
+  // Code Spell Check
+  "cSpell.enableFiletypes": [
+    "asciidoc",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "git-commit",
+    "go",
+    "handlebars",
+    "haskell",
+    "html",
+    "jade",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "latex",
+    "less",
+    "markdown",
+    "matlab",
+    "php",
+    "plaintext",
+    "pug",
+    "python",
+    "restructuredtext",
+    "rust",
+    "scala",
+    "scss",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "wolfram",
+    "yaml",
+    "yml"
+  ],
+  "cSpell.allowCompoundWords": true,
+
+  // Code Runner
+  "code-runner.executorMap": {
+    // keep matlab interpreter open
+    "matlab": "$fileNameWithoutExt, return, 1, 2>'/dev/null'; cd $dir && matlab -nodesktop -nosplash -r $fileNameWithoutExt && exit",
+    // just run with no interpreter
+    // "matlab": "cd $dir && matlab -batch $fileNameWithoutExt",
+    "wolfram": "cd $dir && wolframscript -script $fileName",
+  },
+  "code-runner.runInTerminal": true,
+  "code-runner.enableAppInsights": false,
+
+  // Customize UI
+  "customizeUI.titleBar": "frameless",
+  "customizeUI.activityBar": "regular",
+
+  // Indent to bracket
+  "indent-to-bracket.useDefaultIndentationAfterEmptyBracket": true,
+
+  // LaTeX Utilities
+  "latex-utilities.liveReformat.enabled": true,
+  "latex-utilities.formattedPaste.useAsDefault": false,
+  "latex-utilities.formattedPaste.image.template": "\\includegraphics{${imageFilePath}}",
+  "latex-utilities.tikzpreview.enabled": false,
+
+  // LaTeX Workshop
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoBuild.run": "never",
+  "latex-workshop.chktex.enabled": false,
+  "latex-workshop.chktex.path": "chktex", // /Library/TeX/texbin/chktex
+  "latex-workshop.chktex.run": "onSave",
+  "latex-workshop.intellisense.package.enabled": true,
+  "latex-workshop.latex.outDir": "%DIR%", // "%DOC%",
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.view.pdf.invert": 0.75, // 0
+  "latex-workshop.latexindent.path": "latexindent", //Library/TeX/texbin/latexindent
+
+  // Markdown
+  "markdown.preview.scrollEditorWithPreview": true,
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.markEditorSelection": true,
+  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "markdown.preview.lineHeight": 1.6,
+  "markdown.preview.fontSize": 14,
+  "markdown.preview.fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif",
+
+  // Markdown All In One
+  "markdown.extension.toc.updateOnSave": true,
+
+  // Markdown Preview VS Code Highlighting
+  "markdownShiki.theme": null,
+
+  // Material Icons
+  "material-icon-theme.files.associations": {"*.m": "matlab"},
+
+  // Matlab
+  "matlab.lintOnSave": true,
+  "matlab.mlintpath": "/Applications/MATLAB_R2019b.app/bin/maci64/mlint",
+
+  // matlab-formatter
+  "matlab-formatter.indentwidth": 2,
+
+  // Path AutocompleteUSer/
+  "path-autocomplete.pathMappings": {"/": "/"},
+  "path-autocomplete.triggerOutsideStrings": false,
+  "path-autocomplete.enableFolderTrailingSlash": true,
+
+  // PlatformIO
+  "platformio-ide.disablePIOHomeStartup": true,
+
+  // Python
+  "python.autoComplete.addBrackets": false,
+  "python.formatting.autopep8Path": "autopep8",
+  "python.jediEnabled": false,
+  "python.jediPath": "/usr/local/lib/python3.7/site-packages",
+  "python.linting.enabled": false,
+  "python.linting.lintOnSave": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.pylintPath": "pylint",
+  "python.linting.flake8Enabled": false,
+  "python.linting.flake8Path": "flake8",
+  "python.linting.pycodestyleEnabled": false,
+  "python.linting.pycodestylePath": "pycodestyle",
+  "python.pythonPath": "/usr/local/bin/python3",
+
+  // SystemVerilog
+  "systemverilog.antlrVerification": true,
+  "systemverilog.verifyOnOpen": true,
+  "systemverilog.compilerType": "Verilator",
+  "systemverilog.launchConfiguration": "verilator --sv --lint-only --language 1800-2012 --Wall", // /usr/local/bin/verilator --sv --lint-only --language 1800-2012 --Wall
+  "systemverilog.compileOnSave": false,
+
+  // Visual Studio Intellicode
+  "vsintellicode.modify.editor.suggestSelection": "enabled",
+
+  // Todo Tree
+  // "todo-tree.highlights.customHighlight": {
+  //   "FIXME": {
+  //     "background": "red",
+  //     "fontStyle" : "italic",
+  //     "foreground": "white",
+  //     "iconColour": "green",
+  //     "type"      : "tag"
+  //   },
+  //   "TODO": {
+  //     "background": "grey",
+  //     "fontStyle" : "italic",
+  //     "foreground": "black",
+  //     "iconColour": "green",
+  //     "type"      : "tag"
+  //   }
+  // },
+  "todo-tree.general.tags": ["BUG", "FIXME", "TODO"],
+  "todo-tree.highlights.enabled": true,
+  "todo-tree.tree.autoRefresh": true,
+  "todo-tree.regex.regex": "((\\(\\*|%|//|#|<!--|;|/\\*|\\s)\\s*($TAGS)|^\\s*- \\[ \\])",
+  // alternate regex that prevents comment-less scopes from triggering TODOs
+  // unfortunately it also keeps multi-line comments from working
+  // "todo-tree.regex.regex": "((\\(\\*|%|//|#|<!--|;|/\\*)\\s*($TAGS)|^\\s*- \\[ \\])",
+  "todo-tree.tree.showScanModeButton": true,
+
+  // Wolfram Language
+  "wolfram.installationDirectory": "/Appplications/Mathematica.app"
+}

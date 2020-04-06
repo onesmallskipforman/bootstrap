@@ -1,6 +1,7 @@
 #!/bin/zsh
 
-user=$(sed '1q;d' ~/"Dropbox/Backup/Docker/login.txt")
-pass=$(sed '2q;d' ~/"Dropbox/Backup/Docker/login.txt")
+login=$(pass docker)
+user=$(echo $login | sed '1q;d')
+pass=$(echo $login | sed '2q;d')
 
 echo "$pass" | docker login -u $user --password-stdin

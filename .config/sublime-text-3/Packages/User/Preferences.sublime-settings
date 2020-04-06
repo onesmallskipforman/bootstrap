@@ -1,0 +1,97 @@
+{
+	"afn_blacklist_scopes":
+	[
+		"python",
+		"c++",
+		"markdown",
+		"latex"
+	],
+	"afn_valid_scopes":
+	[
+		"string"
+	],
+	"auto_complete_commit_on_tab": true,
+	"auto_complete_cycle": true,
+	"auto_complete_delay": 0,
+	"auto_complete_selector": "source, string, comment, text",
+	"auto_complete_triggers":
+	[
+		{
+			"characters": ".",
+			"selector": "source - string - comment - constant.numeric"
+		},
+		{
+			"characters": "<",
+			"selector": "source.c++"
+		},
+		{
+			"characters": "\\",
+			"selector": "text.tex.latex"
+		},
+		{
+			"characters": "/",
+			"selector": "string.quoted.double,string.quoted.single"
+		}
+	],
+	"auto_complete_with_fields": false,
+	"auto_find_in_selection": false,
+	"auto_indent": true,
+	"block_caret": false,
+	"caret_style": "blink",
+	"close_windows_when_empty": false,
+	"color_scheme": "Packages/Theme - Monokai Pro/Monokai Pro.sublime-color-scheme",
+	"copy_with_empty_selection": true,
+	"detect_indentation": false,
+	"drag_text": false,
+	"draw_indent_guides": true,
+	"draw_white_space": "selection",
+	"find_selected_text": true,
+	"font_face": "Menlo",
+	"font_size": 12,
+	"highlight_line": false,
+	"hot_exit": false,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"indent_guide_options":
+	[
+		"draw_active",
+		"draw_normal"
+	],
+	"indent_subsequent_lines": true,
+	"index_files": true,
+	"line_padding_bottom": 0,
+	"line_padding_top": 0,
+	"match_brackets": false,
+	"match_brackets_angle": false,
+	"match_brackets_braces": false,
+	"match_brackets_content": false,
+	"match_brackets_square": false,
+	"match_tags": false,
+	"mouse_wheel_switches_tabs": false,
+	"move_to_limit_on_up_down": false,
+	"open_files_in_new_window": false,
+	"preview_on_click": true,
+	"rulers":
+	[
+		80
+	],
+	"scroll_past_end": true,
+	"shift_tab_unindent": true,
+	"show_definitions": true,
+	"show_full_path": false,
+	"smart_indent": true,
+	"spell_check": true,
+	"spelling_selector": "markup.raw, source string.quoted - punctuation - meta.preprocessor.include, source comment - source comment.block.preprocessor, -(source, constant, keyword, storage, support, variable, markup.underline.link, meta.tag)",
+	"tab_completion": false,
+	"tab_size": 2,
+	"theme": "Adaptive.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"tree_animation_enabled": false,
+	"trim_trailing_white_space_on_save": true,
+	"use_tab_stops": true,
+	"word_separators": "./\\()\"'-:,.;<>~!@#$%^&*|+=[]{}`~?",
+	"word_wrap": false,
+	"wrap_width": 80
+}

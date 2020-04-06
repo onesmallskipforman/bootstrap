@@ -1,9 +1,31 @@
 # Don't track content of these folders
-*Private/
 .DS_Store
 .vscode
-todo.txt
+
+# private config files
+.config/gnupg
 .config/kitty/themes
 .config/kitty/theme.conf
-.config/termpdf.py/cache
+.config/minecraft/launcher_profiles.json
 .config/platformio
+.config/slack
+.config/spotify
+.config/spotify-tui
+.config/spotifyd
+.config/termpdf.py/cache
+
+# private data files
+.local/share/pass
+
+# private dev files
+*Private/
+todo.txt
+
+# .config/minecraft/saves
+# .config/sublie-text-3/Packages/User/*
+# !.config/sublie-text-3/Packages/User/*.sublime-settings
+# !.config/sublie-text-3/Packages/User/*.sublime-keymap
+# !.config/sublie-text-3/Packages/User/*.tmTheme
+# !.config/sublie-text-3/Packages/User/Builds
+# !.config/sublie-text-3/Packages/User/Snippets
+# !.config/sublie-text-3/Packages/User/Snippets

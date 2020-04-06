@@ -4225,3 +4225,25 @@ clear
 ls -a | wc -l
 brave
 kitty
+cd Desktop
+clear
+cd Desktop
+cd ..
+cd Projects/Dotfiles
+clear
+./dots.sh all
+brew search neovim
+brew search mutt
+clear
+ls
+ls
+clear
+brew search ubar
+brew install ubar
+brew cask install ubar
+cd /usr/local/etc/openvpn/ovpn_udp
+clear
+ls
+clear
+curl --silent 'https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations' | jq --raw-output '.[].hostname'
+curl --silent 'https://nordvpn.com/wp-admin/admin-ajax.php?action=servers_recommendations' | jq --raw-output '.[].hostname'

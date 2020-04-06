@@ -58,7 +58,6 @@ defaults write com.apple.dock mineffect -string "scale"
 
 # set dock apps
 dockutil --no-restart --remove all
-dockutil --no-restart --add "/System/Applications/Launchpad.app"
 dockutil --no-restart --add "/System/Applications/System Preferences.app"
 dockutil --no-restart --add "/Applications/TickTick.app"
 dockutil --no-restart --add "/System/Applications/Notes.app"

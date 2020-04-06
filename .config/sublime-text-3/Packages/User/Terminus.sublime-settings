@@ -1,0 +1,16 @@
+{
+  "theme": "user",
+  "default_config": {
+    "osx": "/bin/zsh"
+  },
+  "view_settings": {
+    "font_face": "Menlo",
+    "font_size": 12,
+    "block_caret": true,
+    "caret_style": "blink",
+    "line_padding_top": 0,
+    "line_padding_bottom": 0,
+    "caret_extra_top": 2,
+    "caret_extra_bottom": 2
+  }
+}
