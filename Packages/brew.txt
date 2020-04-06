@@ -6,7 +6,8 @@ gcc
 geckodriver
 ghostscript
 gnu-getopt
-gnupg
+gpg
+pass
 imagemagick
 jq
 llvm
