@@ -47,8 +47,7 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 sudo tmutil disablelocal
 
 # fix wget history
-mkdir -p "$XDG_CACHE_HOME/wget-hsts"
-rm -rf "$HOME/.wget-hsts"
+# rm -rf "$HOME/.wget-hsts"
 
 # fix zsh_history
 rm -rf "$HOME/.zsh_history"

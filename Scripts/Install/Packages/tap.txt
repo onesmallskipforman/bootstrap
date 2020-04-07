@@ -1,5 +1,0 @@
-homebrew/cask
-homebrew/cask-drivers
-koekeishiya/formulae
-elsorino/homebrew-elso
-zero-sh/tap

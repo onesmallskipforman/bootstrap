@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-DOTSDIR=$(dirname $0)
+DIR=$(dirname $0)
 
 function runDots() {
   # Ask for the administrator password upfront
@@ -18,7 +18,7 @@ function runDots() {
       echo "Syncing the dotfiles repo to home "
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/bootstrap.sh" -f && source ~/.zshenv && source ~/.config/zsh/.zshrc
+      $DIR/bootstrap.sh -f && source ~/.zshenv && source ~/.config/zsh/.zshrc
     fi
     if [[ $ARG == "osxprep" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -26,16 +26,16 @@ function runDots() {
       echo "Updating OSX and installing Xcode command line tools"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/osxprep.sh"
+      $DIR/Scripts/osxprep.sh
     fi
     if [[ $ARG == "packages" ]] || [[ $ARG == "all" ]]; then
       echo ""
       echo "------------------------------"
-      echo "Installing Packages (Homebrew, Cask, Mas, Npm, Pip, etc."
+      echo "Installing Packages (Homebrew, Cask, Mas, Pip, etc)."
       echo "This might take a while to complete."
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/Packages/packages.sh"
+      $DIR/Scripts/Install/packages.sh
     fi
 
     # if [[ $ARG == "mathematica" ]] || [[ $ARG == "all" ]]; then
@@ -44,7 +44,7 @@ function runDots() {
     #   echo "Installing Mathematica"
     #   echo "------------------------------"
     #   echo ""
-    #   "./Math/Mathematica/mathematica.sh"
+    #   "Math/Mathematica/mathematica.sh"
     # fi
     # if [[ $ARG == "matlab" ]] || [[ $ARG == "all" ]]; then
     #   echo ""
@@ -52,15 +52,15 @@ function runDots() {
     #   echo "Installing Matlab"
     #   echo "------------------------------"
     #   echo ""
-    #   "./Math/Matlab/matlab.sh" # ttab
+    #   "Math/Matlab/matlab.sh" # ttab
     # fi
     if [[ $ARG == "dmenu" ]] || [[ $ARG == "all" ]]; then
       echo ""
       echo "------------------------------"
-      echo "Setting Up Kitty Theme"
+      echo "Install dmenu-mac"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/dmenu"
+      $DIR/Scripts/Install/dmenu
     fi
     if [[ $ARG == "kitty" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -68,7 +68,7 @@ function runDots() {
       echo "Setting Up Kitty Theme"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/kitty_themes"
+      $DIR/Scripts/Install/kitty_themes
     fi
     if [[ $ARG == "refind" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -76,7 +76,7 @@ function runDots() {
       echo "Setting Up rEFInd"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/refind"
+      $DIR/Scripts/Install/refind
     fi
     if [[ $ARG == "termpdf" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -84,7 +84,7 @@ function runDots() {
       echo "Installing Termpdf"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/termpdf"
+      $DIR/Scripts/Install/termpdf
     fi
     if [[ $ARG == "yabai" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -92,7 +92,7 @@ function runDots() {
       echo "Setting Up Yabai"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Install/yabai_sa"
+      $DIR/Scripts/Install/yabai_sa
     fi
     if [[ $ARG == "dock" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -100,7 +100,7 @@ function runDots() {
       echo "Configuring Dock"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Config/dock"
+      $DIR/Scripts/Config/dock
     fi
     if [[ $ARG == "docker" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -108,7 +108,7 @@ function runDots() {
       echo "Sign In To Docker Account"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Config/dockerlogin"
+      $DIR/Scripts/Config/dockerlogin
     fi
     if [[ $ARG == "osx" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -116,7 +116,7 @@ function runDots() {
       echo "Configuring OSX UI"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/Config/osx"
+      $DIR/Scripts/Config/osx
     fi
     if [[ $ARG == "minecraft" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -124,7 +124,7 @@ function runDots() {
       echo "Setting Up Minecraft"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/XDG/minecraft"
+      $DIR/Scripts/XDG/minecraft
     fi
     if [[ $ARG == "slack" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -132,7 +132,7 @@ function runDots() {
       echo "Setting Up Slack"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/XDG/slack"
+      $DIR/Scripts/XDG/slack
     fi
     if [[ $ARG == "spotify" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -140,7 +140,7 @@ function runDots() {
       echo "Setting Up Spotify"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/XDG/spotify"
+      $DIR/Scripts/XDG/spotify
     fi
     if [[ $ARG == "sublime" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -148,7 +148,7 @@ function runDots() {
       echo "Setting Up Sublime"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/XDG/sublime"
+      $DIR/Scripts/XDG/sublime
     fi
     if [[ $ARG == "vscode" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -156,7 +156,7 @@ function runDots() {
       echo "Configuring VS Code"
       echo "------------------------------"
       echo ""
-      source "$DOTSDIR/Scripts/XDG/vscode"
+      $DIR/Scripts/XDG/vscode
     fi
 
   done
@@ -166,9 +166,9 @@ function runDots() {
   echo "------------------------------"
 }
 
-# read -p "This may overwrite existing files in your home DOTSDIRectory. Are you sure? (y/n) " -n 1;
+# read -p "This may overwrite existing files in your home DIRectory. Are you sure? (y/n) " -n 1;
 # echo "";
-printf '%s ' "This may overwrite existing files in your home DOTSDIRectory. Are you sure? (y/n)";
+printf '%s ' "This may overwrite existing files in your home DIRectory. Are you sure? (y/n)";
 read REPLY;
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
