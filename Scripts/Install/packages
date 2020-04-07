@@ -10,7 +10,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # HOMEBREW
 #===============================================================================
 
-# check for homebrew and mas, and install if missing
+# check for homebrew  mas, and install if missing
 which brew &>/dev/null 2>&1 || (
   echo "Installing homebrew..." &&
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -29,9 +29,11 @@ echo "Brew Setup Complete."
 
 # quarantine homebrew gui apps
 echo "Removing Apple Quarantine..."
+HOMEBREW_NO_AUTO_UPDATE=1
 brew cask list | xargs brew cask info | grep '(App)' \
   | sed 's/^/"\/Applications\//;s/\.app.*/.app"/' \
   | xargs sudo xattr -r -d com.apple.quarantine  &>/dev/null
+HOMEBREW_NO_AUTO_UPDATE=0
 
 #===============================================================================
 # PIP
@@ -43,11 +45,8 @@ which pip3 &>/dev/null || (
   brew install python # pip3 install -U pip
 )
 
-# upgrade existing packages
-pip3 list --outdated --format=freeze \
-  | grep -v '^\-e' \
-  | cut -d = -f 1  \
-  | xargs -n1 pip3 install -U
+# install and upgrade existing packages
+pip3 install -r "$PACKAGES_FOLDER/requirements.txt" -U
 
 # install packages
 xargs pip3 install < "$PACKAGES_FOLDER/pip.txt"

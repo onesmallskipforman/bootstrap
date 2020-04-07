@@ -149,5 +149,5 @@ for app in "Activity Monitor" \
 	killall "${app}" &> /dev/null
 done
 
-echo "OSX Config Done."
+echo "OSX Config Complete."
 echo "Some of these changes require a logout/restart to take effect."
