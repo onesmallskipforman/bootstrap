@@ -5,3 +5,4 @@ user=$(echo $login | sed '1q;d')
 pass=$(echo $login | sed '2q;d')
 
 echo "$pass" | docker login -u $user --password-stdin
+docker-machine create --driver virtualbox default

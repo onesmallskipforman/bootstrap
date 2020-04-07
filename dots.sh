@@ -18,7 +18,7 @@ function runDots() {
       echo "Syncing the dotfiles repo to home "
       echo "------------------------------"
       echo ""
-      $DIR/bootstrap.sh -f && source ~/.zshenv && source ~/.config/zsh/.zshrc
+      $DIR/bootstrap.sh -f
     fi
     if [[ $ARG == "osxprep" ]] || [[ $ARG == "all" ]]; then
       echo ""
@@ -108,7 +108,7 @@ function runDots() {
       echo "Sign In To Docker Account"
       echo "------------------------------"
       echo ""
-      $DIR/Scripts/Config/dockerlogin
+      $DIR/Scripts/Config/docker
     fi
     if [[ $ARG == "osx" ]] || [[ $ARG == "all" ]]; then
       echo ""

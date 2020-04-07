@@ -46,11 +46,13 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 # Disable local Time Machine snapshots
 sudo tmutil disablelocal
 
-# fix wget history
-# rm -rf "$HOME/.wget-hsts"
+# set up gpg permissions
+find $GNUPGHOME -type f -exec chmod 600 {} \;
+find $GNUPGHOME -type d -exec chmod 700 {} \;
 
-# fix zsh_history
+# clean ~/
 rm -rf "$HOME/.zsh_history"
+rm -rf "$HOME/.DS_Store"
 
 # install command line tools
 xcode-select -p &>/dev/null 2>&1 || (
