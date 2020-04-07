@@ -16,7 +16,7 @@ sudo chsh -s /bin/zsh
 
 # Update OS
 echo "Updating OSX"
-softwareupdate -i -a --verbose # use sudo -s if you want -R option
+sudo softwareupdate -i -a -R --verbose # use sudo -s if you want -R option
 
 # allows apps downloaded from anywhere
 sudo spctl --master-disable
@@ -45,6 +45,13 @@ osascript -e "tell application \"System Events\" to tell every desktop to set pi
 
 # Disable local Time Machine snapshots
 sudo tmutil disablelocal
+
+# fix wget history
+mkdir -p "$XDG_CACHE_HOME/wget-hsts"
+rm -rf "$HOME/.wget-hsts"
+
+# fix zsh_history
+rm -rf "$HOME/.zsh_history"
 
 # install command line tools
 xcode-select -p &>/dev/null 2>&1 || (

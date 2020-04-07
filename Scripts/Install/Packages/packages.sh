@@ -4,7 +4,7 @@
 # HOMEBREW AND MAS INSTALLATION
 #===============================================================================
 
-cd "$(dirname $0)";
+PACKDIR=$(dirname $0)
 
 # Install command-line tools using Homebrew.
 
@@ -47,10 +47,10 @@ mas upgrade
 # xargs brew cask install < cask.txt
 # xargs mas install       < mas.txt
 
-comm -23 <(sort "tap.txt") <(brew tap | sort) | xargs -n 1 brew tap
-comm -23 <(sort "brew.txt") <(brew leaves | sort) | xargs brew install
-comm -23 <(sort "cask.txt") <(brew cask list | sort) | xargs brew cask install
-comm -23 <(sort "mas.txt") <(mas list | sed 's/[[:space:]].*$//' | sort) | xargs mas install
+comm -23 <(sort "$PACKDIR/tap.txt")  <(brew tap | sort) | xargs -n 1 brew tap
+comm -23 <(sort "$PACKDIR/brew.txt") <(brew leaves | sort) | xargs brew install
+comm -23 <(sort "$PACKDIR/cask.txt") <(brew cask list | sort) | xargs brew cask install
+comm -23 <(sort "$PACKDIR/mas.txt")  <(mas list | sed 's/[[:space:]].*$//' | sort) | xargs mas install
 
 # remove outdated versions from the cellar
 echo "Cleaning Homebrew..."
@@ -99,7 +99,7 @@ pip3 list --outdated --format=freeze \
   | xargs -n1 pip3 install -U
 
 # install packages
-xargs pip3 install < pip.txt
+xargs pip3 install < "$PACKDIR/pip.txt"
 
 echo "Pip Setup Complete!"
 

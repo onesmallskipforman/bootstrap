@@ -17,5 +17,6 @@ ln -sf "$XDG/Cache/Python/Completion Rules.tmPreferences" "$OSX/Cache/Python"
 ln -sf "$XDG/Packages/User"/*                             "$OSX/Packages/User"
 
 # Install Package Control
-wget "https://packagecontrol.io/Package%20Control.sublime-package"
+wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" \
+  "https://packagecontrol.io/Package%20Control.sublime-package"
 mv "Package Control.sublime-package" "$OSX/Installed Packages"

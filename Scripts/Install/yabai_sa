@@ -15,4 +15,4 @@ sudo yabai --uninstall-sa
 sudo yabai --install-sa
 
 # load the scripting addition
-killall Dock
+killall Dock; brew services restart yabai

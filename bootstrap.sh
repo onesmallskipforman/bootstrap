@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-DIR=$(dirname $0)
+DIR=$(realpath $(dirname $0))
 
 function bootstrap() {
   mkdir -p "$1"
@@ -11,8 +11,6 @@ function bootstrap() {
 }
 
 function doIt() {
-
-  echo $DIR
 
   # boostrap scripts
   bootstrap $DIR "https://github.com/onesmallskipforman/bootstrap.git"
