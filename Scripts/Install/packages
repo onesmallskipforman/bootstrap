@@ -52,16 +52,4 @@ pip3 list --outdated --format=freeze \
 # install packages
 xargs pip3 install < "$PACKAGES_FOLDER/pip.txt"
 
-echo "Pip Setup Complete!"
-
-#===============================================================================
-# PERL
-#===============================================================================
-
-# setup so latexindent (part of mactex-no-gui) will work
-sudo cpan install Log::Log4perl
-sudo cpan install Log::Dispatch::File
-sudo cpan install YAML::Tiny
-sudo cpan install File::HomeDir
-
-echo "Package Manager Setup Complete"
+echo "Pip Setup Complete."
