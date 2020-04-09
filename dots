@@ -34,7 +34,7 @@ function runDots() {
       $DIR/Scripts/Install/dmenu
     [ $ARG = "kitty"       ] || [ $ARG = "all" ] && \
       bigprint "Setting Up Kitty Themes" && \
-      $DIR/Scripts/Install/kitty_themes
+      $DIR/Scripts/Config/kitty_themes
     [ $ARG = "refind"      ] || [ $ARG = "all" ] && \
       bigprint "Setting Up rEFInd" && \
       $DIR/Scripts/Install/refind
@@ -43,10 +43,7 @@ function runDots() {
       $DIR/Scripts/Install/termpdf
     [ $ARG = "yabai"       ] || [ $ARG = "all" ] && \
       bigprint "Setting Up Yabai Scripting Addon" && \
-      $DIR/Scripts/Install/yabai_sa
-    [ $ARG = "dock"        ] || [ $ARG = "all" ] && \
-      bigprint "Configuring Dock" && \
-      $DIR/Scripts/Config/dock
+      $DIR/Scripts/Config/yabai_sa
     [ $ARG = "docker"      ] || [ $ARG = "all" ] && \
       bigprint "Sign In To Docker Account" && \
       $DIR/Scripts/Config/docker
