@@ -1,8 +1,17 @@
-#!/bin/zsh
+#!/bin/sh
 
-login=$(pass docker)
-user=$(echo $login | sed '1q;d')
-pass=$(echo $login | sed '2q;d')
+# restart service
+brew services restart docker-machine
 
-echo "$pass" | docker login -u $user --password-stdin
+# create driver
 docker-machine create --driver virtualbox default
+
+# set up env variable
+eval $(docker-machine env default)
+
+# login
+# login=$(pass docker)
+# sed '2q;d' <<< login | docker login -u "$(sed '2q;d')"
+pass docker | xargs -n2 sh -c 'docker login -u "$1" --password-stdin <<< "$2"' sh
+# pass docker | xargs -n2 sh -c 'docker login -u "$1" -p "$2"' sh
+# pass docker | parallel -N 2 docker login -u={1} -p={2}

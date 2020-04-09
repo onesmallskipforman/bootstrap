@@ -26,6 +26,9 @@ sudo scutil --set LocalHostName "SkippersMBP"
 dscacheutil -flushcache
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
+# make screenshots directory
+# mkdir -p "${XDG_DATA_HOME}/screenshots"
+
 # Turn Dark mode on
 osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
 

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+#===================================================================
+# XDG TO OS LINKING
+#===================================================================
+
+function xdg() {
+  # links personal files that follow XDG standard to those that do not
+
+  OS="$1" # path to files on specific OS
+  for item in "${@:2}"; do
+    # Trim Path and Prepend OS Path
+    sed 's!.*/!!; s,^,'"$OS/"',' <<< "$item" | xargs -I{} rm -r {}
+  done
+
+  # link items
+  ln -s "${@:2}" "$OS"
+  # ls -l "$OS"
+}
+
+OSX="$HOME/Library/ApplicationSupport"
+xdg "$OSX/Code/User" \
+    "$XDG_CONFIG_HOME/Code/User"/*
+xdg "$OSX/Minecraft" \
+    "$XDG_CONFIG_HOME/minecraft"/* "$XDG_DATA_HOME/minecraft"/*
+xdg "$OSX/Slack" \
+    "$XDG_DATA_HOME/slack"/*
+xdg "$OSX/Spotify" \
+    "$XDG_DATA_HOME/spotify"/*
+xdg "$OSX/Sublime Text 3" \
+    "$XDG_CONFIG_HOME/sublime-text-3/User"
+xdg "$OSX/Sublime Text 3/Cache/Python" \
+    "$XDG_CONFIG_HOME/sublime-text-3/Cache/Python/Completion Rules.tmPreferences"

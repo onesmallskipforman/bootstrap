@@ -1,0 +1,23 @@
+#!/bin/zsh
+
+#===================================================================
+# VSCODE CONFIG
+#===================================================================
+
+# install plugins in list that are not already installed
+comm -23 \
+  <(sort "$XDG_CONFIG_HOME/Code/plugins.txt") \
+  <(code --list-extensions | sort) \
+  | xargs -n 1 code --install-extension
+
+#===============================================================================
+# SUBLIME CONFIG
+#===============================================================================
+
+URL="https://packagecontrol.io/Package%20Control.sublime-package"
+DIR="$HOME/Library/ApplicationSupport/Sublime Text 3/Installed Packages"
+
+# Install Package Control
+[ ! -f "$DIR/Package Control.sublime-package" ] &&
+  wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" "$URL" &&\
+  mv "Package Control.sublime-package" "$DIR"

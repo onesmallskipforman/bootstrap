@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 # Close any open System Preferences panes
 osascript -e 'quit app "System Preferences"'
@@ -130,7 +130,7 @@ defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool 
 defaults write com.apple.screencapture disable-shadow -bool true
 
 # Save screenshots to the Pictures/Screenshots
-defaults write com.apple.screencapture location -string "${XDG_DATA_HOME}/screenshots"
+defaults write com.apple.screencapture location -string "${HOME}/Desktop"
 
 # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
 defaults write com.apple.screencapture type -string "png"
@@ -140,7 +140,7 @@ defaults write com.apple.screencapture type -string "png"
 #===============================================================================
 
 for app in "Activity Monitor" \
-  "Docker" \
+  "Dock" \
   "Finder" \
   "Messages" \
   "Safari" \

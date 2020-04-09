@@ -19,62 +19,52 @@ function runDots() {
 
   # Run sections based on command line arguments
   for ARG in "$@"; do
-    [ $ARG = "bootstrap" ]     || [ $ARG = "all"  ] && \
+    [ $ARG = "bootstrap"   ] || [ $ARG = "all" ] && \
       bigprint "Syncing the dotfiles repo to home" && \
       $DIR/bootstrap -f
-    [ $ARG = "osxprep" ]       || [ $ARG = "all"  ] && \
+    [ $ARG = "osxprep"     ] || [ $ARG = "all" ] && \
       bigprint "Updating OSX and installing Xcode command line tools" && \
       $DIR/Scripts/osxprep
-    [ $ARG = "packages" ]      || [ $ARG = "all"  ] && \
+    [ $ARG = "packages"    ] || [ $ARG = "all" ] && \
       bigprint "Installing Packages (Homebrew, Cask, Mas, Pip)." && \
       $DIR/Scripts/Install/packages
-    # [ $ARG = "mathematica" ] || [ $ARG = "all"  ] && \
-    #   bigprint "Installing Mathematica"
-    #   $DIR/Scripts/Install/Mathematica/mathematica
-    # fi
-    # [ $ARG = "matlab" ]      || [ $ARG = "all"  ] && \
-    #   bigprint "Installing Matlab"
-    #   $DIR/Scripts/Install/Matlab/matlab
-    # fi
-    [ $ARG = "dmenu" ]         || [ $ARG = "all"  ] && \
+
+    [ $ARG = "dmenu"       ] || [ $ARG = "all" ] && \
       bigprint "Installing dmenu-mac" && \
       $DIR/Scripts/Install/dmenu
-    [ $ARG = "kitty" ]         || [ $ARG = "all"  ] && \
+    [ $ARG = "kitty"       ] || [ $ARG = "all" ] && \
       bigprint "Setting Up Kitty Themes" && \
       $DIR/Scripts/Install/kitty_themes
-    [ $ARG = "refind" ]        || [ $ARG = "all"  ] && \
+    [ $ARG = "refind"      ] || [ $ARG = "all" ] && \
       bigprint "Setting Up rEFInd" && \
       $DIR/Scripts/Install/refind
-    [ $ARG = "termpdf" ]       || [ $ARG = "all"  ] && \
+    [ $ARG = "termpdf"     ] || [ $ARG = "all" ] && \
       bigprint "Installing Termpdf" && \
       $DIR/Scripts/Install/termpdf
-    [ $ARG = "yabai" ]         || [ $ARG = "all"  ] && \
+    [ $ARG = "yabai"       ] || [ $ARG = "all" ] && \
       bigprint "Setting Up Yabai Scripting Addon" && \
       $DIR/Scripts/Install/yabai_sa
-    [ $ARG = "dock" ]          || [ $ARG = "all"  ] && \
+    [ $ARG = "dock"        ] || [ $ARG = "all" ] && \
       bigprint "Configuring Dock" && \
       $DIR/Scripts/Config/dock
-    [ $ARG = "docker" ]        || [ $ARG = "all"  ] && \
+    [ $ARG = "docker"      ] || [ $ARG = "all" ] && \
       bigprint "Sign In To Docker Account" && \
       $DIR/Scripts/Config/docker
-    [ $ARG = "osx" ]           || [ $ARG = "all"  ] && \
-      bigprint"Configuring OSX UI" && \
+    [ $ARG = "osx"         ] || [ $ARG = "all" ] && \
+      bigprint"Configuring OSX" && \
       $DIR/Scripts/Config/osx
-    [ $ARG = "minecraft" ]     || [ $ARG = "all"  ] && \
-      bigprint "Setting Up Minecraft" && \
-      $DIR/Scripts/XDG/minecraft
-    [ $ARG = "slack" ]         || [ $ARG = "all"  ] && \
-      bigprint "Setting Up Slack" && \
-      $DIR/Scripts/XDG/slack
-    [ $ARG = "spotify" ]       || [ $ARG = "all"  ] && \
-      bigprint "Setting Up Spotify" && \
-      $DIR/Scripts/XDG/spotify
-    [ $ARG = "sublime" ]       || [ $ARG = "all"  ] && \
-      bigprint "Setting Up Sublime" && \
-      $DIR/Scripts/XDG/sublime
-    [ $ARG = "vscode" ]        || [ $ARG = "all"  ] && \
-      bigprint "Configuring VS Code" && \
-      $DIR/Scripts/XDG/vscode
+    [ $ARG = "xdg"         ] || [ $ARG = "all" ] && \
+      bigprint "Linking XDG Files" && \
+      $DIR/Scripts/Config/xdg
+    [ $ARG = "editor"      ] || [ $ARG = "all" ] && \
+      bigprint "Setting Up Text Editor Packages" && \
+      $DIR/Scripts/Install/editors
+    [ $ARG = "mathematica" ] || [ $ARG = "all" ] && \
+      bigprint "Installing Mathematica"
+      # $DIR/Scripts/Install/Mathematica/mathematica
+    [ $ARG = "matlab"      ] || [ $ARG = "all" ] && \
+      bigprint "Installing Matlab"
+      # $DIR/Scripts/Install/Matlab/matlab
   done
   bigprint "Completed running dots. Please resart your computer."
 }
