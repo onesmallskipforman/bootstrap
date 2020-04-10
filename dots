@@ -1,16 +1,11 @@
 #!/bin/zsh
 
-function bigprint() {
-  echo ""
-  echo "-------------------------------------------------------------------"
-  echo "$1"
-  echo "-------------------------------------------------------------------"
-  echo ""
-}
-
+# grab script directory and functions
 DIR=$(dirname $0)
+source "$DIR/lib/functions.sh"
 
 function runDots() {
+
   # Ask for the administrator password upfront
   sudo -v
 
@@ -22,48 +17,14 @@ function runDots() {
     [ $ARG = "bootstrap"   ] || [ $ARG = "all" ] && \
       bigprint "Syncing the dotfiles repo to home" && \
       $DIR/bootstrap -f
-    [ $ARG = "osxprep"     ] || [ $ARG = "all" ] && \
-      bigprint "Updating OSX and installing Xcode command line tools" && \
-      $DIR/Scripts/osxprep
-    [ $ARG = "packages"    ] || [ $ARG = "all" ] && \
-      bigprint "Installing Packages (Homebrew, Cask, Mas, Pip)." && \
-      $DIR/Scripts/Install/packages
-
-    [ $ARG = "dmenu"       ] || [ $ARG = "all" ] && \
-      bigprint "Installing dmenu-mac" && \
-      $DIR/Scripts/Install/dmenu
-    [ $ARG = "kitty"       ] || [ $ARG = "all" ] && \
-      bigprint "Setting Up Kitty Themes" && \
-      $DIR/Scripts/Config/kitty_themes
-    [ $ARG = "refind"      ] || [ $ARG = "all" ] && \
-      bigprint "Setting Up rEFInd" && \
-      $DIR/Scripts/Install/refind
-    [ $ARG = "termpdf"     ] || [ $ARG = "all" ] && \
-      bigprint "Installing Termpdf" && \
-      $DIR/Scripts/Install/termpdf
-    [ $ARG = "yabai"       ] || [ $ARG = "all" ] && \
-      bigprint "Setting Up Yabai Scripting Addon" && \
-      $DIR/Scripts/Config/yabai_sa
-    [ $ARG = "docker"      ] || [ $ARG = "all" ] && \
-      bigprint "Sign In To Docker Account" && \
-      $DIR/Scripts/Config/docker
-    [ $ARG = "osx"         ] || [ $ARG = "all" ] && \
-      bigprint"Configuring OSX" && \
-      $DIR/Scripts/Config/osx
-    [ $ARG = "xdg"         ] || [ $ARG = "all" ] && \
-      bigprint "Linking XDG Files" && \
-      $DIR/Scripts/Config/xdg
-    [ $ARG = "editor"      ] || [ $ARG = "all" ] && \
-      bigprint "Setting Up Text Editor Packages" && \
-      $DIR/Scripts/Install/editors
-    [ $ARG = "mathematica" ] || [ $ARG = "all" ] && \
-      bigprint "Installing Mathematica"
-      # $DIR/Scripts/Install/Mathematica/mathematica
-    [ $ARG = "matlab"      ] || [ $ARG = "all" ] && \
-      bigprint "Installing Matlab"
-      # $DIR/Scripts/Install/Matlab/matlab
+    [ $ARG = "osxprep"     ] || [ $ARG = "all" ] && osxprep
+    [ $ARG = "homebrew"    ] || [ $ARG = "all" ] && homebrew_install
+    [ $ARG = "termpdf"     ] || [ $ARG = "all" ] && termpdf_install
+    [ $ARG = "refind"      ] || [ $ARG = "all" ] && refind_install
+    [ $ARG = "config"      ] || [ $ARG = "all" ] && config
   done
   bigprint "Completed running dots. Please resart your computer."
+  echo "Some of these changes require a logout/restart to take effect.\n"
 }
 
 # read -p "This may overwrite existing files in your home DIRectory. Are you sure? (y/n) " -n 1;
