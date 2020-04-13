@@ -6,6 +6,20 @@
 # SYSTEM PREP
 #===============================================================================
 
+function dotfiles() {
+  # bootstrap scripts and configs
+  bigprint "Syncing dotfiles repo to home"
+  GHUB="https://github.com/onesmallskipforman"
+  clonepull "$GHUB/bootstrap.git" "$1"
+  clonepull "$GHUB/dotfiles.git"  "$1/Home"
+  clonepull "$GHUB/userdata.git"  "$1/Home/.local/share"
+
+  # remove old files, then symlink (or copy)
+  rm -rf "$HOME"/{.config,.local,.zshenv}
+  ln -sf "$1/Home"/{.config,.local,.zshenv} "$HOME"
+  # cp -r "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
+}
+
 function osxprep() {
   bigprint "Updating OSX and installing Xcode command line tools"
 
@@ -351,6 +365,10 @@ function bigprint() {
   echo "$1"
   echo "-------------------------------------------------------------------"
   echo ""
+}
+
+function clonepull() {
+  [ ! -d "$2/.git" ] && git clone "$1" "$2" || git -C "$2" pull origin master
 }
 
 # experimental
