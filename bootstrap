@@ -3,12 +3,14 @@
 DIR=$(realpath $(dirname $0))
 
 function bootstrap() {
-
   # bootstrap scripts and configs
-  URL="https://github.com/onesmallskipforman/bootstrap.git"
-  git clone --recurse-submodules "$URL" "$DIR" || \
-    git -C "$DIR" pull origin master && \
-    git -C "$DIR" submodule foreach --recursive git pull origin master
+  BTSR="https://github.com/onesmallskipforman/bootstrap.git"
+  DOTS="https://github.com/onesmallskipforman/dotfiles.git"
+  DATA="https://github.com/onesmallskipforman/userdata.git"
+
+  git clone "$BTSR" "$DIR"                   || git -C "$DIR" pull origin master
+  git clone "$DOTS" "$DIR/Home"              || git -C "$DIR" pull origin master
+  git clone "$DATA" "$DIR/Home/.local/share" || git -C "$DIR" pull origin master
 
   # remove old files, then symlink (or copy)
   rm -rf "$HOME"/{.config,.local,.zshenv}
