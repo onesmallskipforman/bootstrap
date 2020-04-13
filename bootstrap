@@ -3,20 +3,12 @@
 DIR=$(realpath $(dirname $0))
 
 function bootstrap() {
-  mkdir -p "$1"
-  git -C "$1" init
-  git -C "$1" remote add origin "$2"
-  # git -C "$1"clone --recurse-submodules
-  git -C "$1" pull origin master
-  git -C "$1" submodule foreach git pull origin master
-  git -C "$1" pull origin master --recurse-submodules
-  git -C "$1" submodule update --remote --recursive
-}
 
-function doIt() {
-
-  # boostrap scripts
-  bootstrap $DIR "https://github.com/onesmallskipforman/bootstrap.git"
+  # bootstrap scripts and configs
+  URL="https://github.com/onesmallskipforman/bootstrap.git"
+  git clone --recurse-submodules "$URL" "$DIR" || \
+    git -C "$DIR" pull origin master && \
+    git -C "$DIR" submodule foreach --recursive git pull origin master
 
   # remove old files, then symlink (or copy)
   rm -rf "$HOME"/{.config,.local,.zshenv}
@@ -31,7 +23,7 @@ else
   read REPLY;
 
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    doIt;
+    bootstrap;
   fi;
 fi;
 unset doIt;
