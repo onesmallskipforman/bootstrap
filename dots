@@ -2,7 +2,7 @@
 
 # grab script directory and functions
 DIR=$(dirname $0)
-source "$DIR/lib/functions.sh"
+source "$DIR/functions.sh"
 
 function runDots() {
 

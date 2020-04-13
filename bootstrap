@@ -4,7 +4,7 @@ DIR=$(realpath $(dirname $0))
 
 function bootstrap() {
   mkdir -p "$1"
-  git -C "$1" init
+  git -C "$1" clone --recursive-submodules
   git -C "$1" remote add origin "$2"
   git -C "$1" pull origin master
   # # git -C "$1" clean -fdX
@@ -14,14 +14,6 @@ function doIt() {
 
   # boostrap scripts
   bootstrap $DIR "https://github.com/onesmallskipforman/bootstrap.git"
-
-  # public dotfiles
-  PUBLIC="$DIR/Filesystem"
-  bootstrap "$PUBLIC" "https://github.com/onesmallskipforman/dotfiles.git"
-
-  # private dotfiles
-  PRIVATE="$PUBLIC/.local/share"
-  bootstrap "$PRIVATE" "https://github.com/onesmallskipforman/userdata.git"
 
   # remove old files, then symlink (or copy)
   rm -rf "$HOME"/{.config,.local,.zshenv}
