@@ -4,10 +4,13 @@ DIR=$(realpath $(dirname $0))
 
 function bootstrap() {
   mkdir -p "$1"
-  git -C "$1" clone --recursive-submodules
+  git -C "$1" init
   git -C "$1" remote add origin "$2"
+  # git -C "$1"clone --recurse-submodules
   git -C "$1" pull origin master
-  # # git -C "$1" clean -fdX
+  git -C "$1" submodule foreach git pull origin master
+  git -C "$1" pull origin master --recurse-submodules
+  git -C "$1" submodule update --remote --recursive
 }
 
 function doIt() {
@@ -17,8 +20,8 @@ function doIt() {
 
   # remove old files, then symlink (or copy)
   rm -rf "$HOME"/{.config,.local,.zshenv}
-  ln -sf "$DIR/Filesystem"/{.config,.local,.zshenv} "$HOME"
-  # cp -r "$PWD/.config"/* "$HOME"
+  ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
+  # cp -r "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
 }
 
 if [[ "$1" == "--force" ]] || [[ "$1" == "-f" ]]; then
