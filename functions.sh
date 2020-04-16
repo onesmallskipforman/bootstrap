@@ -283,8 +283,8 @@ function xdg() {
     done
 
     # link items
-    ln -s "${@:2}" "$OS"
-    # ls -l "$OS"
+    ln -sf "${@:2}" "$OS"
+    ls -l "$OS"
   }
 
   OSX="$HOME/Library/ApplicationSupport"
@@ -300,6 +300,10 @@ function xdg() {
     "$XDG_CONFIG_HOME/sublime-text-3/User"
   xdg_generic "$OSX/Sublime Text 3/Cache/Python" \
     "$XDG_CONFIG_HOME/sublime-text-3/Cache/Python/Completion Rules.tmPreferences"
+  xdg_generic "$OSX/Übersicht" \
+    "$XDG_CONFIG_HOME/ubersicht/widgets"
+  xdg_generic "$OSX/tracesOf.Uebersicht" \
+    "$XDG_CONFIG_HOME/ubersicht/WidgetSettings.json"
 
   echo "XDG Linking Complete."
 }
