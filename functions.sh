@@ -63,7 +63,7 @@ function osxprep() {
 # INSTALLATIONS
 #===============================================================================
 
-function homebrew_install () {
+function homebrew_install() {
   # homebrew-managed installations
   bigprint "Installing Packages (Homebrew, Cask, Mas)."
 
@@ -94,16 +94,19 @@ function homebrew_install () {
   echo "Brew Setup Complete."
 }
 
-function termpdf_install() {
-  # termpdf.py installation
-  bigprint "Installing Termpdf"
+function pip_install() {
+  bigprint "Installing Pip Packages"
+  pip3 install -r "$HOME/.config/pip/requirements.txt"
+  echo "Pip Installation Complete."
+}
 
-  git clone https://github.com/dsanson/termpdf.py
-  pip3 install -r termpdf.py/requirements.txt -U
-  cp -f termpdf.py/termpdf.py /usr/local/bin/termpdf
-  rm -rf "termpdf.py"
-
-  echo "Termpdf Installtion Complete."
+function git_clone() {
+  bigprint "Cloning Git Repos"
+  while IFS= read URL; do
+    DIR=$HOME/.local/src/$(basename "$URL" .git)
+    clonepull "$URL" "$DIR"
+  done < "$HOME/.config/git/repos.txt"
+  echo "Repo Cloning Complete."
 }
 
 function refind_install() {
@@ -153,44 +156,6 @@ function refind_install() {
   sudo diskutil unmount /Volumes/ESP
 
   echo "Refind Installation Complete."
-}
-
-# experimental
-function mathematica_install () {
-  bigprint "Installing Mathematica"
-
-  # attatch dmg, move app, symlink
-  local version="12.1.0"
-  dmg_run \
-    "$XDG_DATA_HOME/mathematica/Mathematica_${version}_MAC.dmg" \
-    "/Volumes/Mathematica/Mathematica.app"
-  sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications
-  sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
-  trap - INT ERR TERM EXIT # undo trap set in dmg_run
-  echo "Mathematica Install Complete."
-
-  # "/Volumes/Download Manager for Wolfram Mathematica 12.1/Download Manager for Wolfram Mathematica 12.1.app"
-  # setopt +o nomatch
-  # while [ ! -f ~/Downloads/M-OSX-L-$version-*/*.dmg]; do sleep 1; done
-  # killall "${installer%.*}"
-  # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
-}
-
-# experimental
-function matlab_install () {
-  bigprint "Installing MATLAB"
-
-  # run installer in dmg, print password, wait for closure, symlink
-  local version="R2019b"
-  dmg_run \
-    "$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg" \
-    "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-  pass mathematica
-  open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-  sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
-  sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
-  trap - INT ERR TERM EXIT # undo trap set in dmg_run
-  echo "MATLAB Install Complete."
 }
 
 #===============================================================================
@@ -322,28 +287,23 @@ function yabai_sa() {
 }
 
 function kitty_themes() {
-  # kitty themes install
+  bigprint "Setting Up Kitty Themes"
+  rm    -rf ~/.config/kitty/themes
+  mkdir -p  ~/.config/kitty/themes
+  cp ~/.local/src/base16-kitty/colors/* ~/.config/kitty/themes
+  cp ~/.local/src/kitty-themes/themes/* ~/.config/kitty/themes
+  cp -f ~/.config/kitty/themes/themes/base16-gruvbox-dark-soft.conf ~/.config/kitty/theme.conf
+  echo "Kitty Themes Set."
+}
 
-  # build themes directory
-  DATA="$XDG_DATA_HOME/kitty"
-  CONFIG="$XDG_CONFIG_HOME/kitty"
-  rm -rf "$DATA/themes"
-  mkdir -p "$DATA/themes"
-
-  git clone https://github.com/dexpota/kitty-themes "$DATA/kitty-themes"
-  git clone https://github.com/kdrag0n/base16-kitty "$DATA/base16-kitty"
-  cp "$DATA/kitty-themes/themes"/* "$DATA/base16-kitty/colors"/* "$DATA/themes/"
-
-  rm -rf "$DATA/kitty-themes" "$DATA/base16-kitty"
-
-  # set theme (copy or link)
-  rm -rf "$CONFIG/theme.conf"
-  cp "$DATA/themes/Monokai_Pro_(Filter_Octagon).conf" "$CONFIG/theme.conf"
-
-  # for testing themes
-  # kitty @ set-colors -a "$DATA/themes/<theme>.conf"
-
-  echo "Kitty Themes Installed."
+function alacritty_themes() {
+  bigprint "Setting Up Alacritty Themes"
+  rm    -rf ~/.config/alacritty/themes
+  mkdir -p  ~/.config/alacritty/themes
+  cp ~/.local/src/base16-alacritty/colors/* ~/.config/alacritty/themes
+  cp ~/.local/src/alacritty-theme/themes/*  ~/.config/alacritty/themes
+  alacritty-colorscheme -C ~/.config/alacritty/themes -a base16-gruvbox-dark-hard.yml
+  echo "Alacritty Themes Set."
 }
 
 function config() {
@@ -356,6 +316,7 @@ function config() {
   xdg
   yabai_sa
   kitty_themes
+  alacritty_themes
 }
 
 #===============================================================================
@@ -372,11 +333,16 @@ function bigprint() {
 }
 
 function clonepull() {
-  [ ! -d "$2/.git" ] && git clone "$1" "$2" || git -C "$2" pull origin master
+  # clone, and pull if already cloned from url $1 into dir $2
+  [ ! -d "$2/.git" ] && git clone --depth 1 "$1" "$2" || git -C "$2" pull origin master
 }
 
+#===============================================================================
+# EXPERIMENTAL
+#===============================================================================
+
 # experimental
-function dmg_cleanup {
+function dmg_cleanup() {
   # remove dmg and installer on exit, failure, etc.
   local installer=$(basename $1); local mountname=$(dirname $1)
   pgrep "${installer%.*}"       && killall "${installer%.*}"
@@ -392,3 +358,47 @@ function dmg_run () {
   unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
   hdiutil attach "$DMGPATH" -nobrowse
 }
+
+# experimental
+function mathematica_install () {
+  bigprint "Installing Mathematica"
+
+  # attatch dmg, move app, symlink
+  local version="12.1.0"
+  dmg_run \
+    "$XDG_DATA_HOME/mathematica/Mathematica_${version}_MAC.dmg" \
+    "/Volumes/Mathematica/Mathematica.app"
+  sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications
+  sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
+  trap - INT ERR TERM EXIT # undo trap set in dmg_run
+  echo "Mathematica Install Complete."
+
+  # "/Volumes/Download Manager for Wolfram Mathematica 12.1/Download Manager for Wolfram Mathematica 12.1.app"
+  # setopt +o nomatch
+  # while [ ! -f ~/Downloads/M-OSX-L-$version-*/*.dmg]; do sleep 1; done
+  # killall "${installer%.*}"
+  # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
+}
+
+# experimental
+function matlab_install() {
+  bigprint "Installing MATLAB"
+
+  # run installer in dmg, print password, wait for closure, symlink
+  local version="R2019b"
+  dmg_run \
+    "$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg" \
+    "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+  pass mathematica
+  open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+  sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
+  sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
+  trap - INT ERR TERM EXIT # undo trap set in dmg_run
+  echo "MATLAB Install Complete."
+}
+
+#===============================================================================
+# IN DEVELOPMENT
+#===============================================================================
+
+# function spicetify-cli

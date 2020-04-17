@@ -16,7 +16,7 @@ function runDots() {
     [ $ARG = "dotfiles" ] || [ $ARG = "all" ] && dotfiles "$DIR"
     [ $ARG = "osxprep"  ] || [ $ARG = "all" ] && osxprep
     [ $ARG = "homebrew" ] || [ $ARG = "all" ] && homebrew_install
-    [ $ARG = "termpdf"  ] || [ $ARG = "all" ] && termpdf_install
+    [ $ARG = "pip"  ]     || [ $ARG = "all" ] && pip_install
     [ $ARG = "refind"   ] || [ $ARG = "all" ] && refind_install
     [ $ARG = "config"   ] || [ $ARG = "all" ] && config
   done
