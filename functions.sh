@@ -1,10 +1,11 @@
-#!/bin/zsh
+#!/bin/sh
 
 # shell functions for configuring and installing various programs
 
 #===============================================================================
 # SYSTEM PREP
 #===============================================================================
+
 
 function dotfiles() {
   # bootstrap scripts and configs
@@ -20,77 +21,43 @@ function dotfiles() {
   # cp -r "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
 }
 
-function osxprep() {
-  bigprint "Updating OSX and installing Xcode command line tools"
+function os_prep() {
+  bigprint "Updating OS"
 
-  # ensure zsh is the default shell
-  sudo chsh -s /bin/zsh
-
-  # Update OS
-  sudo softwareupdate -iR --verbose #-iaR --verbose # sudo for -R option
-
-  # allows apps downloaded from anywhere
-  sudo spctl --master-disable
+  sudo chsh -s /bin/zsh                 # default shell to zsh
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  sudo softwareupdate -irR --verbose    # update os
+  sudo tmutil disable                   # disable time machine
+  sudo spctl --master-disable           # allow apps downloaded from anywhere
 
   # Set computer name (as done via System Preferences → Sharing)
-  sudo scutil --set ComputerName "SkippersMBP"
-  sudo scutil --set HostName "SkippersMBP"
+  sudo scutil --set ComputerName  "SkippersMBP"
+  sudo scutil --set HostName      "SkippersMBP"
   sudo scutil --set LocalHostName "SkippersMBP"
   dscacheutil -flushcache
   sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
-  # Turn Dark mode on
-  osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to true'
-
-  # Set a custom wallpaper image
-  WALLPAPER="$XDG_DATA_HOME/wallpapers/beams.jpeg"
-  osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
-  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
-
-  # Disable local Time Machine snapshots
-  sudo tmutil disable
-
   # install command line tools
-  xcode-select -p &>/dev/null 2>&1 || (
+  xcode-select -p &>/dev/null || (
     echo "Installing Command Line Tools..." &&
     xcode-select --install
   )
-
-  echo "OSX Prep Config Complete."
+  echo "OS Prep Complete."
 }
 
 #===============================================================================
 # INSTALLATIONS
 #===============================================================================
 
-function homebrew_install() {
+function pkg_install() {
   # homebrew-managed installations
-  bigprint "Installing Packages (Homebrew, Cask, Mas)."
-
-  # check for homebrew  mas, and install if missing
-  which brew &>/dev/null 2>&1 || (
-    echo "Installing homebrew..." &&
+  bigprint "Installing Packages."
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  which brew &>/dev/null || (           # install homebrew if missing
+    echo "Installing Homebrew..." &&
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   )
-
-  which mas &>/dev/null 2>&1 || (
-    echo "Installing mas..." &&
-    brew install mas
-  )
-
-  # run installs/upgrades
-  # brew update
-  brew bundle -v
-  # brew cleanup
-
-  # quarantine homebrew gui apps
-  echo "Removing Apple Quarantine..."
-  HOMEBREW_NO_AUTO_UPDATE=1
-  brew cask list | xargs brew cask info | grep '(App)' \
-    | sed 's/^/"\/Applications\//;s/\.app.*/.app"/' \
-    | xargs sudo xattr -r -d com.apple.quarantine  &>/dev/null
-  HOMEBREW_NO_AUTO_UPDATE=0
-
+  brew bundle -v --no-lock
   echo "Brew Setup Complete."
 }
 
@@ -100,7 +67,7 @@ function pip_install() {
   echo "Pip Installation Complete."
 }
 
-function git_clone() {
+function git_install() {
   bigprint "Cloning Git Repos"
   while IFS= read URL; do
     DIR=$HOME/.local/src/$(basename "$URL" .git)
@@ -109,111 +76,14 @@ function git_clone() {
   echo "Repo Cloning Complete."
 }
 
-function refind_install() {
-  # install rEFInd boot manager
-  bigprint "Setting Up rEFInd"
-
-  # Folders
-  local DATA="$HOME/.local/share/refind"
-  local CONFIG="$HOME/.config/refind"
-  local REFDIR="/Volumes/ESP/EFI/refind"
-
-  # if not installed or forced, run install prep
-  mkdir -p $DATA
-  rm -rf $DATA/refind-bin*
-  wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" -O $DATA/refind.zip \
-    https://sourceforge.net/projects/refind/files/latest/download
-  unzip $DATA/refind.zip -d $DATA/
-  rm $DATA/refind.zip
-  sudo $DATA/refind-bin*/mountesp
-  rm -rf "$REFDIR"
-
-  # install/upgrade
-  sudo $DATA/refind-bin*/refind-install
-
-  # clean upgrade contents, copy refind.conf
-  rm -f "$REFDIR/refind.conf-sample"
-  rm -rf "$REFDIR/icons-backup"
-  cp "$CONFIG/refind.conf" "$REFDIR/refind.conf"
-
-  # install themes
-  mkdir "$REFDIR/themes"
-
-  # refind theme Regular
-  git clone https://github.com/bobafetthotmail/refind-theme-regular.git "$REFDIR/themes/refind-theme-regular"
-  echo "include themes/refind-theme-regular/theme.conf" >> "$REFDIR/refind.conf"
-  cp "$CONFIG/theme.conf" "$REFDIR/themes/refind-theme-regular/theme.conf"
-
-  # major theme
-  # git clone https://github.com/kgoettler/ursamajor-rEFInd.git "$REFDIR/themes/rEFInd-minimal-black"
-  # echo "include themes/ursamajor-rEFInd/theme.conf" >> "$REFDIR/refind.conf"
-
-  # minimalist black theme
-  # git clone https://github.com/andersfischernielsen/rEFInd-minimal-black "$REFDIR/themes/rEFInd-minimal-black"
-  # echo "include themes/rEFInd-minimal-black/theme.conf" >> "$REFDIR/refind.conf"
-
-  # unmount ESP/EFI
-  sudo diskutil unmount /Volumes/ESP
-
-  echo "Refind Installation Complete."
-}
-
 #===============================================================================
 # APP CONFIGS/SETUPS
 #===============================================================================
 
-function gpg_perm() {
-  # set permisisons for relevant dirs used by gpg
-  bigprint "Set GPG Store Permissions"
-
-  # make directory and set permissions
-  mkdir -p "$GNUPGHOME"
-  find $GNUPGHOME -type f -exec chmod 600 {} \;
-  find $GNUPGHOME -type d -exec chmod 700 {} \;
-
-  echo "GPG Directory Permissions Set."
-}
-
-function docker() {
-  # setup of docker virtual machine and account login
-  bigprint "Sign In To Docker Account"
-
-  # restart service
-  brew services restart docker-machine
-
-  # create driver, set environment variables, login
-  docker-machine create --driver virtualbox default
-  eval $(docker-machine env default)
-  pass docker | xargs -n2 sh -c 'docker login -u "$1" --password-stdin <<< "$2"' sh
-  # pass docker | xargs -n2 sh -c 'docker login -u "$1" -p "$2"' sh
-
-  echo "Docker Setup Complete."
-}
-
-function editors() {
-  # configuration for text editors
-  bigprint "Setting Up Text Editor Packages"
-
-  # vscode: install plugins in list that are not already installed
-  comm -23 \
-    <(sort "$XDG_CONFIG_HOME/Code/plugins.txt") \
-    <(code --list-extensions | sort) \
-    | xargs -n 1 code --install-extension
-
-  # Sublime: Install Package Control
-  local URL="https://packagecontrol.io/Package%20Control.sublime-package"
-  local DIR="$HOME/Library/ApplicationSupport/Sublime Text 3/Installed Packages"
-
-  [ ! -f "$DIR/Package Control.sublime-package" ] &&
-    wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" "$URL" &&\
-    mv "Package Control.sublime-package" "$DIR"
-
-  echo "Text Editor Config Complete."
-}
-
-function osx() {
+function os_config() {
   # set osx defaults
-  bigprint "Configuring OSX"
+  bigprint "Configuring OS"
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
 
   # Close any open System Preferences panes
   osascript -e 'quit app "System Preferences"'
@@ -232,11 +102,12 @@ function osx() {
     killall "${app}" &> /dev/null
   done
 
-  echo "OSX Config Complete."
+  echo "OS Config Complete."
 }
 
-function xdg() {
+function xdg_link() {
   bigprint "Linking XDG Files"
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
 
   function xdg_generic() {
     # links personal files that follow XDG standard to those that do not
@@ -265,6 +136,8 @@ function xdg() {
     "$XDG_CONFIG_HOME/sublime-text-3/User"
   xdg_generic "$OSX/Sublime Text 3/Cache/Python" \
     "$XDG_CONFIG_HOME/sublime-text-3/Cache/Python/Completion Rules.tmPreferences"
+  xdg_generic "$OSX/Sublime Text 3/Installed Packages" \
+    "$XDG_CONFIG_HOME/sublime-text-3/Installed Packages/Package Control.sublime-package"
   xdg_generic "$OSX/Übersicht" \
     "$XDG_CONFIG_HOME/ubersicht/widgets"
   xdg_generic "$OSX/tracesOf.Uebersicht" \
@@ -273,50 +146,11 @@ function xdg() {
   echo "XDG Linking Complete."
 }
 
-function yabai_sa() {
-  bigprint "Setting Up Yabai Scripting Addon"
-
-  # install the scripting addition
-  sudo yabai --uninstall-sa
-  sudo yabai --install-sa
-
-  # load the new scripting addition
-  killall Dock; brew services restart yabai
-
-  echo "Yabai Scripting Addition Installed."
-}
-
-function kitty_themes() {
-  bigprint "Setting Up Kitty Themes"
-  rm    -rf ~/.config/kitty/themes
-  mkdir -p  ~/.config/kitty/themes
-  cp ~/.local/src/base16-kitty/colors/* ~/.config/kitty/themes
-  cp ~/.local/src/kitty-themes/themes/* ~/.config/kitty/themes
-  cp -f ~/.config/kitty/themes/themes/base16-gruvbox-dark-soft.conf ~/.config/kitty/theme.conf
-  echo "Kitty Themes Set."
-}
-
-function alacritty_themes() {
-  bigprint "Setting Up Alacritty Themes"
-  rm    -rf ~/.config/alacritty/themes
-  mkdir -p  ~/.config/alacritty/themes
-  cp ~/.local/src/base16-alacritty/colors/* ~/.config/alacritty/themes
-  cp ~/.local/src/alacritty-theme/themes/*  ~/.config/alacritty/themes
-  alacritty-colorscheme -C ~/.config/alacritty/themes -a base16-gruvbox-dark-hard.yml
-  echo "Alacritty Themes Set."
-}
-
-function config() {
-  bigprint "Configuring Various Programs"
-  # run above configs
-  gpg_perm
-  docker
-  editors
-  osx
-  xdg
-  yabai_sa
-  kitty_themes
-  alacritty_themes
+function wm_config() {
+  bigprint "Setting Up Window Manager"
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  sudo yabai --uninstall-sa; sudo yabai --install-sa; killall Dock
+  echo "Window Manager Configured."
 }
 
 #===============================================================================
@@ -338,10 +172,9 @@ function clonepull() {
 }
 
 #===============================================================================
-# EXPERIMENTAL
+# MATH TOOLS INSTALLATION (EXPERIMENTAL)
 #===============================================================================
 
-# experimental
 function dmg_cleanup() {
   # remove dmg and installer on exit, failure, etc.
   local installer=$(basename $1); local mountname=$(dirname $1)
@@ -350,7 +183,6 @@ function dmg_cleanup() {
   rm -f "$2"
 }
 
-# experimental
 function dmg_run () {
   # unzip and mount a dmg
   local DMGPATH="$1"; local INSTPATH="$2"
@@ -359,7 +191,6 @@ function dmg_run () {
   hdiutil attach "$DMGPATH" -nobrowse
 }
 
-# experimental
 function mathematica_install () {
   bigprint "Installing Mathematica"
 
@@ -380,7 +211,6 @@ function mathematica_install () {
   # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
 }
 
-# experimental
 function matlab_install() {
   bigprint "Installing MATLAB"
 
@@ -396,9 +226,3 @@ function matlab_install() {
   trap - INT ERR TERM EXIT # undo trap set in dmg_run
   echo "MATLAB Install Complete."
 }
-
-#===============================================================================
-# IN DEVELOPMENT
-#===============================================================================
-
-# function spicetify-cli
