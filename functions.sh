@@ -149,7 +149,7 @@ function xdg_link() {
 function wm_config() {
   bigprint "Setting Up Window Manager"
   [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
-  sudo yabai --uninstall-sa; sudo yabai --install-sa; killall Dock
+  sudo yabai --uninstall-sa; sudo yabai --install-sa
   echo "Window Manager Configured."
 }
 
