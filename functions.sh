@@ -25,7 +25,7 @@ function os_prep() {
   bigprint "Updating OS"
 
   sudo chsh -s /bin/zsh                 # default shell to zsh
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   sudo softwareupdate -irR --verbose    # update os
   sudo tmutil disable                   # disable time machine
   sudo spctl --master-disable           # allow apps downloaded from anywhere
@@ -52,7 +52,7 @@ function os_prep() {
 function pkg_install() {
   # homebrew-managed installations
   bigprint "Installing Packages."
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   which brew &>/dev/null || (           # install homebrew if missing
     echo "Installing Homebrew..." &&
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -83,7 +83,7 @@ function git_install() {
 function os_config() {
   # set osx defaults
   bigprint "Configuring OS"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
 
   # Close any open System Preferences panes
   osascript -e 'quit app "System Preferences"'
@@ -107,7 +107,7 @@ function os_config() {
 
 function xdg_link() {
   bigprint "Linking XDG Files"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
 
   function xdg_generic() {
     # links personal files that follow XDG standard to those that do not
@@ -148,7 +148,7 @@ function xdg_link() {
 
 function wm_config() {
   bigprint "Setting Up Window Manager"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && exit
+  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   sudo yabai --uninstall-sa; sudo yabai --install-sa
   echo "Window Manager Configured."
 }
