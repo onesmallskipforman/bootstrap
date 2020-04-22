@@ -6,19 +6,27 @@
 # SYSTEM PREP
 #===============================================================================
 
-
 function dotfiles() {
+  
+  function gitstrap() {
+    git -C "$2" init
+    git -C "$2" remote add origin "$1"
+    git -C "$2" fetch --depth 1 origin master
+    git -C "$2" reset --hard
+  }
+  
   # bootstrap scripts and configs
   bigprint "Syncing dotfiles repo to home"
   GHUB="https://github.com/onesmallskipforman"
   clonepull "$GHUB/bootstrap.git" "$1"
-  clonepull "$GHUB/dotfiles.git"  "$1/Home"
-  clonepull "$GHUB/userdata.git"  "$1/Home/.local/share"
+  
+  # dotfile boostrap
+  mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
+  gitstrap "$GHUB/dotfiles.git"  "$1/Home"
+  gitstrap "$GHUB/userdata.git"  "$1/Home/.local/share"
 
-  # remove old files, then symlink (or copy)
-  rm -rf "$HOME"/{.config,.local,.zshenv}
+  # symlink
   ln -sf "$1/Home"/{.config,.local,.zshenv} "$HOME"
-  # cp -r "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
 }
 
 function os_prep() {
