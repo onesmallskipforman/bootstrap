@@ -45,6 +45,11 @@ function i3() {
   ls -l /usr/bin/i3
 }
 
+function i3blocks() {
+  sudo apt-get update
+  sudo apt-get install i3blocks
+}
+
 function alacritty() {
   # sudo apt-get install -y cmake libfreetype6-dev libfontconfig1-dev xclip
 
