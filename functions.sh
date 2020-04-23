@@ -12,7 +12,7 @@ function dotfiles() {
     git -C "$2" init
     git -C "$2" remote add origin "$1"
     git -C "$2" fetch --depth 1 origin master
-    git -C "$2" reset --hard
+    git -C "$2" reset --hard origin/master
   }
   
   # bootstrap scripts and configs
@@ -21,6 +21,7 @@ function dotfiles() {
   clonepull "$GHUB/bootstrap.git" "$1"
   
   # dotfile boostrap
+  mkdir -p "Home"
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
   gitstrap "$GHUB/dotfiles.git"  "$1/Home"
   gitstrap "$GHUB/userdata.git"  "$1/Home/.local/share"

@@ -1,9 +1,23 @@
 #!/bin/sh
 
+
+function ubuntu_prep() {
+  hostnamectl set-hostname SkippersMPB
+}
+
+function ubuntu_config() {
+  sudo chsh -s /bin/zsh
+}
+
 function basics() {
   sudo apt-get install -y \
     xserver-xorg-input-libinput \ # trackpad
     git
+}
+
+function zsh() {
+  sudo apt-get install -y zsh zsh-syntax-highlighting autojump zsh-autosuggestions
+  git -C "$HOME/.local/src" clone https://github.com/zsh-users/zsh-autosuggestions.git
 }
 
 function redshift() {
