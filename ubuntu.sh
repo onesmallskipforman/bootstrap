@@ -7,12 +7,13 @@ function ubuntu_prep() {
 
 function ubuntu_config() {
   sudo chsh -s /bin/zsh
+  sudo apt-get install -y xserver-xorg-input-libinput
 }
 
-function basics() {
-  sudo apt-get install -y \
-    xserver-xorg-input-libinput \ # trackpad
-    git
+function git() {
+  sudo add-apt-repository -y ppa:git-core/ppa
+  sudo apt-get update
+  sudo apt-get install -y git
 }
 
 function zsh() {
@@ -21,13 +22,13 @@ function zsh() {
 }
 
 function redshift() {
-  sudo add-apt-repository ppa:dobey/redshift-daily
+  sudo add-apt-repository -y ppa:dobey/redshift-daily
   sudo apt-get update
   sudo apt-get install -y redshift
 }
 
 function nvim() {
-  sudo add-apt-repository ppa:neovim-ppa/stable
+  sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt-get update
   sudo apt-get install -y neovim
 }
