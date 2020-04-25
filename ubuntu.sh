@@ -10,7 +10,7 @@ function ubuntu_config() {
   sudo apt-get install -y xserver-xorg-input-libinput
 }
 
-function git() {
+function gitstuff() {
   sudo add-apt-repository -y ppa:git-core/ppa
   sudo apt-get update
   sudo apt-get install -y git
@@ -106,4 +106,41 @@ function vscode() {
   sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
   sudo apt-get update
   sudo apt-get install -y code
+}
+
+function baskerville() {
+  sudo apt-get install -y git \
+                      xcb \
+                      libxcb-util0-dev \
+                      libxcb-ewmh-dev \
+                      libxcb-randr0-dev \
+                      libxcb-icccm4-dev \
+                      libxcb-keysyms1-dev \
+                      libxcb-xinerama0-dev \
+                      libasound2-dev \
+                      gcc \
+                      make \
+                      libxcb-xtest0-dev \
+                      libxft-dev \
+                      libx11-xcb-dev
+
+  cd  ~/.local/src
+  # git clone https://github.com/baskerville/bspwm.git
+  git clone https://github.com/baskerville/sxhkd.git
+  # git clone https://github.com/baskerville/sutils.git
+  # git clone https://github.com/baskerville/xtitle.git
+  # git clone https://github.com/baskerville/xdo.git
+
+  # cd  ~/development/github.com/baskerville
+  # cd bspwm/ && make && sudo make install
+  cd sxhkd && make && sudo make install
+  # cd ../sutils/ && make && sudo make install
+  # cd ../xtitle/ && make && sudo make install
+  # cd ../xdo/ && make && sudo make install
+
+  # patched lemonbar
+  # cd ~/development/github.com/krypt-n
+  # cd !:1
+  # git clone https://github.com/krypt-n/bar.git
+  # cd bar && make && sudo make install
 }
