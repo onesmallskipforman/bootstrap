@@ -1,5 +1,8 @@
 #!/bin/sh
 
+function other() {
+  sudo apt-get install -y arandr # for setting display configs
+}
 
 function ubuntu_prep() {
   hostnamectl set-hostname SkippersMPB
@@ -41,14 +44,16 @@ function i3() {
   cd $HOME/.local/src
 
   git clone --recursive https://github.com/Airblader/xcb-util-xrm.git xcb-util-xrm
+  cd xcb-util-xrm
   ./autogen.sh
   make
-  make install
+  sudo make install
   sudo ldconfig
   sudo ldconfig -p
 
   cd $HOME/.local/src
   git clone https://www.github.com/Airblader/i3 i3-gaps
+  cd i3-gaps
   autoreconf --force --install
   rm -Rf build/
   mkdir build
@@ -65,31 +70,44 @@ function i3blocks() {
   sudo apt-get install i3blocks
 }
 
-function alacritty() {
-  # sudo apt-get install -y cmake libfreetype6-dev libfontconfig1-dev xclip
+function alacritty_install() {
+  sudo apt-get install -y cmake libfreetype6-dev libfontconfig1-dev xclip
 
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh # rustup
+  sudo apt-get install -y curl
+
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y # rustup
   rustup override set stable
   rustup update stable
+  source $HOME/.cargo/env
 
+  mkdir -p $HOME/.local/src
   cd $HOME/.local/src
-  git clone https://github.com/jwilm/alacritty
+  git clone https://github.com/alacritty/alacritty alacritty
   cd alacritty
+
+  apt-get install cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev python3
+
+  # option 1
   cargo install cargo-deb
   cargo deb --install -p alacritty
 
-  # option 2
-  apt-get install cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev python3
-  cargo build --release
+  # option 2 (something is not working here)
+  # cargo build --release
+
+  # option 3
+  # cargo install --git https://github.com/alacritty/alacritty
+
+  # option 4
+  # make binary
 
   # man page
   sudo mkdir -p /usr/local/share/man/man1
-  gzip -c alacritty.man | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
+  gzip -c extra/alacritty.man | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
 
   # zsh completions
-  mkdir -p ${ZDOTDIR:-~}/.zsh_functions
-  echo 'fpath+=${ZDOTDIR:-~}/.zsh_functions' >> ${ZDOTDIR:-~}/.zshrc
-  cp extra/completions/_alacritty ${ZDOTDIR:-~}/.zsh_functions/_alacritty
+  # mkdir -p ${ZDOTDIR:-~}/.zsh_functions
+  # echo 'fpath+=${ZDOTDIR:-~}/.zsh_functions' >> ${ZDOTDIR:-~}/.zshrc
+  # cp extra/completions/_alacritty ${ZDOTDIR:-~}/.zsh_functions/_alacritty
 
 }
 
