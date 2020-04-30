@@ -1,7 +1,20 @@
 #!/bin/sh
 
-function other() {
-  sudo apt-get install -y arandr # for setting display configs
+function buttons() {
+
+  # brightness control
+  sudo apt-get install -y xbacklight
+
+  # volume control pulsemixer option
+  # python3 -m pip install pulsemixer
+
+  # pactl option
+  sudo apt-get install -y pulseaudio alsa-utils
+
+  # simulating keypresses for firefox
+  sudo apt-get install xdotool xbindkeys xautomation
+
+  sudo apt-get update
 }
 
 function ubuntu_prep() {
@@ -19,8 +32,8 @@ function gitstuff() {
   sudo apt-get install -y git
 }
 
-function zsh() {
-  sudo apt-get install -y zsh zsh-syntax-highlighting autojump zsh-autosuggestions
+function zsh_plugs() {
+  sudo apt-get install -y zsh zsh-syntax-highlighting autojump
   git -C "$HOME/.local/src" clone https://github.com/zsh-users/zsh-autosuggestions.git
 }
 
@@ -30,7 +43,7 @@ function redshift() {
   sudo apt-get install -y redshift
 }
 
-function nvim() {
+function nvim_install() {
   sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt-get update
   sudo apt-get install -y neovim
