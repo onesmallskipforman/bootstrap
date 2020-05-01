@@ -64,6 +64,9 @@ function os_config() {
   bigprint "Configuring OS"
   # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
 
+  # set firefox at default browser
+  /Applications/Firefox.app/Contents/MacOS/firefox -setDefaultBrowser -silent
+
   # Close any open System Preferences panes
   osascript -e 'quit app "System Preferences"'
 

@@ -6,7 +6,7 @@
 
 function os_prep() {
   bigprint "Prepping OS"
-  sudo apt-get install -y git curl
+  sudo apt-get install -y git curl gcc
   echo "OS Prep Complete."
 }
 
