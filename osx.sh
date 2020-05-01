@@ -99,13 +99,13 @@ function os_config() {
     killall "${app}" &> /dev/null
   done
 
-  echo "OS Config Complete."
+  echo "OS Config Complete. Restart Required"
 }
 
 function wm_config() {
   bigprint "Setting Up Window Manager"
   # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
-  sudo yabai --uninstall-sa; sudo yabai --install-sa
+  [ yabai --check-sa ] || sudo yabai --install-sa
   echo "Window Manager Configured."
 }
 
