@@ -1,8 +1,69 @@
-#!/bin/zsh
+#!/bin/bash
+
+#===============================================================================
+# SYSTEM PREP
+#===============================================================================
+
+function dotfiles() {
+
+  function gitstrap() {
+    git -C "$2" init
+    git -C "$2" remote add origin "$1"
+    git -C "$2" fetch --depth 1 origin master
+    git -C "$2" reset --hard origin/master
+  }
+
+  # bootstrap scripts and configs
+  bigprint "Syncing dotfiles repo to home"
+  GHUB="https://github.com/onesmallskipforman"
+  clonepull "$GHUB/bootstrap.git" "$1"
+
+  # dotfile boostrap
+  mkdir -p "Home"
+  mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
+  gitstrap "$GHUB/dotfiles.git"  "$1/Home"
+  gitstrap "$GHUB/userdata.git"  "$1/Home/.local/share"
+
+  # symlink
+  ln -sf "$1/Home"/{.config,.local,.zshenv} "$HOME"
+}
+
+#===============================================================================
+# INSTALLATIONS
+#===============================================================================
+
+function pip_install() {
+  bigprint "Installing Pip Packages"
+  pip3 install -r "$HOME/.config/pip/requirements.txt"
+  echo "Pip Installation Complete."
+}
+
+#===============================================================================
+# UTILITIES
+#===============================================================================
+
+function bigprint() {
+  # print section
+  echo ""
+  echo "-------------------------------------------------------------------"
+  echo "$1"
+  echo "-------------------------------------------------------------------"
+  echo ""
+}
+
+function clonepull() {
+  # clone, and pull if already cloned from url $1 into dir $2
+  [ ! -d "$2/.git" ] && git clone --depth 1 "$1" "$2" || git -C "$2" pull origin master
+}
+
+#===============================================================================
+# SCRIPT
+#===============================================================================
 
 # grab script directory and functions
 DIR=$(realpath $(dirname $0))
-source "$DIR/functions.sh"
+if [[ ! "$OSTYPE" = "darwin"*    ]]; then; source "$DIR/osx.sh"   ; fi
+if [[ ! "$OSTYPE" = "linux-gnu"  ]]; then; source "$DIR/ubuntu.sh"; fi
 
 function runDots() {
   # Ask for the administrator password upfront
@@ -15,9 +76,11 @@ function runDots() {
   for ARG in "$@"; do
     [ $ARG = "dots" ] || [ $ARG = "all" ] && dotfiles "$DIR"
     [ $ARG = "prep" ] || [ $ARG = "all" ] && os_prep
+    [ $ARG = "key"  ] || [ $ARG = "all" ] && key_prep
     [ $ARG = "pkg"  ] || [ $ARG = "all" ] && pkg_install
     [ $ARG = "pip"  ] || [ $ARG = "all" ] && pip_install
     [ $ARG = "git"  ] || [ $ARG = "all" ] && git_install
+    [ $ARG = "cargo"] || [ $ARG = "all" ] && cargo_install
     [ $ARG = "os"   ] || [ $ARG = "all" ] && os_config
     [ $ARG = "xdg"  ] || [ $ARG = "all" ] && xdg_link
     [ $ARG = "wm"   ] || [ $ARG = "all" ] && wm_config
@@ -28,8 +91,6 @@ function runDots() {
   echo "Some of these changes require a logout/restart to take effect.\n"
 }
 
-read REPLY\?"This may overwrite existing files in ~/. Are you sure? (y/n): ";
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  runDots "$@"
-fi;
+read -p "This may overwrite existing files in ~/. Are you sure? (y/n): " REPLY;
+if [[ $REPLY =~ ^[Yy]$ ]]; then; runDots "$@"; fi;
 unset runDots;

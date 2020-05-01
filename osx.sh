@@ -1,50 +1,15 @@
-#!/bin/sh
-
-# shell functions for configuring and installing various programs
+# shell functions for configuring and installing various programs on OS X
 
 #===============================================================================
 # SYSTEM PREP
 #===============================================================================
 
-function dotfiles() {
-
-  function gitstrap() {
-    git -C "$2" init
-    git -C "$2" remote add origin "$1"
-    git -C "$2" fetch --depth 1 origin master
-    git -C "$2" reset --hard origin/master
-  }
-
-  # bootstrap scripts and configs
-  bigprint "Syncing dotfiles repo to home"
-  GHUB="https://github.com/onesmallskipforman"
-  clonepull "$GHUB/bootstrap.git" "$1"
-
-  # dotfile boostrap
-  mkdir -p "Home"
-  mv -n "$HOME"/{.config,.local,.zshenv,.xprofile} "$1/Home" &>/dev/null
-  gitstrap "$GHUB/dotfiles.git"  "$1/Home"
-  gitstrap "$GHUB/userdata.git"  "$1/Home/.local/share"
-
-  # symlink
-  ln -sf "$1/Home"/{.config,.local,.zshenv,.xprofile} "$HOME"
-}
-
 function os_prep() {
-  bigprint "Updating OS"
+  bigprint "Prepping OS"
 
-  sudo chsh -s /bin/zsh                 # default shell to zsh
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   sudo softwareupdate -irR --verbose    # update os
   sudo tmutil disable                   # disable time machine
   sudo spctl --master-disable           # allow apps downloaded from anywhere
-
-  # Set computer name (as done via System Preferences → Sharing)
-  sudo scutil --set ComputerName  "SkippersMBP"
-  sudo scutil --set HostName      "SkippersMBP"
-  sudo scutil --set LocalHostName "SkippersMBP"
-  dscacheutil -flushcache
-  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
   # install command line tools
   xcode-select -p &>/dev/null || (
@@ -61,7 +26,7 @@ function os_prep() {
 function pkg_install() {
   # homebrew-managed installations
   bigprint "Installing Packages."
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
+  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   which brew &>/dev/null || (           # install homebrew if missing
     echo "Installing Homebrew..." &&
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -70,10 +35,15 @@ function pkg_install() {
   echo "Brew Setup Complete."
 }
 
-function pip_install() {
-  bigprint "Installing Pip Packages"
-  pip3 install -r "$HOME/.config/pip/requirements.txt"
-  echo "Pip Installation Complete."
+function cargo_install() {
+  bigprint "Installing Cargo Packages"
+  which rustup &>/dev/null || (
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    rustup override set stable
+  )
+  rustup update stable
+  source $HOME/.cargo/env
+  cat "$HOME/.config/cargo/cargo_osx.txt" | xargs -n1 cargo install --git
 }
 
 function git_install() {
@@ -81,7 +51,7 @@ function git_install() {
   while IFS= read URL; do
     DIR=$HOME/.local/src/$(basename "$URL" .git)
     clonepull "$URL" "$DIR"
-  done < "$HOME/.config/git/repos.txt"
+  done < "$HOME/.config/git/repos_osx.txt"
   echo "Repo Cloning Complete."
 }
 
@@ -92,13 +62,28 @@ function git_install() {
 function os_config() {
   # set osx defaults
   bigprint "Configuring OS"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
+  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
 
   # Close any open System Preferences panes
   osascript -e 'quit app "System Preferences"'
 
+  # default shell to zsh
+  sudo chsh -s /bin/zsh
+
+  # Set computer name (as done via System Preferences → Sharing)
+  sudo scutil --set ComputerName  "SkippersMBP"
+  sudo scutil --set HostName      "SkippersMBP"
+  sudo scutil --set LocalHostName "SkippersMBP"
+  dscacheutil -flushcache
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
+
+  # Set a custom wallpaper image
+  WALLPAPER="$XDG_DATA_HOME/wallpapers/beams.jpeg"
+  osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
+  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
+
   # configure osx and set dock elements
-  $XDG_CONFIG_HOME/osx/osx
+  $XDG_CONFIG_HOME/osx/defaults
   $XDG_CONFIG_HOME/osx/dock
 
   for app in "Activity Monitor" \
@@ -114,9 +99,16 @@ function os_config() {
   echo "OS Config Complete."
 }
 
+function wm_config() {
+  bigprint "Setting Up Window Manager"
+  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
+  sudo yabai --uninstall-sa; sudo yabai --install-sa
+  echo "Window Manager Configured."
+}
+
 function xdg_link() {
   bigprint "Linking XDG Files"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
+  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
 
   function xdg_generic() {
     # links personal files that follow XDG standard to those that do not
@@ -153,31 +145,6 @@ function xdg_link() {
     "$XDG_CONFIG_HOME/ubersicht/WidgetSettings.json"
 
   echo "XDG Linking Complete."
-}
-
-function wm_config() {
-  bigprint "Setting Up Window Manager"
-  [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
-  sudo yabai --uninstall-sa; sudo yabai --install-sa
-  echo "Window Manager Configured."
-}
-
-#===============================================================================
-# UTILITIES
-#===============================================================================
-
-function bigprint() {
-  # print section
-  echo ""
-  echo "-------------------------------------------------------------------"
-  echo "$1"
-  echo "-------------------------------------------------------------------"
-  echo ""
-}
-
-function clonepull() {
-  # clone, and pull if already cloned from url $1 into dir $2
-  [ ! -d "$2/.git" ] && git clone --depth 1 "$1" "$2" || git -C "$2" pull origin master
 }
 
 #===============================================================================

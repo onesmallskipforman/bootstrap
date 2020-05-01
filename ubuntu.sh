@@ -1,177 +1,106 @@
-#!/bin/sh
+# shell functions for configuring and installing various programs on Ubuntu
 
-function buttons() {
+#===============================================================================
+# SYSTEM PREP
+#===============================================================================
 
-  # brightness control
-  sudo apt-get install -y xbacklight
-
-  # volume control pulsemixer option
-  # python3 -m pip install pulsemixer
-
-  # pactl option
-  sudo apt-get install -y pulseaudio alsa-utils
-
-  # simulating keypresses for firefox
-  sudo apt-get install xdotool xbindkeys xautomation
-
-  sudo apt-get update
+function os_prep() {
+  bigprint "Prepping OS"
+  sudo apt-get install -y git curl
+  echo "OS Prep Complete."
 }
 
-function ubuntu_prep() {
+function key_prep() {
+  bigprint "Prepping Keys for Installations"
+
+  # Prep Sublime
+  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+  echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+
+  # Prep VSCode
+  # option 1 - need to test
+  # wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+  # sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+
+  # option 2
+  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+  sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+}
+
+#===============================================================================
+# INSTALLATIONS
+#===============================================================================
+
+function pkg_install() {
+  # Install Apt Package Repos and Packages
+  bigprint "Installing Packages."
+  sudo apt-get update -y && sudo apt-get dist-upgrade -y
+
+  grep '^repo' $APT_BUNDLE_FILE  \
+    | sed 's/^[^"]*"//; s/".*//' \
+    | xargs -n1 sudo add-apt-repository -y
+  sudo apt-get update -y && sudo apt-get dist-upgrade -y
+
+  grep '^apt'  $APT_BUNDLE_FILE  \
+    | sed 's/^[^"]*"//; s/".*//' \
+    | xargs sudo apt-get install -y
+  sudo apt-get update -y && sudo apt-get dist-upgrade -y
+}
+
+function cargo_install() {
+  bigprint "Installing Cargo Packages"
+  which rustup &>/dev/null || (
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    rustup override set stable
+  )
+  rustup update stable
+  source $HOME/.cargo/env
+  cat "$HOME/.config/cargo/cargo_ubuntu.txt" | xargs -n1 cargo install --git
+  # after cloning https://github.com/alacritty/alacritty.git
+  # cd $HOME/.local/src/alacritty
+  # option 1
+  # cargo install cargo-deb
+  # cargo deb --install -p alacritty
+  # option 2 (something is not working here)
+  # cargo build --release
+  # option 3
+  # cargo install --git https://github.com/alacritty/alacritty
+  # option 4
+  # make binary
+}
+
+function git_install() {
+  bigprint "Cloning Git Repos"
+  while IFS= read URL; do
+    DIR=$HOME/.local/src/$(basename "$URL" .git)
+    clonepull "$URL" "$DIR"
+  done < "$HOME/.config/git/repos_ubuntu.txt"
+  echo "Repo Cloning Complete."
+}
+
+#===============================================================================
+# APP CONFIGS/SETUPS
+#===============================================================================
+
+function os_config() {
+  sudo chsh -s /bin/zsh
   hostnamectl set-hostname SkippersMPB
 }
 
-function ubuntu_config() {
-  sudo chsh -s /bin/zsh
-  sudo apt-get install -y xserver-xorg-input-libinput
-}
-
-function gitstuff() {
-  sudo add-apt-repository -y ppa:git-core/ppa
-  sudo apt-get update
-  sudo apt-get install -y git
-}
-
-function zsh_plugs() {
-  sudo apt-get install -y zsh zsh-syntax-highlighting autojump
-  git -C "$HOME/.local/src" clone https://github.com/zsh-users/zsh-autosuggestions.git
-}
-
-function redshift() {
-  sudo add-apt-repository -y ppa:dobey/redshift-daily
-  sudo apt-get update
-  sudo apt-get install -y redshift
-}
-
-function nvim_install() {
-  sudo add-apt-repository -y ppa:neovim-ppa/stable
-  sudo apt-get update
-  sudo apt-get install -y neovim
-}
-
-function i3() {
-  sudo apt-get update && sudo apt-get -y dist-upgrade && \
-  sudo apt-get install -y libxcb1-dev libxcb-keysyms1-dev libpango1.0-dev libxcb-util0-dev libxcb-icccm4-dev libyajl-dev libstartup-notification0-dev libxcb-randr0-dev libev-dev libxcb-cursor-dev libxcb-xinerama0-dev libxcb-xkb-dev libxkbcommon-dev libxkbcommon-x11-dev autoconf xutils-dev libxcb-shape0-dev dh-autoreconf libtool
-
-  mkdir -p $HOME/.local/src
-  cd $HOME/.local/src
-
-  git clone --recursive https://github.com/Airblader/xcb-util-xrm.git xcb-util-xrm
-  cd xcb-util-xrm
+function wm_config() {
+  cd $HOME/.local/src/xcb-util-xrm
   ./autogen.sh
   make
   sudo make install
   sudo ldconfig
   sudo ldconfig -p
 
-  cd $HOME/.local/src
-  git clone https://www.github.com/Airblader/i3 i3-gaps
-  cd i3-gaps
+  cd $HOME/.local/src/i3
   autoreconf --force --install
-  rm -Rf build/
   mkdir build
   cd build/
   ../configure --prefix=/usr --sysconfdir=/etc
   make
   sudo make install
-  which i3
-  ls -l /usr/bin/i3
-}
-
-function i3blocks() {
-  sudo apt-get update
-  sudo apt-get install i3blocks
-}
-
-function alacritty_install() {
-  sudo apt-get install -y cmake libfreetype6-dev libfontconfig1-dev xclip
-
-  sudo apt-get install -y curl
-
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y # rustup
-  rustup override set stable
-  rustup update stable
-  source $HOME/.cargo/env
-
-  mkdir -p $HOME/.local/src
-  cd $HOME/.local/src
-  git clone https://github.com/alacritty/alacritty alacritty
-  cd alacritty
-
-  apt-get install cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev python3
-
-  # option 1
-  cargo install cargo-deb
-  cargo deb --install -p alacritty
-
-  # option 2 (something is not working here)
-  # cargo build --release
-
-  # option 3
-  # cargo install --git https://github.com/alacritty/alacritty
-
-  # option 4
-  # make binary
-
-  # man page
-  sudo mkdir -p /usr/local/share/man/man1
-  gzip -c extra/alacritty.man | sudo tee /usr/local/share/man/man1/alacritty.1.gz > /dev/null
-
-  # zsh completions
-  # mkdir -p ${ZDOTDIR:-~}/.zsh_functions
-  # echo 'fpath+=${ZDOTDIR:-~}/.zsh_functions' >> ${ZDOTDIR:-~}/.zshrc
-  # cp extra/completions/_alacritty ${ZDOTDIR:-~}/.zsh_functions/_alacritty
-
-}
-
-function sublime() {
-  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-  echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-  sudo apt-get update
-  sudo apt-get install -y sublime-text
-}
-
-function vscode() {
-  curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-  sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-  sudo apt-get update
-  sudo apt-get install -y code
-}
-
-function baskerville() {
-  sudo apt-get install -y git \
-                      xcb \
-                      libxcb-util0-dev \
-                      libxcb-ewmh-dev \
-                      libxcb-randr0-dev \
-                      libxcb-icccm4-dev \
-                      libxcb-keysyms1-dev \
-                      libxcb-xinerama0-dev \
-                      libasound2-dev \
-                      gcc \
-                      make \
-                      libxcb-xtest0-dev \
-                      libxft-dev \
-                      libx11-xcb-dev
-
-  cd  ~/.local/src
-  # git clone https://github.com/baskerville/bspwm.git
-  git clone https://github.com/baskerville/sxhkd.git
-  # git clone https://github.com/baskerville/sutils.git
-  # git clone https://github.com/baskerville/xtitle.git
-  # git clone https://github.com/baskerville/xdo.git
-
-  # cd  ~/development/github.com/baskerville
-  # cd bspwm/ && make && sudo make install
-  cd sxhkd && make && sudo make install
-  # cd ../sutils/ && make && sudo make install
-  # cd ../xtitle/ && make && sudo make install
-  # cd ../xdo/ && make && sudo make install
-
-  # patched lemonbar
-  # cd ~/development/github.com/krypt-n
-  # cd !:1
-  # git clone https://github.com/krypt-n/bar.git
-  # cd bar && make && sudo make install
 }
