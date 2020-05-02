@@ -34,7 +34,7 @@ function key_prep() {
 
 
   # option 3
-  wget -q0 - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+  wget -qO - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
   echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
 
 
@@ -77,6 +77,14 @@ function quartus_install() {
   echo '# For Altera USB-Blaster permissions. \
   SUBSYSTEM=="usb",\
   ENV{DEVTYPE}=="usb_device",\ATTR{idVendor}=="09fb",\ATTR{idProduct}=="6001",\MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\RUN+="/bin/chmod 0666 %c"'| sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
+}
+
+function light_install() {
+  wget -qO - https://github.com/haikarainen/light/releases/download/v1.2/light-1.2.tar.gz | tar -C $HOME/.local/src -xzf -
+  cd $HOME/.local/src/light*
+  ./configure && make
+  sudo make install
+  cd ~-
 }
 
 #===============================================================================
