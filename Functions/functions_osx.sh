@@ -35,26 +35,6 @@ function pkg_install() {
   echo "Brew Setup Complete."
 }
 
-function cargo_install() {
-  bigprint "Installing Cargo Packages"
-  which rustup &>/dev/null || (
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    rustup override set stable
-  )
-  rustup update stable
-  source $HOME/.cargo/env
-  cat "$HOME/.config/cargo/cargo_osx.txt" | xargs -n1 cargo install --git
-}
-
-function git_install() {
-  bigprint "Cloning Git Repos"
-  while IFS= read URL; do
-    DIR=$HOME/.local/src/$(basename "$URL" .git)
-    clonepull "$URL" "$DIR"
-  done < "$HOME/.config/git/repos_osx.txt"
-  echo "Repo Cloning Complete."
-}
-
 #===============================================================================
 # APP CONFIGS/SETUPS
 #===============================================================================
@@ -67,9 +47,6 @@ function os_config() {
   # set firefox at default browser
   /Applications/Firefox.app/Contents/MacOS/firefox -setDefaultBrowser -silent
 
-  # Close any open System Preferences panes
-  osascript -e 'quit app "System Preferences"'
-
   # default shell to zsh
   sudo chsh -s /bin/zsh
 
@@ -80,10 +57,8 @@ function os_config() {
   dscacheutil -flushcache
   sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
-  # Set a custom wallpaper image
-  WALLPAPER="$XDG_DATA_HOME/wallpapers/beams.jpeg"
-  osascript -e "tell application \"Finder\" to set desktop picture to \"$(realpath "$WALLPAPER")\" as POSIX file"
-  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$(realpath "$WALLPAPER")\""
+  # Close any open System Preferences panes
+  osascript -e 'quit app "System Preferences"'
 
   # configure osx and set dock elements
   $XDG_CONFIG_HOME/osx/defaults
