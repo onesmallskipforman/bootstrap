@@ -42,6 +42,10 @@ function key_prep() {
   # curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
   wget -qO - https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+
+  # prep ROS
+  wget -qO - https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
+  echo "deb http://packages.ros.org/ros/ubuntu xenial main" | sudo tee /etc/apt/sources.list.d/ros-latest.list
 }
 
 #===============================================================================
@@ -99,6 +103,11 @@ function os_config() {
   sudo chsh -s /bin/zsh
   hostnamectl set-hostname SkippersMPB
   feh --bg-fill ~/.local/share/wallpapers/beams.jpeg
+}
+
+function ros_config() {
+  sudo rosdep init
+  rosdep update
 }
 
 # function wm_config() {
