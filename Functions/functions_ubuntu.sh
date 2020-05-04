@@ -38,6 +38,10 @@ function key_prep() {
   echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
 
 
+  # prep spotify
+  # curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
+  wget -qO - https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
+  echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 }
 
 #===============================================================================
