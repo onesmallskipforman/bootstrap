@@ -31,7 +31,7 @@ function pkg_install() {
     echo "Installing Homebrew..." &&
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   )
-  brew bundle -v --no-lock
+  brew bundle -v --no-lock "Packages/brewfile"
   echo "Brew Setup Complete."
 }
 

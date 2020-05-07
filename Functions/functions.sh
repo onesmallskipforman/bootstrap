@@ -34,7 +34,7 @@ function dotfiles() {
 
 function pip_install() {
   bigprint "Installing Pip Packages"
-  pip3 install -r "$HOME/.config/packages/requirements.txt"
+  pip3 install -r "Packages/requirements.txt"
   echo "Pip Installation Complete."
 }
 
@@ -46,7 +46,7 @@ function cargo_install() {
   )
   rustup update stable
   source $HOME/.cargo/env
-  cat "$HOME/.config/cargo/cargo_$OS.txt" | xargs -n1 cargo install --git
+  cat "Packages/cargo_$OS.txt" | xargs -n1 cargo install --git
   # after cloning https://github.com/alacritty/alacritty.git
   # cd $HOME/.local/src/alacritty
   # option 1
@@ -65,7 +65,7 @@ function git_install() {
   while IFS= read URL; do
     DIR=$HOME/.local/src/$(basename "$URL" .git)
     clonepull "$URL" "$DIR"
-  done < "$HOME/.config/packages/repos_$OS.txt"
+  done < "Packages/repos_$OS.txt"
   echo "Repo Cloning Complete."
 }
 

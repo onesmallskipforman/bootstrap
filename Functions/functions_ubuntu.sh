@@ -24,25 +24,25 @@ function pkg_install() {
   sudo apt-get update -y && sudo apt-get dist-upgrade -y
 
   # import keys
-  grep '^key' "$HOME/.config/packages/aptfile"  \
+  grep '^key' "Packages/aptfile"  \
     | sed 's/^[^"]*"//; s/".*//' \
     | while read key; do wget -qO - $key | sudo apt-key add -; done
   sudo apt-get update -y && sudo apt-get dist-upgrade -y
 
   # add repos
-  grep '^repo' "$HOME/.config/packages/aptfile"  \
+  grep '^repo' "Packages/aptfile"  \
     | sed 's/^[^"]*"//; s/".*//' \
     | xargs -n1 -I{} sudo add-apt-repository -y "{}"
   sudo apt-get update -y && sudo apt-get dist-upgrade -y
 
   # install apt packages
-  grep '^apt' "$HOME/.config/packages/aptfile" \
+  grep '^apt' "Packages/aptfile" \
     | sed 's/^[^"]*"//; s/".*//' \
     | xargs sudo apt-get -y -o Dpkg::Options::=--force-confdef install
   sudo apt-get update -y --fix-missing && sudo apt-get dist-upgrade -y && sudo apt-get -y autoremove
 
   # # alternative for deb files
-  # grep '^deb' "$HOME/.config/packages/aptfile"  \
+  # grep '^deb' "Packages/aptfile"  \
   #   | while IFS=, read url list; do
   #       url=$(sed 's/^[^"]*"//; s/".*//' <<< $url)
   #       list=$(sed 's/^[^"]*"//; s/".*//' <<< $list)
