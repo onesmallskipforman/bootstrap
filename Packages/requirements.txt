@@ -1,0 +1,2 @@
+git+https://github.com/toggle-corp/alacritty-colorscheme.git
+git+https://github.com/dsanson/termpdf.py.git

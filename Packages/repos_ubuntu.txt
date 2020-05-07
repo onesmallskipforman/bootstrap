@@ -1,0 +1,7 @@
+https://github.com/aaron-williamson/base16-alacritty.git
+https://github.com/eendroroy/alacritty-theme.git
+https://github.com/dexpota/kitty-themes.git
+https://github.com/kdrag0n/base16-kitty.git
+https://github.com/zsh-users/zsh-autosuggestions.git
+https://github.com/Airblader/xcb-util-xrm.git
+https://www.github.com/Airblader/i3.git

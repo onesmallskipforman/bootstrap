@@ -11,41 +11,7 @@ function os_prep() {
   # install 32-bit architechture for modelsim
   sudo dpkg --add-architecture i386
 
-
   echo "OS Prep Complete."
-}
-
-function key_prep() {
-  bigprint "Prepping Keys for Installations"
-
-  # Prep Sublime
-  wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-  echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-
-  # Prep VSCode
-  # option 1 - need to test
-  # wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-  # sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-
-  # option 2
-  # curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-  # sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-  # sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-
-
-  # option 3
-  wget -qO - https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-  echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
-
-
-  # prep spotify
-  # curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
-  wget -qO - https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add -
-  echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-
-  # prep ROS
-  wget -qO - https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
-  echo "deb http://packages.ros.org/ros/ubuntu xenial main" | sudo tee /etc/apt/sources.list.d/ros-latest.list
 }
 
 #===============================================================================
@@ -57,15 +23,33 @@ function pkg_install() {
   bigprint "Installing Packages."
   sudo apt-get update -y && sudo apt-get dist-upgrade -y
 
-  grep '^repo' "$HOME/.config/packages/aptfile"  \
+  # import keys
+  grep '^key' "$HOME/.config/packages/aptfile"  \
     | sed 's/^[^"]*"//; s/".*//' \
-    | xargs -n1 sudo add-apt-repository -y
+    | while read key; do wget -qO - $key | sudo apt-key add -; done
   sudo apt-get update -y && sudo apt-get dist-upgrade -y
 
+  # add repos
+  grep '^repo' "$HOME/.config/packages/aptfile"  \
+    | sed 's/^[^"]*"//; s/".*//' \
+    | xargs -n1 -I{} sudo add-apt-repository -y "{}"
+  sudo apt-get update -y && sudo apt-get dist-upgrade -y
+
+  # install apt packages
   grep '^apt' "$HOME/.config/packages/aptfile" \
     | sed 's/^[^"]*"//; s/".*//' \
     | xargs sudo apt-get -y -o Dpkg::Options::=--force-confdef install
   sudo apt-get update -y --fix-missing && sudo apt-get dist-upgrade -y && sudo apt-get -y autoremove
+
+  # # alternative for deb files
+  # grep '^deb' "$HOME/.config/packages/aptfile"  \
+  #   | while IFS=, read url list; do
+  #       url=$(sed 's/^[^"]*"//; s/".*//' <<< $url)
+  #       list=$(sed 's/^[^"]*"//; s/".*//' <<< $list)
+  #       echo "deb $url" | sudo tee /etc/apt/sources.list.d/$list
+  #     done
+  # sudo apt-get update -y && sudo apt-get dist-upgrade -y
+
 }
 
 function quartus_install() {

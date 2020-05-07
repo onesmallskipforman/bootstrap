@@ -1,0 +1,79 @@
+key  "https://download.sublimetext.com/sublimehq-pub.gpg"                       #
+key  "https://packages.microsoft.com/keys/microsoft.asc"                        #
+key  "https://download.spotify.com/debian/pubkey.gpg"                           #
+key  "https://raw.githubusercontent.com/ros/rosdistro/master/ros.key"           #
+
+repo "deb https://download.sublimetext.com/ apt/stable/"                        #
+repo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" #
+repo "deb http://repository.spotify.com stable non-free"                        #
+repo "deb http://packages.ros.org/ros/ubuntu xenial main"                       #
+repo "ppa:dobey/redshift-daily"                                                 #
+repo "ppa:git-core/ppa"                                                         # to get more recent update of git
+repo "ppa:neovim-ppa/stable"                                                    #
+repo "ppa:monettes/i3wm-gaps"                                                   #
+repo "ppa:dawidd0811/neofetch"                                                  #
+repo "ppa:ytvwld/asciiquarium"                                                  #
+
+# alternative format for deb repos
+# deb  "https://download.sublimetext.com/ apt/stable/"                       , "sublime-text"
+# deb  "[arch=amd64] https://packages.microsoft.com/repos/vscode stable main", "vscode"
+# deb  "http://repository.spotify.com stable non-free"                       , "spotify"
+# deb  "http://packages.ros.org/ros/ubuntu xenial main"                      , "ros-latest"
+
+apt  "alsa-utils"                                                               # for audio controls
+apt  "autoconf"                                                                 # i3-gaps dependency
+apt  "autojump"                                                                 #
+apt  "cmake"                                                                    # alacritty dependency
+apt  "code"                                                                     #
+apt  "curl"                                                                     # rustup dependency
+apt  "dh-autoreconf"                                                            # i3-gaps dependency
+apt  "git"                                                                      #
+apt  "i3blocks"                                                                 #
+apt  "libev-dev"                                                                # i3-gaps dependency
+apt  "libfontconfig1-dev"                                                       # alacritty dependency
+apt  "libfreetype6-dev"                                                         # alacritty dependency
+apt  "libpango1.0-dev"                                                          # i3-gaps dependency
+apt  "libstartup-notification0-dev"                                             # i3-gaps dependency
+apt  "libtool"                                                                  # i3-gaps dependency
+apt  "libxcb-cursor-dev"                                                        # i3-gaps dependency
+apt  "libxcb-icccm4-dev"                                                        # i3-gaps dependency
+apt  "libxcb-keysyms1-dev"                                                      # i3-gaps dependency
+apt  "libxcb-randr0-dev"                                                        # i3-gaps dependency
+apt  "libxcb-shape0-dev"                                                        # i3-gaps dependency
+apt  "libxcb-util0-dev"                                                         # i3-gaps dependency
+apt  "libxcb-xfixes0-dev"                                                       # alacritty dependency
+apt  "libxcb-xinerama0-dev"                                                     # i3-gaps dependency
+apt  "libxcb-xkb-dev"                                                           # i3-gaps dependency
+apt  "libxcb1-dev"                                                              # i3-gaps dependency
+apt  "libxkbcommon-dev"                                                         # i3-gaps dependency
+apt  "libxkbcommon-x11-dev"                                                     # i3-gaps dependency
+apt  "libyajl-dev"                                                              # i3-gaps dependency
+apt  "neovim"                                                                   #
+apt  "pkg-config"                                                               # alacritty dependency
+apt  "pulseaudio"                                                               # for audio controls
+apt  "python3"                                                                  # alacritty dependency
+apt  "redshift"                                                                 #
+apt  "sublime-text"                                                             #
+apt  "xautomation"                                                              # for emulating keypresses to deal with firefox
+apt  "xbacklight"                                                               # brightness control
+apt  "xbindkeys"                                                                # for binding keys to deal with firefox
+apt  "xclip"                                                                    # alacritty dependency
+apt  "xdotool"                                                                  # for grabbing window names
+apt  "xserver-xorg-input-libinput"                                              # allows for sane trackpad expeirence
+apt  "xutils-dev"                                                               # i3-gaps dependency
+apt  "zsh"                                                                      #
+apt  "zsh-syntax-highlighting"                                                  #
+apt  "feh"                                                                      #
+apt  "sxiv"                                                                     #
+apt  "i3-wm"                                                                    #
+apt  "compton"                                                                  #
+apt  "neofetch"                                                                 #
+apt  "tty-clock"                                                                #
+apt  "asciiquarium"                                                             #
+apt  "libc6:i386"                                                               # modelsim dependency
+apt  "libncurses5:i386"                                                         # modelsim dependency
+apt  "libstdc++6:i386"                                                          # modelsim dependency
+apt  "libxft2:i386"                                                             # modelsim dependency
+apt  "libxext6:i386"                                                            # modelsim dependency
+apt  "spotify-client"                                                           #
+apt  "ros-kinetic-desktop-full"                                                 #

@@ -23,7 +23,6 @@ function runDots() {
   for ARG in "$@"; do
     [ $ARG = "dots"  ] || [ $ARG = "all" ] && dotfiles "$DIR"
     [ $ARG = "prep"  ] || [ $ARG = "all" ] && os_prep
-    [ $ARG = "key"   ] || [ $ARG = "all" ] && key_prep
     [ $ARG = "pkg"   ] || [ $ARG = "all" ] && pkg_install
     [ $ARG = "pip"   ] || [ $ARG = "all" ] && pip_install
     [ $ARG = "git"   ] || [ $ARG = "all" ] && git_install
