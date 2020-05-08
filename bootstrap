@@ -6,8 +6,8 @@
 
 # grab script directory and functions
 DIR=$(realpath $(dirname $0))
-if [ "$OSTYPE" = "darwin"*    ]; then OS="osx"   ; fi
-if [ "$OSTYPE" = "linux-gnu"  ]; then OS="ubuntu"; fi
+if [[ "$OSTYPE" = "darwin"*   ]]; then OS="osx"   ; fi
+if [[ "$OSTYPE" = "linux-gnu" ]]; then OS="ubuntu"; fi
 
 source "Functions/functions.sh"
 source "Functions/functions_$OS.sh"
