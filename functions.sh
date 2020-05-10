@@ -153,7 +153,7 @@ function pkg_install_osx() {
 #===============================================================================
 
 function config() {
-  bigprint "Configuring OS"
+  bigprint "Runnung Post-Install Configs"
 
   # default shell to zsh
   sudo chsh -s /bin/zsh
@@ -177,11 +177,14 @@ function config_osx() {
   dscacheutil -flushcache
   sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
-  # configure osx and set dock elements
+  # configure osx ui/ux
   $HOME/.config/aqua/defaults
 
   # set firefox at default browser
   /Applications/Firefox.app/Contents/MacOS/firefox -setDefaultBrowser -silent
+
+  # configure yabai wm with scripting addition
+  [ yabai --check-sa ] || sudo yabai --install-sa
 
   echo "OS Config Complete. Restart Required"
 }
@@ -204,7 +207,9 @@ function link() {
 #===============================================================================
 
 function misc() {
+  bigprint "Running Miscellaneous Installs and Configs"
   misc_$OS
+  echo "Misc. operations complete."
 }
 
 function misc_ubuntu() {
@@ -214,7 +219,6 @@ function misc_ubuntu() {
 }
 
 function misc_osx() {
-  yabai_config
   # math_install
 }
 
@@ -248,13 +252,6 @@ function light_install() {
 function ros_config() {
   sudo rosdep init
   rosdep update
-}
-
-function yabai_config() {
-  bigprint "Setting Up Window Manager"
-  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
-  [ yabai --check-sa ] || sudo yabai --install-sa
-  echo "Window Manager Configured."
 }
 
 function math_install() {
