@@ -70,6 +70,23 @@ function git_install() {
 }
 
 #===============================================================================
+# POST-INSTALL CONFIG
+#===============================================================================
+
+function link() {
+  bigprint "Setting Symlinks"
+
+  cat links_$OS.csv | while IFS=, read tgt lnk; do
+    tgt="$(eval echo $tgt)"
+    lnk="$(eval echo $lnk)"
+    ln -sfn "$tgt" "$lnk"
+    ls -l "$lnk"
+  done
+
+  echo "Linking Complete."
+}
+
+#===============================================================================
 # UTILITIES
 #===============================================================================
 

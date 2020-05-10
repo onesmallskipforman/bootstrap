@@ -1,11 +1,12 @@
 # shell functions for configuring and installing various programs on Ubuntu
 
 #===============================================================================
-# SYSTEM PREP
+# MAIN BOOTSTRAP
 #===============================================================================
 
-function os_prep() {
-  bigprint "Prepping OS"
+# SYSTEM PREP
+function prep() {
+  bigprint "Prepping For Bootstrap"
   sudo apt-get install -y git curl gcc
 
   # install 32-bit architechture for modelsim
@@ -14,10 +15,7 @@ function os_prep() {
   echo "OS Prep Complete."
 }
 
-#===============================================================================
 # INSTALLATIONS
-#===============================================================================
-
 function pkg_install() {
   # Install Apt Package Repos and Packages
   bigprint "Installing Packages."
@@ -52,6 +50,29 @@ function pkg_install() {
 
 }
 
+# POST-INSTALL CONFIG
+function config() {
+  bigprint "Configuring"
+
+  # default shell to zsh
+  sudo chsh -s /bin/zsh
+
+  # Set computer name
+  hostnamectl set-hostname SkippersMPB
+
+  echo "OS Config Complete. Restart Required"
+}
+
+#===============================================================================
+# MISCELLANEOUS
+#===============================================================================
+
+function misc() {
+  quartus_install
+  light_install
+  ros_config
+}
+
 function quartus_install() {
   ADIR="$HOME/.local/share/altera"
 
@@ -79,34 +100,7 @@ function light_install() {
   cd ~-
 }
 
-#===============================================================================
-# APP CONFIGS/SETUPS
-#===============================================================================
-
-function os_config() {
-  sudo chsh -s /bin/zsh
-  hostnamectl set-hostname SkippersMPB
-  feh --bg-fill ~/.local/share/wallpapers/beams.jpeg
-}
-
 function ros_config() {
   sudo rosdep init
   rosdep update
 }
-
-# function wm_config() {
-#   cd $HOME/.local/src/xcb-util-xrm
-#   ./autogen.sh
-#   make
-#   sudo make install
-#   sudo ldconfig
-#   sudo ldconfig -p
-
-#   cd $HOME/.local/src/i3
-#   autoreconf --force --install
-#   mkdir build
-#   cd build/
-#   ../configure --prefix=/usr --sysconfdir=/etc
-#   make
-#   sudo make install
-# }

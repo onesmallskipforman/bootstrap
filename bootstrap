@@ -21,17 +21,15 @@ function runDots() {
 
   # Run sections based on command line arguments
   for ARG in "$@"; do
-    [ $ARG = "dots"  ] || [ $ARG = "all" ] && dotfiles "$DIR"
-    [ $ARG = "prep"  ] || [ $ARG = "all" ] && os_prep
-    [ $ARG = "pkg"   ] || [ $ARG = "all" ] && pkg_install
-    [ $ARG = "pip"   ] || [ $ARG = "all" ] && pip_install
-    [ $ARG = "git"   ] || [ $ARG = "all" ] && git_install
-    [ $ARG = "cargo" ] || [ $ARG = "all" ] && cargo_install
-    [ $ARG = "os"    ] || [ $ARG = "all" ] && os_config
-    [ $ARG = "xdg"   ] || [ $ARG = "all" ] && xdg_link
-    [ $ARG = "wm"    ] || [ $ARG = "all" ] && wm_config
-    # [ $ARG = "matlab"   ] || [ $ARG = "all" ] && matlab_install
-    # [ $ARG = "wolfram"  ] || [ $ARG = "all" ] && mathematica_install
+    [ $ARG = "dots"   ] || [ $ARG = "all" ] && dotfiles "$DIR"
+    [ $ARG = "prep"   ] || [ $ARG = "all" ] && prep
+    [ $ARG = "pkg"    ] || [ $ARG = "all" ] && pkg_install
+    [ $ARG = "pip"    ] || [ $ARG = "all" ] && pip_install
+    [ $ARG = "git"    ] || [ $ARG = "all" ] && git_install
+    [ $ARG = "cargo"  ] || [ $ARG = "all" ] && cargo_install
+    [ $ARG = "config" ] || [ $ARG = "all" ] && config
+    [ $ARG = "link"   ] || [ $ARG = "all" ] && link
+    [ $ARG = "misc"     ] || [ $ARG = "all" ] && misc
   done
   bigprint "Completed running dots. Please resart your computer."
   echo "Some of these changes require a logout/restart to take effect.\n"

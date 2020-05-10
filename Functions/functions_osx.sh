@@ -1,11 +1,12 @@
 # shell functions for configuring and installing various programs on OS X
 
 #===============================================================================
-# SYSTEM PREP
+# MAIN BOOTSTRAP
 #===============================================================================
 
-function os_prep() {
-  bigprint "Prepping OS"
+# SYSTEM PREP
+function prep() {
+  bigprint "Prepping For Bootstrap"
 
   sudo softwareupdate -irR --verbose    # update os
   sudo tmutil disable                   # disable time machine
@@ -19,10 +20,7 @@ function os_prep() {
   echo "OS Prep Complete."
 }
 
-#===============================================================================
 # INSTALLATIONS
-#===============================================================================
-
 function pkg_install() {
   # homebrew-managed installations
   bigprint "Installing Packages."
@@ -35,14 +33,9 @@ function pkg_install() {
   echo "Brew Setup Complete."
 }
 
-#===============================================================================
-# APP CONFIGS/SETUPS
-#===============================================================================
-
-function os_config() {
-  # set osx defaults
-  bigprint "Configuring OS"
-  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
+# POST-INSTALL CONFIG
+function config() {
+  bigprint "Configuring"
 
   # set firefox at default browser
   /Applications/Firefox.app/Contents/MacOS/firefox -setDefaultBrowser -silent
@@ -50,133 +43,86 @@ function os_config() {
   # default shell to zsh
   sudo chsh -s /bin/zsh
 
-  # Set computer name (as done via System Preferences → Sharing)
+  # Set computer name
   sudo scutil --set ComputerName  "SkippersMBP"
   sudo scutil --set HostName      "SkippersMBP"
   sudo scutil --set LocalHostName "SkippersMBP"
   dscacheutil -flushcache
   sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "SkippersMBP"
 
-  # Close any open System Preferences panes
-  osascript -e 'quit app "System Preferences"'
-
   # configure osx and set dock elements
-  $XDG_CONFIG_HOME/osx/defaults
-  $XDG_CONFIG_HOME/osx/dock
-
-  for app in "Activity Monitor" \
-    "Dock" \
-    "Finder" \
-    "Messages" \
-    "Safari" \
-    "cfprefsd" \
-    "SystemUIServer"; do
-    killall "${app}" &> /dev/null
-  done
+  $HOME/.config/aqua/defaults
 
   echo "OS Config Complete. Restart Required"
 }
 
-function wm_config() {
+#===============================================================================
+# MISCELLANEOUS
+#===============================================================================
+
+function misc() {
+  yabai_config
+  # math_install
+}
+
+function yabai_config() {
   bigprint "Setting Up Window Manager"
   # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
   [ yabai --check-sa ] || sudo yabai --install-sa
   echo "Window Manager Configured."
 }
 
-function xdg_link() {
-  bigprint "Linking XDG Files"
-  # [[ ! "$OSTYPE" = "darwin"* ]] && echo "OS Config Complete." && return
-
-  function xdg_generic() {
-    # links personal files that follow XDG standard to those that do not
-
-    OS="$1" # path to files on specific OS
-    for item in "${@:2}"; do
-      # Trim Path and Prepend OS Path
-      sed 's!.*/!!; s,^,'"$OS/"',' <<< "$item" | xargs -I{} rm -r {}
-    done
-
-    # link items
-    ln -sf "${@:2}" "$OS"
-    ls -l "$OS"
+function math_install() {
+  # MATH TOOLS INSTALLATION (EXPERIMENTAL)
+  function dmg_cleanup() {
+    # remove dmg and installer on exit, failure, etc.
+    local installer=$(basename $1); local mountname=$(dirname $1)
+    pgrep "${installer%.*}"       && killall "${installer%.*}"
+    [ -d  "/Volumes/$mountname" ] && diskutil unmount force "/Volumes/$mountname"
+    rm -f "$2"
   }
 
-  OSX="$HOME/Library/ApplicationSupport"
-  xdg_generic "$OSX/Code/User" \
-    "$XDG_CONFIG_HOME/Code/User"/*
-  xdg_generic "$OSX/Minecraft" \
-    "$XDG_CONFIG_HOME/minecraft"/* "$XDG_DATA_HOME/minecraft"/*
-  xdg_generic "$OSX/Slack" \
-    "$XDG_DATA_HOME/slack"/*
-  xdg_generic "$OSX/Spotify" \
-    "$XDG_DATA_HOME/spotify"/*
-  xdg_generic "$OSX/Sublime Text 3" \
-    "$XDG_CONFIG_HOME/sublime-text-3/User"
-  xdg_generic "$OSX/Sublime Text 3/Cache/Python" \
-    "$XDG_CONFIG_HOME/sublime-text-3/Cache/Python/Completion Rules.tmPreferences"
-  xdg_generic "$OSX/Sublime Text 3/Installed Packages" \
-    "$XDG_CONFIG_HOME/sublime-text-3/Installed Packages/Package Control.sublime-package"
-  xdg_generic "$OSX/Übersicht" \
-    "$XDG_CONFIG_HOME/ubersicht/widgets"
-  xdg_generic "$OSX/tracesOf.Uebersicht" \
-    "$XDG_CONFIG_HOME/ubersicht/WidgetSettings.json"
+  function dmg_run () {
+    # unzip and mount a dmg
+    local DMGPATH="$1"; local INSTPATH="$2"
+    trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
+    unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
+    hdiutil attach "$DMGPATH" -nobrowse
+  }
 
-  echo "XDG Linking Complete."
-}
+  function mathematica_install () {
+    bigprint "Installing Mathematica"
 
-#===============================================================================
-# MATH TOOLS INSTALLATION (EXPERIMENTAL)
-#===============================================================================
+    # attatch dmg, move app, symlink
+    local version="12.1.0"
+    dmg_run \
+      "$XDG_DATA_HOME/mathematica/Mathematica_${version}_MAC.dmg" \
+      "/Volumes/Mathematica/Mathematica.app"
+    sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications
+    sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
+    trap - INT ERR TERM EXIT # undo trap set in dmg_run
+    echo "Mathematica Install Complete."
 
-function dmg_cleanup() {
-  # remove dmg and installer on exit, failure, etc.
-  local installer=$(basename $1); local mountname=$(dirname $1)
-  pgrep "${installer%.*}"       && killall "${installer%.*}"
-  [ -d  "/Volumes/$mountname" ] && diskutil unmount force "/Volumes/$mountname"
-  rm -f "$2"
-}
+    # "/Volumes/Download Manager for Wolfram Mathematica 12.1/Download Manager for Wolfram Mathematica 12.1.app"
+    # setopt +o nomatch
+    # while [ ! -f ~/Downloads/M-OSX-L-$version-*/*.dmg]; do sleep 1; done
+    # killall "${installer%.*}"
+    # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
+  }
 
-function dmg_run () {
-  # unzip and mount a dmg
-  local DMGPATH="$1"; local INSTPATH="$2"
-  trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
-  unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
-  hdiutil attach "$DMGPATH" -nobrowse
-}
+  function matlab_install() {
+    bigprint "Installing MATLAB"
 
-function mathematica_install () {
-  bigprint "Installing Mathematica"
-
-  # attatch dmg, move app, symlink
-  local version="12.1.0"
-  dmg_run \
-    "$XDG_DATA_HOME/mathematica/Mathematica_${version}_MAC.dmg" \
-    "/Volumes/Mathematica/Mathematica.app"
-  sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications
-  sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
-  trap - INT ERR TERM EXIT # undo trap set in dmg_run
-  echo "Mathematica Install Complete."
-
-  # "/Volumes/Download Manager for Wolfram Mathematica 12.1/Download Manager for Wolfram Mathematica 12.1.app"
-  # setopt +o nomatch
-  # while [ ! -f ~/Downloads/M-OSX-L-$version-*/*.dmg]; do sleep 1; done
-  # killall "${installer%.*}"
-  # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
-}
-
-function matlab_install() {
-  bigprint "Installing MATLAB"
-
-  # run installer in dmg, print password, wait for closure, symlink
-  local version="R2019b"
-  dmg_run \
-    "$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg" \
-    "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-  pass mathematica
-  open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-  sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
-  sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
-  trap - INT ERR TERM EXIT # undo trap set in dmg_run
-  echo "MATLAB Install Complete."
+    # run installer in dmg, print password, wait for closure, symlink
+    local version="R2019b"
+    dmg_run \
+      "$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg" \
+      "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+    pass mathematica
+    open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+    sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
+    sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
+    trap - INT ERR TERM EXIT # undo trap set in dmg_run
+    echo "MATLAB Install Complete."
+  }
 }
