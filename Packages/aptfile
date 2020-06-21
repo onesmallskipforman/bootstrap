@@ -24,6 +24,8 @@ apt  "alsa-utils"                                                               
 apt  "autoconf"                                                                 # i3-gaps dependency
 apt  "autojump"                                                                 #
 apt  "cmake"                                                                    # alacritty dependency
+apt  "make"                                                                     # bspwm dep
+apt  "gcc"                                                                      # bspwm dep
 apt  "code"                                                                     #
 apt  "curl"                                                                     # rustup dependency
 apt  "dh-autoreconf"                                                            # i3-gaps dependency
@@ -35,15 +37,20 @@ apt  "libfreetype6-dev"                                                         
 apt  "libpango1.0-dev"                                                          # i3-gaps dependency
 apt  "libstartup-notification0-dev"                                             # i3-gaps dependency
 apt  "libtool"                                                                  # i3-gaps dependency
+apt  "libasound2-dev"                                                           # bspwm dep
 apt  "libxcb-cursor-dev"                                                        # i3-gaps dependency
-apt  "libxcb-icccm4-dev"                                                        # i3-gaps dependency
-apt  "libxcb-keysyms1-dev"                                                      # i3-gaps dependency
-apt  "libxcb-randr0-dev"                                                        # i3-gaps dependency
+apt  "libxcb-icccm4-dev"                                                        # i3-gaps dependency, bspwm dep
+apt  "libxcb-keysyms1-dev"                                                      # i3-gaps dependency, bspwm dep
+apt  "libxcb-randr0-dev"                                                        # i3-gaps dependency, bspwm dep
 apt  "libxcb-shape0-dev"                                                        # i3-gaps dependency
-apt  "libxcb-util0-dev"                                                         # i3-gaps dependency
+apt  "libxcb-util0-dev"                                                         # i3-gaps dependency, bspwm dep
+apt  "libxcb-ewmh-dev"                                                          # bspwm dep
 apt  "libxcb-xfixes0-dev"                                                       # alacritty dependency
-apt  "libxcb-xinerama0-dev"                                                     # i3-gaps dependency
+apt  "libxcb-xinerama0-dev"                                                     # i3-gaps dependency, bspwm dep
 apt  "libxcb-xkb-dev"                                                           # i3-gaps dependency
+apt  "libxcb-xtest0-dev"                                                        # bspwm dep
+apt  "libxft-dev"                                                               # bspwm dep
+apt  "libx11-xcb-dev"                                                           # bspwm dep
 apt  "libxcb1-dev"                                                              # i3-gaps dependency
 apt  "libxkbcommon-dev"                                                         # i3-gaps dependency
 apt  "libxkbcommon-x11-dev"                                                     # i3-gaps dependency
@@ -77,3 +84,4 @@ apt  "libxft2:i386"                                                             
 apt  "libxext6:i386"                                                            # modelsim dependency
 apt  "spotify-client"                                                           #
 apt  "ros-kinetic-desktop-full"                                                 #
+apt  "xcb"                                                                      # bspwm dependency

@@ -5,3 +5,5 @@ https://github.com/kdrag0n/base16-kitty.git
 https://github.com/zsh-users/zsh-autosuggestions.git
 https://github.com/Airblader/xcb-util-xrm.git
 https://www.github.com/Airblader/i3.git
+https://github.com/baskerville/bspwm.git
+https://github.com/baskerville/sxhkd.git
