@@ -85,3 +85,27 @@ apt  "libxext6:i386"                                                            
 apt  "spotify-client"                                                           #
 apt  "ros-kinetic-desktop-full"                                                 #
 apt  "xcb"                                                                      # bspwm dependency
+
+apt "cmake"                                                                     # polybar dep
+apt "cmake-data"                                                                # polybar dep
+apt "libcairo2-dev"                                                             # polybar dep
+apt "libxcb1-dev"                                                               # polybar dep
+apt "libxcb-ewmh-dev"                                                           # polybar dep
+apt "libxcb-icccm4-dev"                                                         # polybar dep
+apt "libxcb-image0-dev"                                                         # polybar dep
+apt "libxcb-randr0-dev"                                                         # polybar dep
+apt "libxcb-util0-dev"                                                          # polybar dep
+apt "libxcb-xkb-dev"                                                            # polybar dep
+apt "pkg-config"                                                                # polybar dep
+apt "python-xcbgen"                                                             # polybar dep
+apt "xcb-proto"                                                                 # polybar dep
+apt "libxcb-xrm-dev"                                                            # polybar dep
+apt "i3-wm"                                                                     # polybar dep
+apt "libasound2-dev"                                                            # polybar dep
+apt "libmpdclient-dev"                                                          # polybar dep
+apt "libiw-dev"                                                                 # polybar dep
+apt "libcurl4-openssl-dev"                                                      # polybar dep
+apt "libpulse-dev"                                                              # polybar dep
+apt "libxcb-composite0-dev"                                                     # polybar dep
+apt "xcb"                                                                       # polybar dep
+apt "libxcb-ewmh2"                                                              # polybar dep
