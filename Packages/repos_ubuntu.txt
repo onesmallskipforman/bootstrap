@@ -7,3 +7,4 @@ https://github.com/Airblader/xcb-util-xrm.git
 https://www.github.com/Airblader/i3.git
 https://github.com/baskerville/bspwm.git
 https://github.com/baskerville/sxhkd.git
+https://github.com/tryone144/compton

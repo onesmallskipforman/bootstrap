@@ -109,3 +109,30 @@ apt "libpulse-dev"                                                              
 apt "libxcb-composite0-dev"                                                     # polybar dep
 apt "xcb"                                                                       # polybar dep
 apt "libxcb-ewmh2"                                                              # polybar dep
+
+apt "libconfig-dev"                                                             # compton dep
+apt "libdbus-1-dev"                                                             # compton dep
+apt "asciidoc"                                                                  # compton dep
+
+# apt "libxext-dev"                                                               # compton dep (?)
+# apt "libxcb1-dev"                                                               # compton dep (?)
+# apt "libxcb-damage0-dev"                                                        # compton dep (?)
+# apt "libxcb-xfixes0-dev"                                                        # compton dep (?)
+# apt "libxcb-shape0-dev"                                                         # compton dep (?)
+# apt "libxcb-render-util0-dev"                                                   # compton dep (?)
+# apt "libxcb-render0-dev"                                                        # compton dep (?)
+# apt "libxcb-randr0-dev"                                                         # compton dep (?)
+# apt "libxcb-composite0-dev"                                                     # compton dep (?)
+# apt "libxcb-image0-dev"                                                         # compton dep (?)
+# apt "libxcb-present-dev"                                                        # compton dep (?)
+# apt "libxcb-xinerama0-dev"                                                      # compton dep (?)
+# apt "libxcb-glx0-dev"                                                           # compton dep (?)
+# apt "libpixman-1-dev"                                                           # compton dep (?)
+# apt "libdbus-1-dev"                                                             # compton dep (?)
+# apt "libconfig-dev"                                                             # compton dep (?)
+# apt "libgl1-mesa-dev"                                                           # compton dep (?)
+# apt "libpcre2-dev"                                                              # compton dep (?)
+# apt "libevdev-dev"                                                              # compton dep (?)
+# apt "uthash-dev"                                                                # compton dep (?)
+# apt "libev-dev"                                                                 # compton dep (?)
+# apt "libx11-xcb-dev"                                                            # compton dep (?)
