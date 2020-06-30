@@ -62,6 +62,7 @@ function pkg_install() {
   pkg_install_$OS
   pip_install
   cargo_install
+  goget_install
   git_install
 }
 
@@ -80,17 +81,14 @@ function cargo_install() {
   rustup update stable
   source $HOME/.cargo/env
   cat "Packages/cargo_$OS.txt" | xargs -n1 cargo install --git
-  # after cloning https://github.com/alacritty/alacritty.git
-  # cd $HOME/.local/src/alacritty
-  # option 1
-  # cargo install cargo-deb
-  # cargo deb --install -p alacritty
-  # option 2 (something is not working here)
-  # cargo build --release
-  # option 3
-  # cargo install --git https://github.com/alacritty/alacritty
-  # option 4
-  # make binary
+}
+
+function goget_install() {
+  bigprint "Installing Go Packages"
+  which go &>/dev/null || (
+    wget -qO - https://dl.google.com/go/go1.11.linux-amd64.tar.gz | tar -C /usr/local -xzf -
+  )
+  cat "Packages/go_$OS.txt" | xargs -n1
 }
 
 function git_install() {

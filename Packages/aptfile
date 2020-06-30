@@ -136,3 +136,7 @@ apt "asciidoc"                                                                  
 # apt "uthash-dev"                                                                # compton dep (?)
 # apt "libev-dev"                                                                 # compton dep (?)
 # apt "libx11-xcb-dev"                                                            # compton dep (?)
+
+
+apt "screenfetch"
+apt "htop"
