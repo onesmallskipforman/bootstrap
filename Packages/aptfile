@@ -63,7 +63,6 @@ apt  "redshift"                                                                 
 apt  "sublime-text"                                                             #
 apt  "xautomation"                                                              # for emulating keypresses to deal with firefox
 apt  "xbacklight"                                                               # brightness control
-apt  "xbindkeys"                                                                # for binding keys to deal with firefox
 apt  "xclip"                                                                    # alacritty dependency
 apt  "xdotool"                                                                  # for grabbing window names
 apt  "xserver-xorg-input-libinput"                                              # allows for sane trackpad expeirence
