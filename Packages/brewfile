@@ -4,6 +4,7 @@ tap "homebrew/cask-drivers"                              #
 tap "homebrew/services"                                  #
 tap "koekeishiya/formulae"                               #
 tap "zero-sh/tap"                                        #
+tap "brew tap zegervdv/zathura"
 
 brew "asciiquarium"                                      #
 brew "autojump"                                          #
@@ -98,3 +99,5 @@ cask "virtualbox"                                        # required for docker
 cask "visual-studio-code"                                #
 cask "xctu"                                              #
 cask "xquartz"                                           #
+cask "zathura"
+cask "zathura-pdf-poppler"
