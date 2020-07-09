@@ -3,7 +3,6 @@ key  "https://packages.microsoft.com/keys/microsoft.asc"                        
 key  "https://download.spotify.com/debian/pubkey.gpg"                           #
 key  "https://raw.githubusercontent.com/ros/rosdistro/master/ros.key"           #
 
-repo "deb https://download.sublimetext.com/ apt/stable/"                        #
 repo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" #
 repo "deb http://repository.spotify.com stable non-free"                        #
 repo "deb http://packages.ros.org/ros/ubuntu xenial main"                       #
@@ -15,7 +14,6 @@ repo "ppa:dawidd0811/neofetch"                                                  
 repo "ppa:ytvwld/asciiquarium"                                                  #
 
 # alternative format for deb repos
-# deb  "https://download.sublimetext.com/ apt/stable/"                       , "sublime-text"
 # deb  "[arch=amd64] https://packages.microsoft.com/repos/vscode stable main", "vscode"
 # deb  "http://repository.spotify.com stable non-free"                       , "spotify"
 # deb  "http://packages.ros.org/ros/ubuntu xenial main"                      , "ros-latest"

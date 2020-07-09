@@ -1,8 +1,3 @@
 "$HOME/.config/Code/User"                                                        , "$HOME/Library/ApplicationSupport/Code/User"
 "$HOME/.config/minecraft/options.txt"                                            , "$HOME/Library/ApplicationSupport/Minecraft/options.txt"
 "$HOME/.local/share/spotify/prefs"                                               , "$HOME/Library/ApplicationSupport/Spotify/prefs"
-"$HOME/.config/sublime-text-3/User"                                              , "$HOME/Library/ApplicationSupport/Sublime Text 3/User"
-"$HOME/.config/sublime-text-3/Cache/Python/Completion Rules.tmPreferences"       , "$HOME/Library/ApplicationSupport/Sublime Text 3/Cache/Python/Completion Rules.tmPreferences"
-"$HOME/.config/sublime-text-3/Installed Packages/Package Control.sublime-package", "$HOME/Library/ApplicationSupport/Sublime Text 3/Installed Packages/Package Control.sublime-package"
-"$HOME/.config/ubersicht/widgets"                                                , "$HOME/Library/ApplicationSupport/Übersicht/widgets"
-"$HOME/.config/ubersicht/WidgetSettings.json"                                    , "$HOME/Library/ApplicationSupport/tracesOf.Uebersicht/WidgetSettings.json"
