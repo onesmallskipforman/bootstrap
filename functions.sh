@@ -69,6 +69,12 @@ function pkg_install() {
 function pip_install() {
   bigprint "Installing Pip Packages"
   pip3 install -r "Packages/requirements.txt"
+
+  which pip3 &>/dev/null || (
+    curl https://bootstrap.pypa.io/get-pip.py | python3
+    # wget -qO - https://bootstrap.pypa.io/get-pip.py | python3
+  )
+
   echo "Pip Installation Complete."
 }
 
@@ -214,6 +220,7 @@ function misc_ubuntu() {
   quartus_install
   light_install
   ros_config
+  ~/.local/src/nerd-fonts/install.sh Hack
 }
 
 function misc_osx() {

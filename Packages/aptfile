@@ -137,3 +137,13 @@ apt "asciidoc"                                                                  
 
 apt "screenfetch"
 apt "htop"
+
+
+
+apt "software-properties-common" # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
+repo "ppa:deadsnakes/ppa" # up-to-date versions of python
+
+
+
+apt "python3-pip" # pip for ubuntu's python3, do NOT upgrade
+apt "python3.6"

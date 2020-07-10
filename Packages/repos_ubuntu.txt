@@ -11,3 +11,4 @@ https://github.com/tryone144/compton
 https://github.com/qutebrowser/qutebrowser.git
 https://github.com/dylanaraps/pfetch
 https://github.com/junegunn/fzf
+https://github.com/ryanoasis/nerd-fonts
