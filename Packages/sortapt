@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# fun little script to sort brewfile
+
+echo "\
+$(grep '^repo' $APT_BUNDLE_FILE | sort)\n
+$(grep '^apt'  $APT_BUNDLE_FILE | sort)\
+" > $APT_BUNDLE_FILE

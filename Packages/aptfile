@@ -19,40 +19,27 @@ repo "ppa:ytvwld/asciiquarium"                                                  
 # deb  "http://packages.ros.org/ros/ubuntu xenial main"                      , "ros-latest"
 
 apt  "alsa-utils"                                                               # for audio controls
-apt  "autoconf"                                                                 # i3-gaps dependency
 apt  "autojump"                                                                 #
 apt  "cmake"                                                                    # alacritty dependency
 apt  "make"                                                                     # bspwm dep
 apt  "gcc"                                                                      # bspwm dep
 apt  "code"                                                                     #
 apt  "curl"                                                                     # rustup dependency
-apt  "dh-autoreconf"                                                            # i3-gaps dependency
 apt  "git"                                                                      #
 apt  "i3blocks"                                                                 #
-apt  "libev-dev"                                                                # i3-gaps dependency
 apt  "libfontconfig1-dev"                                                       # alacritty dependency
 apt  "libfreetype6-dev"                                                         # alacritty dependency
-apt  "libpango1.0-dev"                                                          # i3-gaps dependency
-apt  "libstartup-notification0-dev"                                             # i3-gaps dependency
-apt  "libtool"                                                                  # i3-gaps dependency
 apt  "libasound2-dev"                                                           # bspwm dep
-apt  "libxcb-cursor-dev"                                                        # i3-gaps dependency
-apt  "libxcb-icccm4-dev"                                                        # i3-gaps dependency, bspwm dep
-apt  "libxcb-keysyms1-dev"                                                      # i3-gaps dependency, bspwm dep
-apt  "libxcb-randr0-dev"                                                        # i3-gaps dependency, bspwm dep
-apt  "libxcb-shape0-dev"                                                        # i3-gaps dependency
-apt  "libxcb-util0-dev"                                                         # i3-gaps dependency, bspwm dep
+apt  "libxcb-icccm4-dev"                                                        # bspwm dep
+apt  "libxcb-keysyms1-dev"                                                      # bspwm dep
+apt  "libxcb-randr0-dev"                                                        # bspwm dep
+apt  "libxcb-util0-dev"                                                         # bspwm dep
 apt  "libxcb-ewmh-dev"                                                          # bspwm dep
 apt  "libxcb-xfixes0-dev"                                                       # alacritty dependency
-apt  "libxcb-xinerama0-dev"                                                     # i3-gaps dependency, bspwm dep
-apt  "libxcb-xkb-dev"                                                           # i3-gaps dependency
-apt  "libxcb-xtest0-dev"                                                        # bspwm dep
+apt  "libxcb-xinerama0-dev"                                                     # bspwm dep
+apt  "libxcb-xkb-dev"                                                           # "libxcb-xtest0-dev"                                                        # bspwm dep
 apt  "libxft-dev"                                                               # bspwm dep
 apt  "libx11-xcb-dev"                                                           # bspwm dep
-apt  "libxcb1-dev"                                                              # i3-gaps dependency
-apt  "libxkbcommon-dev"                                                         # i3-gaps dependency
-apt  "libxkbcommon-x11-dev"                                                     # i3-gaps dependency
-apt  "libyajl-dev"                                                              # i3-gaps dependency
 apt  "neovim"                                                                   #
 apt  "pkg-config"                                                               # alacritty dependency
 apt  "pulseaudio"                                                               # for audio controls
@@ -64,7 +51,6 @@ apt  "xbacklight"                                                               
 apt  "xclip"                                                                    # alacritty dependency
 apt  "xdotool"                                                                  # for grabbing window names
 apt  "xserver-xorg-input-libinput"                                              # allows for sane trackpad expeirence
-apt  "xutils-dev"                                                               # i3-gaps dependency
 apt  "zsh"                                                                      #
 apt  "zsh-syntax-highlighting"                                                  #
 apt  "feh"                                                                      #
@@ -147,3 +133,8 @@ repo "ppa:deadsnakes/ppa" # up-to-date versions of python
 
 apt "python3-pip" # pip for ubuntu's python3, do NOT upgrade
 apt "python3.6"
+
+
+
+repo "ppa:inkscape.dev/stable" # inkscape repo
+apt "inkscape" # for latex drawings

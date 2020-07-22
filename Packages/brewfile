@@ -1,106 +1,104 @@
-tap "homebrew/cask"                                      #
-tap "homebrew/cask-drivers"                              #
-tap "homebrew/services"                                  #
-tap "koekeishiya/formulae"                               #
-tap "zegervdv/zathura"
-tap "homebrew/cask-fonts"
-tap "somdoron/formulae"
-tap "elsorino/homebrew-elso"
+tap "elsorino/homebrew-elso"                                             #
+tap "homebrew/cask"                                                      #
+tap "homebrew/cask-drivers"                                              #
+tap "homebrew/cask-fonts"                                                #
+tap "homebrew/services"                                                  #
+tap "koekeishiya/formulae"                                               #
+tap "somdoron/formulae"                                                  #
+tap "zegervdv/zathura"                                                   #
 
-brew "asciiquarium"                                      #
-brew "autojump"                                          #
-brew "autopep8"                                          #
-brew "balena-cli"                                        #
-brew "calcurse"                                          #
-brew "clang-format"                                      #
-brew "coreutils"                                         #
-brew "docker"                                            #
-brew "docker-credential-helper"                          #
-brew "docker-machine"                                    # required for docker. do not start here as it may tamper with virtualbox updating #
-brew "dockutil"                                          # tool for configuring osx dock
-brew "enscript"                                          # for converting code to postscript
-brew "figlet"                                            # for writing ascii text
-brew "flake8"                                            #
-brew "fzf"                                               #
-brew "gcc"                                               #
-brew "geckodriver"                                       #
-brew "ghostscript"                                       # for ps2pdf
-brew "gnu-getopt"                                        #
-brew "gnu-typist"                                        #
-brew "gotop"                                             #
-brew "gpg"                                               #
-brew "gptfdisk"                                          # crucial for quickly fixing apfs partition hexcode
-brew "htop"                                              #
-brew "imagemagick"                                       #
-brew "jq"                                                #
-brew "jupyterlab"                                        #
-brew "koekeishiya/formulae/skhd" , restart_service: true #
-brew "koekeishiya/formulae/yabai", restart_service: true #
-brew "lf"                                                #
-brew "libusb"                                            #
-brew "llvm"                                              #
-brew "neofetch"                                          #
-brew "neovim"                                            #
-brew "openssl"                                           # required for generating crypt(3) passwords
-brew "openvpn"                                           #
-brew "pandoc"                                            #
-brew "pass"                                              #
-brew "pipes-sh"                                          #
-brew "platformio"                                        #
-brew "poppler"                                           # for pdftotext and pdftoppm
-brew "pycodestyle"                                       # required by autopep8
-brew "pylint"                                            #
-brew "python"                                            #
-brew "redshift"                                          #
-brew "rsync"                                             #
-brew "sc-im"                                             #
-brew "tmux"                                              #
-brew "tty-clock"                                         #
-brew "unar"                                              #
-brew "verilator"                                         #
-brew "wget"                                              #
-brew "youtube-dl"                                        #
-brew "zsh-autosuggestions"                               #
-brew "zsh-syntax-highlighting"                           #
-
-cask "alacritty"                                         # fast terminal
-cask "bitwarden"                                         # password store
-cask "coolterm"                                          # serial port terminal for arduino, as per "https://docs.platformio.org/en/latest/faq.html?highlight=coolterm#advanced-serial-monitor-with-ui" 
-cask "discord"                                           #
-cask "dmenu-mac"                                         #
-cask "elsorino/homebrew-elso/macfeh"                     #
-cask "firefox"                                           #
-cask "fliqlo"                                            #
-cask "homebrew/cask-drivers/ftdi-vcp-driver"             #
-cask "inkscape"                                          # for latex drawings
-cask "kitty"                                             #
-cask "librepcb"                                          # for schematics
-cask "mactex-no-gui"                                     #
-cask "minecraft"                                         #
-cask "nordvpn"                                           #
-cask "slack"                                             #
-cask "spotify"                                           #
-cask "ticktick"                                          #
-cask "virtualbox"                                        # required for docker
-cask "visual-studio-code"                                #
-cask "xctu"                                              #
-cask "xquartz"                                           #
-
-
-
-brew "zegervdv/zathura/zathura"
-brew "zegervdv/zathura/zathura-pdf-poppler"
-
-cask "font-dejavusansmono-nerd-font"
-cask "font-robotomono-nerd-font"
-cask "font-ubuntumono-nerd-font"
-
+brew "asciiquarium"                                                      #
+brew "autojump"                                                          #
+brew "autopep8"                                                          #
+brew "balena-cli"                                                        #
 brew "broot"
+brew "calcurse"                                                          #
+brew "chafa" # terminal graphics
+brew "clang-format"                                                      #
+brew "coreutils"                                                         #
+brew "docker"                                                            #
+brew "docker-credential-helper"                                          #
+brew "docker-machine"                                                    # required for docker
+brew "dockutil"                                                          # tool for configuring osx dock
+brew "enscript"                                                          # for converting code to postscript
+brew "figlet"                                                            # for writing ascii text
+brew "flake8"                                                            #
+brew "fzf"                                                               #
+brew "gcc"                                                               #
+brew "geckodriver"                                                       #
+brew "ghostscript"                                                       # for ps2pdf
+brew "gnu-getopt"                                                        #
+brew "gnu-typist"                                                        #
 brew "go"
-brew "the_silver_searcher"
-brew "screenfetch"
-brew "ripgrep"
-brew "pfetch"
-brew "mpv"
-
+brew "gotop"                                                             #
+brew "gpg"                                                               #
+brew "gptfdisk"                                                          # crucial for quickly fixing apfs partition hexcode
+brew "htop"                                                              #
+brew "imagemagick"                                                       #
+brew "jq"                                                                #
+brew "jupyterlab"                                                        #
+brew "koekeishiya/formulae/skhd" , restart_service: true                 #
+brew "koekeishiya/formulae/yabai", restart_service: true                 #
+brew "lf"                                                                #
+brew "libusb"                                                            #
+brew "llvm"                                                              #
+brew "mpv"                                                               # for playing videos
+brew "neofetch"                                                          #
+brew "neovim"                                                            #
+brew "newsboat" # terminal RSS feed
+brew "openssl"                                                           # required for generating crypt(3) passwords
+brew "openvpn"                                                           #
+brew "pandoc"                                                            #
+brew "pass"                                                              # password store
+brew "pfetch"                                                            # lightweight system info tool
+brew "pidof" # used by pywal
+brew "pipes-sh"                                                          #
+brew "platformio"                                                        # massive embedded development suite
+brew "poppler"                                                           # for pdftotext and pdftoppm
+brew "pycodestyle"                                                       # required by autopep8
+brew "pylint"                                                            #
+brew "python"                                                            #
+brew "redshift"                                                          #
+brew "ripgrep"                                                           # searcher used with vim
+brew "rsync"                                                             #
+brew "sc-im"                                                             #
+brew "screenfetch"                                                       # another system info tool, probably the slowest
 brew "somdoron/formulae/spacebar", args: ["HEAD"], restart_service: true # bar for osx
+brew "the_silver_searcher"                                               # searcher used with vim
+brew "tmux"                                                              #
+brew "tty-clock"                                                         #
+brew "unar"                                                              #
+brew "verilator"                                                         #
+brew "wget"                                                              #
+brew "youtube-dl"                                                        #
+brew "zegervdv/zathura/zathura"                                          # document reader
+brew "zegervdv/zathura/zathura-pdf-poppler"                              # zathura pdf dependency
+brew "zsh-autosuggestions"                                               #
+brew "zsh-syntax-highlighting"                                           #
+
+cask "alacritty"                                                         # fast terminal
+cask "coolterm"                                                          # serial port terminal for arduino, as per "https://docs.platformio.org/en/latest/faq.html?highlight=coolterm#advanced-serial-monitor-with-ui"
+cask "discord"                                                           #
+cask "dmenu-mac"                                                         #
+cask "elsorino/homebrew-elso/macfeh"                                     #
+cask "firefox"                                                           #
+cask "fliqlo"                                                            # screensaver
+cask "font-dejavusansmono-nerd-font"                                     # a font
+cask "font-fira-code-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-robotomono-nerd-font"                                         # a font
+cask "font-saucecodepro-nerd-font"
+cask "font-ubuntumono-nerd-font"                                         # a font
+cask "homebrew/cask-drivers/ftdi-vcp-driver"                             #
+cask "inkscape"                                                          # for latex drawings
+cask "kitty"                                                             #
+cask "librepcb"                                                          # for schematics
+cask "mactex-no-gui"                                                     #
+cask "minecraft"                                                         #
+cask "nordvpn"                                                           #
+cask "slack"                                                             #
+cask "spotify"                                                           #
+cask "virtualbox"                                                        # required for docker
+cask "visual-studio-code"                                                #
+cask "xctu"                                                              #
+cask "xquartz"                                                           # for rendering ssh windows

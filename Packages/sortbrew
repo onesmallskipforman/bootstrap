@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# fun little script to sort brewfile
+
+echo "\
+$(grep '^tap'  $HOMEBREW_BUNDLE_FILE | sort)\n
+$(grep '^brew' $HOMEBREW_BUNDLE_FILE | sort)\n
+$(grep '^cask' $HOMEBREW_BUNDLE_FILE | sort)\
+" > $HOMEBREW_BUNDLE_FILE

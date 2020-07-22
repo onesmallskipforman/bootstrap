@@ -73,6 +73,7 @@ function pip_install() {
   which pip3 &>/dev/null || (
     curl https://bootstrap.pypa.io/get-pip.py | python3
     # wget -qO - https://bootstrap.pypa.io/get-pip.py | python3
+    # python3 -m pip uninstall pip
   )
 
   echo "Pip Installation Complete."
