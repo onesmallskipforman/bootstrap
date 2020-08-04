@@ -194,19 +194,6 @@ function config_osx() {
   echo "OS Config Complete. Restart Required"
 }
 
-function link() {
-  bigprint "Setting Symlinks"
-
-  cat Packages/links_$OS.csv | while IFS=, read tgt lnk; do
-    tgt="$(eval echo $tgt)"
-    lnk="$(eval echo $lnk)"
-    ln -sfn "$tgt" "$lnk"
-    ls -l "$lnk"
-  done
-
-  echo "Linking Complete."
-}
-
 #===============================================================================
 # MISCELLANEOUS
 #===============================================================================
@@ -227,7 +214,10 @@ function misc_ubuntu() {
 function misc_osx() {
   # math_install
   mkdir -p $(brew --prefix zathura)/lib/zathura
-  ln -s $(brew --prefix zathura-pdf-poppler)/libpdf-poppler.dylib $(brew --prefix zathura)/lib/zathura/libpdf-poppler.dylib
+  ln -sf $(brew --prefix zathura-pdf-poppler)/libpdf-poppler.dylib $(brew --prefix zathura)/lib/zathura/libpdf-poppler.dylib
+  ln -sf "$HOME/.config/minecraft/options.txt" "$HOME/Library/ApplicationSupport/Minecraft/options.txt"
+  ln -sf "$HOME/.local/share/spotify/prefs"    "$HOME/Library/ApplicationSupport/Spotify/prefs"
+  ln -sfn "$HOME/.config/Code/User"            "$HOME/Library/ApplicationSupport/Code/User"
 }
 
 function quartus_install() {
@@ -262,8 +252,14 @@ function ros_config() {
   rosdep update
 }
 
-function math_install() {
-  # MATH TOOLS INSTALLATION (EXPERIMENTAL)
+function matlab_install() {
+  # MATLAB INSTALLATION (EXPERIMENTAL)
+  bigprint "Installing MATLAB"
+
+  local version="R2019b"
+  local DMGPATH="$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg"
+  local INSTPATH="/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+
   function dmg_cleanup() {
     # remove dmg and installer on exit, failure, etc.
     local installer=$(basename $1); local mountname=$(dirname $1)
@@ -271,50 +267,20 @@ function math_install() {
     [ -d  "/Volumes/$mountname" ] && diskutil unmount force "/Volumes/$mountname"
     rm -f "$2"
   }
+  trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
 
-  function dmg_run () {
-    # unzip and mount a dmg
-    local DMGPATH="$1"; local INSTPATH="$2"
-    trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
-    unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
-    hdiutil attach "$DMGPATH" -nobrowse
-  }
+  # unzip, mount, and run installer, waiting for installer to close
+  unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
+  hdiutil attach "$DMGPATH" -nobrowse
+  open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
 
-  function mathematica_install () {
-    bigprint "Installing Mathematica"
+  # symlink tools
+  sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
+  sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
 
-    # attatch dmg, move app, symlink
-    local version="12.1.0"
-    dmg_run \
-      "$XDG_DATA_HOME/mathematica/Mathematica_${version}_MAC.dmg" \
-      "/Volumes/Mathematica/Mathematica.app"
-    sudo rsync -a -I -u --info=progress2 /Volumes/Mathematica/Mathematica.app /Applications
-    sudo ln -sf /Applications/Mathematica.app/Contents/MacOS/wolframscript /usr/local/bin/wolframscript
-    trap - INT ERR TERM EXIT # undo trap set in dmg_run
-    echo "Mathematica Install Complete."
-
-    # "/Volumes/Download Manager for Wolfram Mathematica 12.1/Download Manager for Wolfram Mathematica 12.1.app"
-    # setopt +o nomatch
-    # while [ ! -f ~/Downloads/M-OSX-L-$version-*/*.dmg]; do sleep 1; done
-    # killall "${installer%.*}"
-    # hdiutil attach ~/Downloads/*M-OSX*/*.dmg -nobrowse
-  }
-
-  function matlab_install() {
-    bigprint "Installing MATLAB"
-
-    # run installer in dmg, print password, wait for closure, symlink
-    local version="R2019b"
-    dmg_run \
-      "$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg" \
-      "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-    pass mathematica
-    open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-    sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
-    sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
-    trap - INT ERR TERM EXIT # undo trap set in dmg_run
-    echo "MATLAB Install Complete."
-  }
+  # undo traps
+  trap - INT ERR TERM EXIT
+  echo "MATLAB Install Complete."
 }
 
 #===============================================================================

@@ -44,7 +44,7 @@ brew "libusb"                                                            #
 brew "llvm"                                                              #
 brew "mpv"                                                               # for playing videos
 brew "neofetch"                                                          #
-brew "neovim"                                                            #
+brew "neovim", args: ["HEAD"]                                            #
 brew "newsboat" # terminal RSS feed
 brew "openssl"                                                           # required for generating crypt(3) passwords
 brew "openvpn"                                                           #

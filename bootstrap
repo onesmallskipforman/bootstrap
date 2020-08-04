@@ -24,7 +24,6 @@ function runDots() {
     [ $ARG = "prep"   ] || [ $ARG = "all" ] && prep
     [ $ARG = "pkg"    ] || [ $ARG = "all" ] && pkg_install
     [ $ARG = "config" ] || [ $ARG = "all" ] && config
-    [ $ARG = "link"   ] || [ $ARG = "all" ] && link
     [ $ARG = "misc"   ] || [ $ARG = "all" ] && misc
   done
   bigprint "Completed running dots. Please resart your computer."
