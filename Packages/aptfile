@@ -1,140 +1,112 @@
-key  "https://download.sublimetext.com/sublimehq-pub.gpg"                       #
-key  "https://packages.microsoft.com/keys/microsoft.asc"                        #
-key  "https://download.spotify.com/debian/pubkey.gpg"                           #
-key  "https://raw.githubusercontent.com/ros/rosdistro/master/ros.key"           #
+key  "http://packages.ros.org/ros.key"
+key  "http://download.spotify.com/debian/pubkey.gpg"
 
-repo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" #
-repo "deb http://repository.spotify.com stable non-free"                        #
-repo "deb http://packages.ros.org/ros/ubuntu xenial main"                       #
-repo "ppa:dobey/redshift-daily"                                                 #
-repo "ppa:git-core/ppa"                                                         # to get more recent update of git
-repo "ppa:neovim-ppa/stable"                                                    #
-repo "ppa:monettes/i3wm-gaps"                                                   #
-repo "ppa:dawidd0811/neofetch"                                                  #
-repo "ppa:ytvwld/asciiquarium"                                                  #
+repo "deb http://packages.ros.org/ros/ubuntu xenial main" #
+repo "deb http://repository.spotify.com stable non-free"  #
+repo "ppa:dawidd0811/neofetch"                            #
+repo "ppa:deadsnakes/ppa"                                 # up-to-date versions of python
+repo "ppa:dobey/redshift-daily"                           #
+repo "ppa:git-core/ppa"                                   # to get more recent update of git
+repo "ppa:inkscape.dev/stable"                            # inkscape repo
+repo "ppa:monettes/i3wm-gaps"                             #
+repo "ppa:neovim-ppa/stable"                              #
+repo "ppa:ytvwld/asciiquarium"                            #
 
-# alternative format for deb repos
-# deb  "[arch=amd64] https://packages.microsoft.com/repos/vscode stable main", "vscode"
-# deb  "http://repository.spotify.com stable non-free"                       , "spotify"
-# deb  "http://packages.ros.org/ros/ubuntu xenial main"                      , "ros-latest"
-
-apt  "alsa-utils"                                                               # for audio controls
-apt  "autojump"                                                                 #
-apt  "cmake"                                                                    # alacritty dependency
-apt  "make"                                                                     # bspwm dep
-apt  "gcc"                                                                      # bspwm dep
-apt  "code"                                                                     #
-apt  "curl"                                                                     # rustup dependency
-apt  "git"                                                                      #
-apt  "i3blocks"                                                                 #
-apt  "libfontconfig1-dev"                                                       # alacritty dependency
-apt  "libfreetype6-dev"                                                         # alacritty dependency
-apt  "libasound2-dev"                                                           # bspwm dep
-apt  "libxcb-icccm4-dev"                                                        # bspwm dep
-apt  "libxcb-keysyms1-dev"                                                      # bspwm dep
-apt  "libxcb-randr0-dev"                                                        # bspwm dep
-apt  "libxcb-util0-dev"                                                         # bspwm dep
-apt  "libxcb-ewmh-dev"                                                          # bspwm dep
-apt  "libxcb-xfixes0-dev"                                                       # alacritty dependency
-apt  "libxcb-xinerama0-dev"                                                     # bspwm dep
-apt  "libxcb-xkb-dev"                                                           # "libxcb-xtest0-dev"                                                        # bspwm dep
-apt  "libxft-dev"                                                               # bspwm dep
-apt  "libx11-xcb-dev"                                                           # bspwm dep
-apt  "neovim"                                                                   #
-apt  "pkg-config"                                                               # alacritty dependency
-apt  "pulseaudio"                                                               # for audio controls
-apt  "python3"                                                                  # alacritty dependency
-apt  "redshift"                                                                 #
-apt  "sublime-text"                                                             #
-apt  "xautomation"                                                              # for emulating keypresses to deal with firefox
-apt  "xbacklight"                                                               # brightness control
-apt  "xclip"                                                                    # alacritty dependency
-apt  "xdotool"                                                                  # for grabbing window names
-apt  "xserver-xorg-input-libinput"                                              # allows for sane trackpad expeirence
-apt  "zsh"                                                                      #
-apt  "zsh-syntax-highlighting"                                                  #
-apt  "feh"                                                                      #
-apt  "sxiv"                                                                     #
-apt  "i3-wm"                                                                    #
-apt  "compton"                                                                  #
-apt  "neofetch"                                                                 #
-apt  "tty-clock"                                                                #
-apt  "asciiquarium"                                                             #
-apt  "libc6:i386"                                                               # modelsim dependency
-apt  "libncurses5:i386"                                                         # modelsim dependency
-apt  "libstdc++6:i386"                                                          # modelsim dependency
-apt  "libxft2:i386"                                                             # modelsim dependency
-apt  "libxext6:i386"                                                            # modelsim dependency
-apt  "spotify-client"                                                           #
-apt  "ros-kinetic-desktop-full"                                                 #
-apt  "xcb"                                                                      # bspwm dependency
-
-apt "cmake"                                                                     # polybar dep
-apt "cmake-data"                                                                # polybar dep
-apt "libcairo2-dev"                                                             # polybar dep
-apt "libxcb1-dev"                                                               # polybar dep
-apt "libxcb-ewmh-dev"                                                           # polybar dep
-apt "libxcb-icccm4-dev"                                                         # polybar dep
-apt "libxcb-image0-dev"                                                         # polybar dep
-apt "libxcb-randr0-dev"                                                         # polybar dep
-apt "libxcb-util0-dev"                                                          # polybar dep
-apt "libxcb-xkb-dev"                                                            # polybar dep
-apt "pkg-config"                                                                # polybar dep
-apt "python-xcbgen"                                                             # polybar dep
-apt "xcb-proto"                                                                 # polybar dep
-apt "libxcb-xrm-dev"                                                            # polybar dep
-apt "i3-wm"                                                                     # polybar dep
-apt "libasound2-dev"                                                            # polybar dep
-apt "libmpdclient-dev"                                                          # polybar dep
-apt "libiw-dev"                                                                 # polybar dep
-apt "libcurl4-openssl-dev"                                                      # polybar dep
-apt "libpulse-dev"                                                              # polybar dep
-apt "libxcb-composite0-dev"                                                     # polybar dep
-apt "xcb"                                                                       # polybar dep
-apt "libxcb-ewmh2"                                                              # polybar dep
-
-apt "libconfig-dev"                                                             # compton dep
-apt "libdbus-1-dev"                                                             # compton dep
-apt "asciidoc"                                                                  # compton dep
-
-# apt "libxext-dev"                                                               # compton dep (?)
-# apt "libxcb1-dev"                                                               # compton dep (?)
-# apt "libxcb-damage0-dev"                                                        # compton dep (?)
-# apt "libxcb-xfixes0-dev"                                                        # compton dep (?)
-# apt "libxcb-shape0-dev"                                                         # compton dep (?)
-# apt "libxcb-render-util0-dev"                                                   # compton dep (?)
-# apt "libxcb-render0-dev"                                                        # compton dep (?)
-# apt "libxcb-randr0-dev"                                                         # compton dep (?)
-# apt "libxcb-composite0-dev"                                                     # compton dep (?)
-# apt "libxcb-image0-dev"                                                         # compton dep (?)
-# apt "libxcb-present-dev"                                                        # compton dep (?)
-# apt "libxcb-xinerama0-dev"                                                      # compton dep (?)
-# apt "libxcb-glx0-dev"                                                           # compton dep (?)
-# apt "libpixman-1-dev"                                                           # compton dep (?)
-# apt "libdbus-1-dev"                                                             # compton dep (?)
-# apt "libconfig-dev"                                                             # compton dep (?)
-# apt "libgl1-mesa-dev"                                                           # compton dep (?)
-# apt "libpcre2-dev"                                                              # compton dep (?)
-# apt "libevdev-dev"                                                              # compton dep (?)
-# apt "uthash-dev"                                                                # compton dep (?)
-# apt "libev-dev"                                                                 # compton dep (?)
-# apt "libx11-xcb-dev"                                                            # compton dep (?)
-
-
-apt "screenfetch"
-apt "htop"
-
-
-
-apt "software-properties-common" # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
-repo "ppa:deadsnakes/ppa" # up-to-date versions of python
-
-
-
-apt "python3-pip" # pip for ubuntu's python3, do NOT upgrade
-apt "python3.6"
-
-
-
-repo "ppa:inkscape.dev/stable" # inkscape repo
-apt "inkscape" # for latex drawings
+apt  "alsa-utils"                                         # for audio controls
+apt  "asciiquarium"                                       #
+apt  "autojump"                                           #
+apt  "cmake"                                              # alacritty dependency
+apt  "code"                                               #
+apt  "compton"                                            #
+apt  "curl"                                               # rustup dependency
+apt  "feh"                                                #
+apt  "gcc"                                                # bspwm dep
+apt  "git"                                                #
+apt  "i3-wm"                                              #
+apt  "i3blocks"                                           #
+apt  "libasound2-dev"                                     # bspwm dep
+apt  "libc6:i386"                                         # modelsim dependency
+apt  "libfontconfig1-dev"                                 # alacritty dependency
+apt  "libfreetype6-dev"                                   # alacritty dependency
+apt  "libncurses5:i386"                                   # modelsim dependency
+apt  "libstdc++6:i386"                                    # modelsim dependency
+apt  "libx11-xcb-dev"                                     # bspwm dep
+apt  "libxcb-ewmh-dev"                                    # bspwm dep
+apt  "libxcb-icccm4-dev"                                  # bspwm dep
+apt  "libxcb-keysyms1-dev"                                # bspwm dep
+apt  "libxcb-randr0-dev"                                  # bspwm dep
+apt  "libxcb-util0-dev"                                   # bspwm dep
+apt  "libxcb-xfixes0-dev"                                 # alacritty dependency
+apt  "libxcb-xinerama0-dev"                               # bspwm dep
+apt  "libxcb-xkb-dev"                                     # ??
+apt  "libxcb-xtest0-dev"                                  # bspwm dep                      # bspwm dep
+apt  "libxext6:i386"                                      # modelsim dependency
+apt  "libxft-dev"                                         # bspwm dep
+apt  "libxft2:i386"                                       # modelsim dependency
+apt  "make"                                               # bspwm dep
+apt  "neofetch"                                           #
+apt  "neovim"                                             #
+apt  "pkg-config"                                         # alacritty dependency
+apt  "pulseaudio"                                         # for audio controls
+apt  "python3"                                            # alacritty dependency
+apt  "redshift"                                           #
+apt  "ros-kinetic-desktop-full"                           #
+apt  "spotify-client"                                     #
+apt  "sublime-text"                                       #
+apt  "sxiv"                                               #
+apt  "tty-clock"                                          #
+apt  "xautomation"                                        # for emulating keypresses to deal with firefox
+apt  "xbacklight"                                         # brightness control
+apt  "xcb"                                                # bspwm dependency
+apt  "xclip"                                              # alacritty dependency
+apt  "xdotool"                                            # for grabbing window names
+apt  "xserver-xorg-input-libinput"                        # allows for sane trackpad expeirence
+apt  "zsh"                                                #
+apt  "zsh-syntax-highlighting"                            #
+apt  "cmake"                                              # polybar dep
+apt  "cmake-data"                                         # polybar dep
+apt  "htop"
+apt  "i3-wm"                                              # polybar dep
+apt  "inkscape"                                           # for latex drawings
+apt  "libasound2-dev"                                     # polybar dep
+apt  "libcairo2-dev"                                      # polybar dep
+apt  "libconfig-dev"                                      # picom dep
+apt  "libcurl4-openssl-dev"                               # polybar dep
+apt  "libdbus-1-dev"                                      # picom dep
+apt  "libev-dev"                                          # picom dep
+apt  "libevdev-dev"                                       # picom dep
+apt  "libgl1-mesa-dev"                                    # picom dep
+apt  "libiw-dev"                                          # polybar dep
+apt  "libmpdclient-dev"                                   # polybar dep
+apt  "libpcre2-dev"                                       # picom dep
+apt  "libpixman-1-dev"                                    # picom dep
+apt  "libpulse-dev"                                       # polybar dep
+apt  "libx11-xcb-dev"                                     # picom dep
+apt  "libxcb-composite0-dev"                              # picom dep, polybar dep
+apt  "libxcb-damage0-dev"                                 # picom dep
+apt  "libxcb-ewmh-dev"                                    # polybar dep
+apt  "libxcb-ewmh2"                                       # polybar dep
+apt  "libxcb-glx0-dev"                                    # picom dep (?)
+apt  "libxcb-icccm4-dev"                                  # polybar dep
+apt  "libxcb-image0-dev"                                  # picom dep, polybar dep
+apt  "libxcb-present-dev"                                 # picom dep
+apt  "libxcb-randr0-dev"                                  # picom dep polybar dep
+apt  "libxcb-render-util0-dev"                            # picom dep
+apt  "libxcb-render0-dev"                                 # picom dep
+apt  "libxcb-shape0-dev"                                  # picom dep
+apt  "libxcb-util0-dev"                                   # polybar dep
+apt  "libxcb-xfixes0-dev"                                 # picom dep
+apt  "libxcb-xinerama0-dev"                               # picom dep
+apt  "libxcb-xkb-dev"                                     # polybar dep
+apt  "libxcb-xrm-dev"                                     # polybar dep
+apt  "libxcb1-dev"                                        # picom dep, polybar dep
+apt  "libxext-dev"                                        # picom dep
+apt  "pkg-config"                                         # polybar dep
+apt  "python-xcbgen"                                      # polybar dep
+apt  "python3-pip"                                        # pip for ubuntu's python3, do NOT upgrade
+apt  "python3.6"
+apt  "screenfetch"
+apt  "software-properties-common"                         # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
+apt  "uthash-dev"                                         # picom dep
+apt  "xcb"                                                # polybar dep
+apt  "xcb-proto"                                          # polybar dep

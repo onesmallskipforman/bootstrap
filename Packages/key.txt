@@ -1,0 +1,2 @@
+http://packages.ros.org/ros.key
+http://download.spotify.com/debian/pubkey.gpg

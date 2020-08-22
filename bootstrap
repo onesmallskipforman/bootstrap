@@ -20,11 +20,10 @@ function runDots() {
 
   # Run sections based on command line arguments
   for ARG in "$@"; do
-    [ $ARG = "dots"   ] || [ $ARG = "all" ] && dotfiles "$DIR"
     [ $ARG = "prep"   ] || [ $ARG = "all" ] && prep
+    [ $ARG = "dots"   ] || [ $ARG = "all" ] && dotfiles "$DIR"
     [ $ARG = "pkg"    ] || [ $ARG = "all" ] && pkg_install
     [ $ARG = "config" ] || [ $ARG = "all" ] && config
-    [ $ARG = "misc"   ] || [ $ARG = "all" ] && misc
   done
   bigprint "Completed running dots. Please resart your computer."
   echo "Some of these changes require a logout/restart to take effect.\n"
