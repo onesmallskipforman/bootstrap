@@ -108,7 +108,7 @@ function config() {
   bigprint "Runnung Miscellaneous Post-Package Installs and Configs"
 
   # default shell to zsh
-  sudo chsh -s /bin/zsh
+  sudo chsh -s /bin/zsh $(whoami)
 
   # os-specific configs
   config_$OS
