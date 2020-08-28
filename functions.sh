@@ -44,6 +44,7 @@ function prep_osx() {
 }
 
 function prep_ubuntu() {
+  sudo apt-get update -y --fix-missing && sudo apt-get dist-upgrade -y
   sudo apt-get install -y git gcc
 }
 
@@ -89,8 +90,7 @@ function pkg_install_ubuntu() {
   # install apt keys, repos, and packages, then cleanup
   xargs -a key.txt sudo apt-key adv --fetch-keys
   xargs -a ppa.txt sudo add-apt-repository -y install; sudo apt-get update
-  xargs -a apt.txt sudo apt-get -y install
-  sudo apt-get update -y --fix-missing && sudo apt-get dist-upgrade -y && sudo apt-get -y autoremove
+  xargs -a apt.txt sudo apt-get -y install; sudo apt-get -y autoremove
 }
 
 function pkg_install_osx() {
