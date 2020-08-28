@@ -54,8 +54,6 @@ function prep_ubuntu() {
 function pkg_install() {
   pkg_install_$OS
   pip_install
-  cargo_install
-  goget_install
   git_install
 }
 
@@ -70,15 +68,6 @@ function pip_install() {
   )
 
   echo "Pip Installation Complete."
-}
-
-function cargo_install() {
-  bigprint "Installing Cargo Packages"
-  which rustup &>/dev/null || (
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  )
-  rustup override set stable; rustup update stable; source $CARGO_HOME/env
-  cat "Packages/cargo_$OS.txt" | xargs -n1 cargo install --git
 }
 
 function git_install() {

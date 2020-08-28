@@ -11,6 +11,7 @@ repo "ppa:inkscape.dev/stable"                            # inkscape repo
 repo "ppa:monettes/i3wm-gaps"                             #
 repo "ppa:neovim-ppa/stable"                              #
 repo "ppa:ytvwld/asciiquarium"                            #
+repo "ppa:mmstick76/alacritty"                            #
 
 apt  "alsa-utils"                                         # for audio controls
 apt  "asciiquarium"                                       #
