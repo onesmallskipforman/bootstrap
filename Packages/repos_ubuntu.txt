@@ -3,12 +3,6 @@ https://github.com/eendroroy/alacritty-theme.git
 https://github.com/dexpota/kitty-themes.git
 https://github.com/kdrag0n/base16-kitty.git
 https://github.com/zsh-users/zsh-autosuggestions.git
-https://github.com/Airblader/xcb-util-xrm.git
-https://www.github.com/Airblader/i3.git
-https://github.com/baskerville/bspwm.git
-https://github.com/baskerville/sxhkd.git
-https://github.com/tryone144/compton
-https://github.com/qutebrowser/qutebrowser.git
 https://github.com/dylanaraps/pfetch
 https://github.com/junegunn/fzf
 https://github.com/ryanoasis/nerd-fonts

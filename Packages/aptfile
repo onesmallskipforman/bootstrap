@@ -11,103 +11,65 @@ repo "ppa:inkscape.dev/stable"                            # inkscape repo
 repo "ppa:monettes/i3wm-gaps"                             #
 repo "ppa:neovim-ppa/stable"                              #
 repo "ppa:ytvwld/asciiquarium"                            #
-repo "ppa:mmstick76/alacritty"                            #
+repo "ppa:mmstick76/alacritty"                            # alacritty ppa
+repo "ppa:neovim-ppa/unstable"                            # neovim latest unstable
+repo "ppa:drdeimosnn/survive-on-wm"                       # for bspwm, sxhkd, polybar
 
 apt  "alsa-utils"                                         # for audio controls
 apt  "asciiquarium"                                       #
 apt  "autojump"                                           #
-apt  "cmake"                                              # alacritty dependency
+apt  "cmake"                                              #
 apt  "code"                                               #
 apt  "compton"                                            #
-apt  "curl"                                               # rustup dependency
+apt  "curl"                                               #
 apt  "feh"                                                #
-apt  "gcc"                                                # bspwm dep
+apt  "gcc"                                                #
 apt  "git"                                                #
-apt  "i3-wm"                                              #
-apt  "i3blocks"                                           #
-apt  "libasound2-dev"                                     # bspwm dep
 apt  "libc6:i386"                                         # modelsim dependency
-apt  "libfontconfig1-dev"                                 # alacritty dependency
-apt  "libfreetype6-dev"                                   # alacritty dependency
 apt  "libncurses5:i386"                                   # modelsim dependency
 apt  "libstdc++6:i386"                                    # modelsim dependency
-apt  "libx11-xcb-dev"                                     # bspwm dep
-apt  "libxcb-ewmh-dev"                                    # bspwm dep
-apt  "libxcb-icccm4-dev"                                  # bspwm dep
-apt  "libxcb-keysyms1-dev"                                # bspwm dep
-apt  "libxcb-randr0-dev"                                  # bspwm dep
-apt  "libxcb-util0-dev"                                   # bspwm dep
-apt  "libxcb-xfixes0-dev"                                 # alacritty dependency
-apt  "libxcb-xinerama0-dev"                               # bspwm dep
-apt  "libxcb-xkb-dev"                                     # ??
-apt  "libxcb-xtest0-dev"                                  # bspwm dep                      # bspwm dep
 apt  "libxext6:i386"                                      # modelsim dependency
-apt  "libxft-dev"                                         # bspwm dep
 apt  "libxft2:i386"                                       # modelsim dependency
-apt  "make"                                               # bspwm dep
+apt  "make"                                               #
 apt  "neofetch"                                           #
 apt  "neovim"                                             #
-apt  "pkg-config"                                         # alacritty dependency
 apt  "pulseaudio"                                         # for audio controls
-apt  "python3"                                            # alacritty dependency
 apt  "redshift"                                           #
 apt  "ros-kinetic-desktop-full"                           #
 apt  "spotify-client"                                     #
-apt  "sublime-text"                                       #
 apt  "sxiv"                                               #
 apt  "tty-clock"                                          #
 apt  "xautomation"                                        # for emulating keypresses to deal with firefox
 apt  "xbacklight"                                         # brightness control
-apt  "xcb"                                                # bspwm dependency
-apt  "xclip"                                              # alacritty dependency
-apt  "xdotool"                                            # for grabbing window names
+apt  "xdotool"                                            # for grabbing window names (I use it to handle firefox keys)
+apt  "xserver-xorg-core"                                  # libinput dependency
 apt  "xserver-xorg-input-libinput"                        # allows for sane trackpad expeirence
 apt  "zsh"                                                #
 apt  "zsh-syntax-highlighting"                            #
-apt  "cmake"                                              # polybar dep
-apt  "cmake-data"                                         # polybar dep
-apt  "htop"
-apt  "i3-wm"                                              # polybar dep
+apt  "htop"                                               #
 apt  "inkscape"                                           # for latex drawings
-apt  "libasound2-dev"                                     # polybar dep
-apt  "libcairo2-dev"                                      # polybar dep
 apt  "libconfig-dev"                                      # picom dep
-apt  "libcurl4-openssl-dev"                               # polybar dep
 apt  "libdbus-1-dev"                                      # picom dep
 apt  "libev-dev"                                          # picom dep
 apt  "libevdev-dev"                                       # picom dep
 apt  "libgl1-mesa-dev"                                    # picom dep
-apt  "libiw-dev"                                          # polybar dep
-apt  "libmpdclient-dev"                                   # polybar dep
 apt  "libpcre2-dev"                                       # picom dep
 apt  "libpixman-1-dev"                                    # picom dep
-apt  "libpulse-dev"                                       # polybar dep
 apt  "libx11-xcb-dev"                                     # picom dep
-apt  "libxcb-composite0-dev"                              # picom dep, polybar dep
+apt  "libxcb-composite0-dev"                              # picom dep
 apt  "libxcb-damage0-dev"                                 # picom dep
-apt  "libxcb-ewmh-dev"                                    # polybar dep
-apt  "libxcb-ewmh2"                                       # polybar dep
 apt  "libxcb-glx0-dev"                                    # picom dep (?)
-apt  "libxcb-icccm4-dev"                                  # polybar dep
-apt  "libxcb-image0-dev"                                  # picom dep, polybar dep
+apt  "libxcb-image0-dev"                                  # picom dep
 apt  "libxcb-present-dev"                                 # picom dep
-apt  "libxcb-randr0-dev"                                  # picom dep polybar dep
+apt  "libxcb-randr0-dev"                                  # picom dep
 apt  "libxcb-render-util0-dev"                            # picom dep
 apt  "libxcb-render0-dev"                                 # picom dep
 apt  "libxcb-shape0-dev"                                  # picom dep
-apt  "libxcb-util0-dev"                                   # polybar dep
 apt  "libxcb-xfixes0-dev"                                 # picom dep
 apt  "libxcb-xinerama0-dev"                               # picom dep
-apt  "libxcb-xkb-dev"                                     # polybar dep
-apt  "libxcb-xrm-dev"                                     # polybar dep
-apt  "libxcb1-dev"                                        # picom dep, polybar dep
+apt  "libxcb1-dev"                                        # picom dep
 apt  "libxext-dev"                                        # picom dep
-apt  "pkg-config"                                         # polybar dep
-apt  "python-xcbgen"                                      # polybar dep
 apt  "python3-pip"                                        # pip for ubuntu's python3, do NOT upgrade
-apt  "python3.6"
-apt  "screenfetch"
+apt  "python3.6"                                          # python 3.6
 apt  "software-properties-common"                         # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
 apt  "uthash-dev"                                         # picom dep
-apt  "xcb"                                                # polybar dep
-apt  "xcb-proto"                                          # polybar dep
