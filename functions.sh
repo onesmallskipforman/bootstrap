@@ -111,7 +111,7 @@ function config() {
   sudo chsh -s /bin/zsh $(whoami)
 
   # install node (for coc.vim)
-  curl -sL install-node.now.sh/lts | bash
+  which node &>/dev/null || (curl -sL install-node.now.sh/lts | bash)
 
   # os-specific configs
   config_$OS
