@@ -126,6 +126,9 @@ function config_ubuntu() {
   light_install
   sudo rosdep init && rosdep update
   ~/.local/src/nerd-fonts/install.sh Hack
+
+  # disable desktop environment
+  sudo systemctl set-default multi-user.target
 }
 
 function config_osx() {
