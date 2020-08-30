@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# fun little script to sort brewfile
-
-echo "\
-$(grep '^tap'  brewfile | sort)\n
-$(grep '^brew' brewfile | sort)\n
-$(grep '^cask' brewfile | sort)\
-" > brewfile
