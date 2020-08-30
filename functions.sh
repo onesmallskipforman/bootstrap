@@ -126,7 +126,7 @@ function config_ubuntu() {
   quartus_install
   light_install
   sudo rosdep init && rosdep update
-  ~/.local/src/nerd-fonts/install.sh Hack
+  nerdfont_install "DejaVuSansMono" "FiraCode" "Hack" "RobotoMono" "SourceCodePro" "UbuntuMono"
 
   # disable desktop environment
   sudo systemctl set-default multi-user.target
@@ -164,6 +164,16 @@ function config_osx() {
 #===============================================================================
 # MISCELLANEOUS
 #===============================================================================
+
+function nerdfont_install() {
+  for arg in "$@"; do
+    wget -q --show-progress \
+      https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$arg.zip \
+      && unzip -qo $arg.zip -d $HOME/.local/share/fonts \
+      && rm $arg.zip
+    done
+}
+
 
 function quartus_install() {
 
