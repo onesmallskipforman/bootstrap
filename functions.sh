@@ -88,9 +88,10 @@ function pkg_install() {
 
 function pkg_install_ubuntu() {
   # install apt keys, repos, and packages, then cleanup
-  xargs -a key.txt sudo apt-key adv --fetch-keys
-  xargs -a ppa.txt sudo add-apt-repository -y install; sudo apt-get update
-  xargs -a apt.txt sudo apt-get -y install; sudo apt-get -y autoremove
+  function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' aptfile }
+  filter "key"  | xargs sudo apt-key adv --fetch-keys
+  filter "ppa" | xargs sudo add-apt-repository -y; sudo apt-get update
+  filter "apt"  | xargs sudo apt-get -y install; sudo apt-get -y autoremove
 }
 
 function pkg_install_osx() {

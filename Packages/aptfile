@@ -1,75 +1,74 @@
-key  "http://packages.ros.org/ros.key"
 key  "http://download.spotify.com/debian/pubkey.gpg"
+key  "http://packages.ros.org/ros.key"
 
-repo "deb http://packages.ros.org/ros/ubuntu xenial main" #
-repo "deb http://repository.spotify.com stable non-free"  #
-repo "ppa:dawidd0811/neofetch"                            #
-repo "ppa:deadsnakes/ppa"                                 # up-to-date versions of python
-repo "ppa:dobey/redshift-daily"                           #
-repo "ppa:git-core/ppa"                                   # to get more recent update of git
-repo "ppa:inkscape.dev/stable"                            # inkscape repo
-repo "ppa:monettes/i3wm-gaps"                             #
-repo "ppa:neovim-ppa/stable"                              #
-repo "ppa:ytvwld/asciiquarium"                            #
-repo "ppa:mmstick76/alacritty"                            # alacritty ppa
-repo "ppa:neovim-ppa/unstable"                            # neovim latest unstable
-repo "ppa:drdeimosnn/survive-on-wm"                       # for bspwm, sxhkd, polybar
+ppa "deb http://packages.ros.org/ros/ubuntu xenial main" #
+ppa "deb http://repository.spotify.com stable non-free"  #
+ppa "ppa:dawidd0811/neofetch"                            #
+ppa "ppa:deadsnakes/ppa"                                 # up-to-date versions of python
+ppa "ppa:dobey/redshift-daily"                           #
+ppa "ppa:drdeimosnn/survive-on-wm"                       # for bspwm, sxhkd, polybar
+ppa "ppa:git-core/ppa"                                   # to get more recent update of git
+ppa "ppa:inkscape.dev/stable"                            # inkscape repo
+ppa "ppa:mmstick76/alacritty"                            # alacritty ppa
+ppa "ppa:monettes/i3wm-gaps"                             #
+ppa "ppa:neovim-ppa/stable"                              #
+ppa "ppa:neovim-ppa/unstable"                            # neovim latest unstable
+ppa "ppa:ytvwld/asciiquarium"                            #
 
-apt  "alsa-utils"                                         # for audio controls
-apt  "asciiquarium"                                       #
-apt  "autojump"                                           #
-apt  "cmake"                                              #
-apt  "code"                                               #
-apt  "compton"                                            #
-apt  "curl"                                               #
-apt  "feh"                                                #
-apt  "gcc"                                                #
-apt  "git"                                                #
-apt  "libc6:i386"                                         # modelsim dependency
-apt  "libncurses5:i386"                                   # modelsim dependency
-apt  "libstdc++6:i386"                                    # modelsim dependency
-apt  "libxext6:i386"                                      # modelsim dependency
-apt  "libxft2:i386"                                       # modelsim dependency
-apt  "make"                                               #
-apt  "neofetch"                                           #
-apt  "neovim"                                             #
-apt  "pulseaudio"                                         # for audio controls
-apt  "redshift"                                           #
-apt  "ros-kinetic-desktop-full"                           #
-apt  "spotify-client"                                     #
-apt  "sxiv"                                               #
-apt  "tty-clock"                                          #
-apt  "xautomation"                                        # for emulating keypresses to deal with firefox
-apt  "xbacklight"                                         # brightness control
-apt  "xdotool"                                            # for grabbing window names (I use it to handle firefox keys)
-apt  "xserver-xorg-core"                                  # libinput dependency
-apt  "xserver-xorg-input-libinput"                        # allows for sane trackpad expeirence
-apt  "zsh"                                                #
-apt  "zsh-syntax-highlighting"                            #
-apt  "htop"                                               #
-apt  "inkscape"                                           # for latex drawings
-apt  "libconfig-dev"                                      # picom dep
-apt  "libdbus-1-dev"                                      # picom dep
-apt  "libev-dev"                                          # picom dep
-apt  "libevdev-dev"                                       # picom dep
-apt  "libgl1-mesa-dev"                                    # picom dep
-apt  "libpcre2-dev"                                       # picom dep
-apt  "libpixman-1-dev"                                    # picom dep
-apt  "libx11-xcb-dev"                                     # picom dep
-apt  "libxcb-composite0-dev"                              # picom dep
-apt  "libxcb-damage0-dev"                                 # picom dep
-apt  "libxcb-glx0-dev"                                    # picom dep (?)
-apt  "libxcb-image0-dev"                                  # picom dep
-apt  "libxcb-present-dev"                                 # picom dep
-apt  "libxcb-randr0-dev"                                  # picom dep
-apt  "libxcb-render-util0-dev"                            # picom dep
-apt  "libxcb-render0-dev"                                 # picom dep
-apt  "libxcb-shape0-dev"                                  # picom dep
-apt  "libxcb-xfixes0-dev"                                 # picom dep
-apt  "libxcb-xinerama0-dev"                               # picom dep
-apt  "libxcb1-dev"                                        # picom dep
-apt  "libxext-dev"                                        # picom dep
-apt  "python3-pip"                                        # pip for ubuntu's python3, do NOT upgrade
-apt  "python3.6"                                          # python 3.6
-apt  "software-properties-common"                         # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
-apt  "uthash-dev"                                         # picom dep
+apt  "alsa-utils"                                        # for audio controls
+apt  "asciiquarium"                                      #
+apt  "autojump"                                          #
+apt  "cmake"                                             #
+apt  "code"                                              #
+apt  "compton"                                           #
+apt  "curl"                                              #
+apt  "feh"                                               #
+apt  "gcc"                                               #
+apt  "git"                                               #
+apt  "htop"                                              #
+apt  "inkscape"                                          # for latex drawings
+apt  "libc6:i386"                                        # modelsim dependency
+apt  "libconfig-dev"                                     # picom dep
+apt  "libdbus-1-dev"                                     # picom dep
+apt  "libevdev-dev"                                      # picom dep
+apt  "libev-dev"                                         # picom dep
+apt  "libgl1-mesa-dev"                                   # picom dep
+apt  "libncurses5:i386"                                  # modelsim dependency
+apt  "libpcre2-dev"                                      # picom dep
+apt  "libpixman-1-dev"                                   # picom dep
+apt  "libstdc++6:i386"                                   # modelsim dependency
+apt  "libx11-xcb-dev"                                    # picom dep
+apt  "libxcb1-dev"                                       # picom dep
+apt  "libxcb-composite0-dev"                             # picom dep
+apt  "libxcb-damage0-dev"                                # picom dep
+apt  "libxcb-image0-dev"                                 # picom dep
+apt  "libxcb-present-dev"                                # picom dep
+apt  "libxcb-randr0-dev"                                 # picom dep
+apt  "libxcb-render0-dev"                                # picom dep
+apt  "libxcb-render-util0-dev"                           # picom dep
+apt  "libxcb-shape0-dev"                                 # picom dep
+apt  "libxcb-xfixes0-dev"                                # picom dep
+apt  "libxcb-xinerama0-dev"                              # picom dep
+apt  "libxext6:i386"                                     # modelsim dependency
+apt  "libxext-dev"                                       # picom dep
+apt  "libxft2:i386"                                      # modelsim dependency
+apt  "make"                                              #
+apt  "neofetch"                                          #
+apt  "neovim"                                            #
+apt  "pulseaudio"                                        # for audio controls
+apt  "python3.6"                                         # python 3.6
+apt  "python3-pip"                                       # pip for ubuntu's python3, do NOT upgrade
+apt  "redshift"                                          #
+apt  "ros-kinetic-desktop-full"                          #
+apt  "software-properties-common"                        # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
+apt  "spotify-client"                                    #
+apt  "sxiv"                                              #
+apt  "tty-clock"                                         #
+apt  "uthash-dev"                                        # picom dep
+apt  "xautomation"                                       # for emulating keypresses to deal with firefox
+apt  "xbacklight"                                        # brightness control
+apt  "xdotool"                                           # for grabbing window names (I use it to handle firefox keys)
+apt  "xserver-xorg-core"                                 # libinput dependency
+apt  "xserver-xorg-input-libinput"                       # allows for sane trackpad expeirence
+apt  "zsh"                                               #
+apt  "zsh-syntax-highlighting"                           #

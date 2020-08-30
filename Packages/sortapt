@@ -4,6 +4,6 @@
 
 echo "\
 $(grep '^key'  aptfile | sort)\n
-$(grep '^repo' aptfile | sort)\n
+$(grep '^ppa' aptfile | sort)\n
 $(grep '^apt'  aptfile | sort)\
 " > aptfile
