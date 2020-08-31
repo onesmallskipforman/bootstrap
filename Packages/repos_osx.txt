@@ -3,3 +3,4 @@ https://github.com/eendroroy/alacritty-theme.git
 https://github.com/dexpota/kitty-themes.git
 https://github.com/kdrag0n/base16-kitty.git
 https://github.com/egeesin/alacritty-color-export.git
+https://github.com/xero/figlet-fonts.git

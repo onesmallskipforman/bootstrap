@@ -5,3 +5,4 @@ https://github.com/kdrag0n/base16-kitty.git
 https://github.com/zsh-users/zsh-autosuggestions.git
 https://github.com/dylanaraps/pfetch
 https://github.com/junegunn/fzf
+https://github.com/xero/figlet-fonts.git
