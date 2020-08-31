@@ -5,6 +5,7 @@
 #===============================================================================
 
 function dotfiles() {
+  DIR=$(realpath $(dirname $0))
 
   function gitstrap() {
     git -C "$2" init
@@ -16,16 +17,16 @@ function dotfiles() {
   # bootstrap scripts and configs
   bigprint "Syncing dotfiles repo to home"
   GHUB="https://github.com/onesmallskipforman"
-  clonepull "$GHUB/bootstrap.git" "$1"
+  clonepull "$GHUB/bootstrap.git" "$DIR"
 
   # dotfile boostrap
   mkdir -p "Home"
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
-  gitstrap "$GHUB/dotfiles.git"  "$1/Home"
-  gitstrap "$GHUB/userdata.git"  "$1/Home/.local/share"
+  gitstrap "$GHUB/dotfiles.git"  "$DIR/Home"
+  gitstrap "$GHUB/userdata.git"  "$DIR/Home/.local/share"
 
   # symlink
-  ln -sf "$1/Home"/{.config,.local,.zshenv} "$HOME"
+  ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
 }
 
 function prep(){

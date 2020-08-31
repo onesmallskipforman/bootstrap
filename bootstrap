@@ -5,9 +5,8 @@
 #===============================================================================
 
 # grab script directory and functions
-DIR=$(realpath $(dirname $0))
-if [[ "$OSTYPE" = "darwin"*   ]]; then OS="osx"   ; fi
-if [[ "$OSTYPE" = "linux-gnu" ]]; then OS="ubuntu"; fi
+if [[ "$(uname)" = "Darwin" ]]; then OS="osx"   ; fi
+if [[ "$(uname)" = "Linux"  ]]; then OS="ubuntu"; fi
 
 source "functions.sh"
 
@@ -21,7 +20,7 @@ function runDots() {
   # Run sections based on command line arguments
   for ARG in "$@"; do
     [ $ARG = "prep"   ] || [ $ARG = "all" ] && prep
-    [ $ARG = "dots"   ] || [ $ARG = "all" ] && dotfiles "$DIR"
+    [ $ARG = "dots"   ] || [ $ARG = "all" ] && dotfiles
     [ $ARG = "pkg"    ] || [ $ARG = "all" ] && pkg_install
     [ $ARG = "config" ] || [ $ARG = "all" ] && config
   done
