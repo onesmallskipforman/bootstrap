@@ -89,10 +89,13 @@ function pkg_install() {
 
 function pkg_install_ubuntu() {
   # install apt keys, repos, and packages, then cleanup
-  function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' aptfile }
-  filter "key"  | xargs sudo apt-key adv --fetch-keys
+  function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' Packages/aptfile }
+  filter "key" | xargs sudo apt-key adv --fetch-keys
   filter "ppa" | xargs sudo add-apt-repository -y; sudo apt-get update
-  filter "apt"  | xargs sudo apt-get -y install; sudo apt-get -y autoremove
+  filter "apt" | xargs sudo apt-get -y install; sudo apt-get -y autoremove
+  filter "git" | while read g; do
+    clonepull $g $HOME/.local/src/$(basename $g .git);
+  done
 }
 
 function pkg_install_osx() {
