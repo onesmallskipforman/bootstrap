@@ -61,7 +61,7 @@ apt "pulseaudio"                                                   # for audio c
 apt "python3.6"                                                    # python 3.6
 apt "python3-pip"                                                  # pip for ubuntu's python3, do NOT upgrade
 apt "redshift"                                                     #
-apt "ros-kinetic-desktop-full"                                     #
+apt "ros-melodic-desktop-full"                                     #
 apt "software-properties-common"                                   # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
 apt "spotify-client"                                               #
 apt "sxiv"                                                         #
