@@ -8,4 +8,5 @@ git "https://github.com/egeesin/alacritty-color-export.git"        #
 git "https://github.com/xero/figlet-fonts.git"                     #
 git "https://github.com/stark/Color-Scripts.git"                   #
 
+pip "pip"
 pip "git+https://github.com/toggle-corp/alacritty-colorscheme.git" # alacritty color changer

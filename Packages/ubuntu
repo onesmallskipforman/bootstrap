@@ -58,7 +58,6 @@ apt "make"                                                         #
 apt "neofetch"                                                     #
 apt "neovim"                                                       #
 apt "pulseaudio"                                                   # for audio controls
-apt "python3.6"                                                    # python 3.6
 apt "python3-pip"                                                  # pip for ubuntu's python3, do NOT upgrade
 apt "redshift"                                                     #
 apt "ros-melodic-desktop-full"                                     #
@@ -85,6 +84,7 @@ git "https://github.com/junegunn/fzf.git"                          # fuzzy finde
 git "https://github.com/xero/figlet-fonts.git"                     # figlet fonts
 git "https://github.com/stark/Color-Scripts.git"                   # colorscripts
 
+pip "pip"
 pip "git+https://github.com/toggle-corp/alacritty-colorscheme.git" # alacritty color changer
 
 ndf "DejaVuSansMono"                                               # nerd font

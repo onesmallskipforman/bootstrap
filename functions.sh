@@ -44,9 +44,9 @@ function pkg_install() {
   bigprint "Installing Packages."
   filter "key" | xargs sudo apt-key adv --fetch-keys
   filter "ppa" | xargs sudo add-apt-repository -y;
-  filter "apt" | xargs     apt_install
+  filter "apt" | xargs apt_install
   filter "brf" | xargs -n1 brew_install
-  filter "pip" | xargs     pip_install
+  filter "pip" | xargs sudo -H python3 -m pip install --user -U "$@"
   filter "git" | xargs -n1 clonepull
   filter "ndf" | xargs -n1 nerdfont_install
   filter "deb" | xargs -n1 deb_install
@@ -57,10 +57,6 @@ function apt_install() {
   sudo apt-get -y update --fix-missing && sudo apt-get -y dist-upgrade
   sudo apt-get -y install "$@"
   sudo apt-get -y autoremove
-}
-
-function pip_install() {
-  python3 -m ensurepip && python3 -m pip install --user -U "$@"
 }
 
 function brew_install() {
