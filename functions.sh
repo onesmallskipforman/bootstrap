@@ -60,7 +60,7 @@ function apt_install() {
 }
 
 function pip_install() {
-  python3 -m ensurepip && pip3 install --user -U "$@"
+  python3 -m ensurepip && python3 -m pip install --user -U "$@"
 }
 
 function brew_install() {
