@@ -1,9 +1,0 @@
-https://github.com/aaron-williamson/base16-alacritty.git
-https://github.com/eendroroy/alacritty-theme.git
-https://github.com/dexpota/kitty-themes.git
-https://github.com/kdrag0n/base16-kitty.git
-https://github.com/zsh-users/zsh-autosuggestions.git
-https://github.com/dylanaraps/pfetch
-https://github.com/junegunn/fzf
-https://github.com/xero/figlet-fonts.git
-https://github.com/stark/Color-Scripts.git

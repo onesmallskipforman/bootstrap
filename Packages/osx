@@ -1,0 +1,11 @@
+brf "Packages/brewfile"                                            # homebrew installs
+
+git "https://github.com/aaron-williamson/base16-alacritty.git"     #
+git "https://github.com/eendroroy/alacritty-theme.git"             #
+git "https://github.com/dexpota/kitty-themes.git"                  #
+git "https://github.com/kdrag0n/base16-kitty.git"                  #
+git "https://github.com/egeesin/alacritty-color-export.git"        #
+git "https://github.com/xero/figlet-fonts.git"                     #
+git "https://github.com/stark/Color-Scripts.git"                   #
+
+pip "git+https://github.com/toggle-corp/alacritty-colorscheme.git" # alacritty color changer

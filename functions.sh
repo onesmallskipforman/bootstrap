@@ -5,7 +5,6 @@
 #===============================================================================
 
 function dotfiles() {
-  DIR=$(realpath $(dirname $0))
 
   function gitstrap() {
     git -C "$2" init
@@ -15,13 +14,14 @@ function dotfiles() {
   }
 
   # bootstrap scripts and configs
-  bigprint "Syncing dotfiles repo to home"
-  GHUB="https://github.com/onesmallskipforman"
-  clonepull "$GHUB/bootstrap.git" "$DIR"
+  # clonepull "$GHUB/bootstrap.git" "$DIR"
 
   # dotfile boostrap
+  bigprint "Syncing dotfiles repo to home"
   mkdir -p "Home"
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
+  GHUB="https://github.com/onesmallskipforman"
+  DIR=$(realpath $(dirname $0))
   gitstrap "$GHUB/dotfiles.git"  "$DIR/Home"
   gitstrap "$GHUB/userdata.git"  "$DIR/Home/.local/share"
 
@@ -31,22 +31,9 @@ function dotfiles() {
 
 function prep(){
   bigprint "Prepping For Bootstrap"
-  prep_$OS
+  which apt-get &>/dev/null || sudo apt-get install -y git gcc
+  [ $(uname) = "Darwin" ] && sudo softwareupdate -irR && xcode-select --install
   echo "OS Prep Complete."
-}
-
-function prep_osx() {
-  sudo softwareupdate -irR --verbose    # update os
-  sudo tmutil disable                   # disable time machine
-  sudo spctl --master-disable           # allow apps downloaded from anywhere
-
-  # install command line tools
-  xcode-select -p &>/dev/null || xcode-select --install
-}
-
-function prep_ubuntu() {
-  sudo apt-get update -y --fix-missing && sudo apt-get dist-upgrade -y
-  sudo apt-get install -y git gcc
 }
 
 #===============================================================================
@@ -54,55 +41,50 @@ function prep_ubuntu() {
 #===============================================================================
 
 function pkg_install() {
-  pkg_install_$OS
-  pip_install
-  git_install
-}
-
-function pip_install() {
-  bigprint "Installing Pip Packages"
-  pip3 install -r "Packages/requirements.txt"
-
-  which pip3 &>/dev/null || (
-    curl https://bootstrap.pypa.io/get-pip.py | python3
-    # wget -qO - https://bootstrap.pypa.io/get-pip.py | python3
-    # python3 -m pip uninstall pip
-  )
-
-  echo "Pip Installation Complete."
-}
-
-function git_install() {
-  bigprint "Cloning Git Repos"
-  while IFS= read URL; do
-    DIR=$HOME/.local/src/$(basename "$URL" .git)
-    clonepull "$URL" "$DIR"
-  done < "Packages/repos_$OS.txt"
-  echo "Repo Cloning Complete."
-}
-
-function pkg_install() {
   bigprint "Installing Packages."
-  pkg_install_$OS
+  filter "key" | xargs sudo apt-key adv --fetch-keys
+  filter "ppa" | xargs sudo add-apt-repository -y;
+  filter "apt" | xargs     apt_install
+  filter "brf" | xargs -n1 brew_install
+  filter "pip" | xargs     pip_install
+  filter "git" | xargs -n1 clonepull
+  filter "ndf" | xargs -n1 nerdfont_install
+  filter "deb" | xargs -n1 deb_install
   echo "Package Install Complete."
 }
 
-function pkg_install_ubuntu() {
-  # install apt keys, repos, and packages, then cleanup
-  function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' Packages/aptfile }
-  filter "key" | xargs sudo apt-key adv --fetch-keys
-  filter "ppa" | xargs sudo add-apt-repository -y; sudo apt-get update
-  filter "apt" | xargs sudo apt-get -y install; sudo apt-get -y autoremove
-  filter "git" | while read g; do
-    clonepull $g $HOME/.local/src/$(basename $g .git);
-  done
+function apt_install() {
+  sudo apt-get -y update --fix-missing && sudo apt-get -y dist-upgrade
+  sudo apt-get -y install "$@"
+  sudo apt-get -y autoremove
 }
 
-function pkg_install_osx() {
+function pip_install() {
+  python3 -m ensurepip && pip3 install --user -U "$@"
+}
+
+function brew_install() {
   # homebrew-managed installations
   which brew &>/dev/null || \
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  brew bundle -v --no-lock "Packages/brewfile"
+  brew bundle -v --no-lock "$1"
+}
+
+function nerdfont_install() {
+  wget -q --show-progress \
+    https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$arg.zip \
+    && unzip -qod $HOME/.local/share/fonts \
+    && rm $arg.zip
+}
+
+function deb_install() {
+  DEB=$(basename $1); wget -qo -d $1 && sudo apt-get install ./$DEB && rm $DEB
+}
+
+function clonepull() {
+  # clone, and pull if already cloned from url $1 into dir
+  DIR=$HOME/.local/src/$(basename $1 .git)
+  [ ! -d "$DIR/.git" ] && git clone --depth 1 "$1" "$DIR" || git -C "$DIR" pull origin master
 }
 
 #===============================================================================
@@ -112,31 +94,27 @@ function pkg_install_osx() {
 function config() {
   bigprint "Runnung Miscellaneous Post-Package Installs and Configs"
 
-  # default shell to zsh
+  # default shell to zsh, set os-specific configs
   sudo chsh -s /bin/zsh $(whoami)
-
-  # install node (for coc.vim)
-  which node &>/dev/null || (curl -sL install-node.now.sh/lts | bash)
-
-  # os-specific configs
   config_$OS
 
   echo "OS Config Complete. Restart Required"
 }
 
 function config_ubuntu() {
-  # Set computer name
+  # Set computer name, disable desktop environment
   hostnamectl set-hostname SkippersMPB
-  quartus_install
-  light_install
-  sudo rosdep init && rosdep update
-  nerdfont_install "DejaVuSansMono" "FiraCode" "Hack" "RobotoMono" "SourceCodePro" "UbuntuMono"
-
-  # disable desktop environment
   sudo systemctl set-default multi-user.target
+
+  # install quartus, configure ros
+  quartus_install
+  sudo rosdep init && rosdep update
 }
 
 function config_osx() {
+  # disable time machine and allow apps downloaded from anywhere
+  sudo tmutil disable; sudo spctl --master-disable
+
   # Set computer name
   sudo scutil --set ComputerName  "SkippersMBP"
   sudo scutil --set HostName      "SkippersMBP"
@@ -161,26 +139,13 @@ function config_osx() {
 
   # configure xdg shell completion
   $(brew --prefix)/opt/fzf/install --xdg
-
-  echo "OS Config Complete. Restart Required"
 }
 
 #===============================================================================
 # MISCELLANEOUS
 #===============================================================================
 
-function nerdfont_install() {
-  for arg in "$@"; do
-    wget -q --show-progress \
-      https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$arg.zip \
-      && unzip -qo $arg.zip -d $HOME/.local/share/fonts \
-      && rm $arg.zip
-    done
-}
-
-
 function quartus_install() {
-
   # 32-bit architechture for modelsim
   sudo dpkg --add-architecture i386
 
@@ -200,14 +165,6 @@ function quartus_install() {
   MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\
   RUN+="/bin/chmod 0666 %c"'| \
   sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
-}
-
-function light_install() {
-  wget -qO - https://github.com/haikarainen/light/releases/download/v1.2/light-1.2.tar.gz | tar -C $HOME/.local/src -xzf -
-  cd $HOME/.local/src/light*
-  ./configure && make
-  sudo make install
-  cd ~-
 }
 
 function matlab_install() {
@@ -254,7 +211,4 @@ function bigprint() {
   echo ""
 }
 
-function clonepull() {
-  # clone, and pull if already cloned from url $1 into dir $2
-  [ ! -d "$2/.git" ] && git clone --depth 1 "$1" "$2" || git -C "$2" pull origin master
-}
+function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' Packages/$OS }
