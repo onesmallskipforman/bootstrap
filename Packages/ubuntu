@@ -57,6 +57,7 @@ apt "libxft2:i386"                                             # modelsim depend
 apt "make"                                                     #
 apt "neofetch"                                                 #
 apt "neovim"                                                   #
+apt "polybar"                                                  # status bar
 apt "pulseaudio"                                               # for audio controls
 apt "python"                                                   # python 2.7 (needed for ROS)
 apt "python3"                                                  # python 3.6
