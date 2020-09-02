@@ -34,7 +34,7 @@ function prep(){
   }
   [ $(uname) = "Darwin" ] && {
     sudo softwareupdate -irR && xcode-select --install
-      which brew &>/dev/null || (curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash)
+      which brew &>/dev/null || (sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash)
   }
   echo "OS Prep Complete."
 }

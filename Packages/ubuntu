@@ -1,10 +1,10 @@
 key "http://download.spotify.com/debian/pubkey.gpg"
 key "http://packages.ros.org/ros.key"
-key "http://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+# key "http://deb.nodesource.com/gpgkey/nodesource.gpg.key"
 
 ppa "deb http://packages.ros.org/ros/ubuntu bionic main"       #
 ppa "deb http://repository.spotify.com stable non-free"        #
-ppa "deb https://deb.nodesource.com/node_lts.x bionic main"    # node (for coc.vim)
+# ppa "deb https://deb.nodesource.com/node_lts.x bionic main"    # node (for coc.vim)
 ppa "ppa:dawidd0811/neofetch"                                  #
 ppa "ppa:deadsnakes/ppa"                                       # up-to-date versions of python
 ppa "ppa:dobey/redshift-daily"                                 #
@@ -12,7 +12,6 @@ ppa "ppa:drdeimosnn/survive-on-wm"                             # for bspwm, sxhk
 ppa "ppa:git-core/ppa"                                         # to get more recent update of git
 ppa "ppa:inkscape.dev/stable"                                  # inkscape repo
 ppa "ppa:mmstick76/alacritty"                                  # alacritty ppa
-ppa "ppa:monettes/i3wm-gaps"                                   #
 ppa "ppa:neovim-ppa/stable"                                    #
 ppa "ppa:neovim-ppa/unstable"                                  # neovim latest unstable
 ppa "ppa:ytvwld/asciiquarium"                                  #
