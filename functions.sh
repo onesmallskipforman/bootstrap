@@ -28,8 +28,14 @@ function dotfiles() {
 
 function prep(){
   bigprint "Prepping For Bootstrap"
-  which apt-get &>/dev/null || sudo apt-get install -y git gcc
-  [ $(uname) = "Darwin" ] && sudo softwareupdate -irR && xcode-select --install
+  which apt-get &>/dev/null && {
+    sudo apt-get -y update --fix-missing && sudo apt-get -y dist-upgrade
+    sudo apt-get install -y git gcc
+  }
+  [ $(uname) = "Darwin" ] && {
+    sudo softwareupdate -irR && xcode-select --install
+      which brew &>/dev/null || (curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash)
+  }
   echo "OS Prep Complete."
 }
 
@@ -39,39 +45,25 @@ function prep(){
 
 function pkg_install() {
   bigprint "Installing Packages."
-  filter "key" | xargs sudo apt-key adv --fetch-keys
-  filter "ppa" | xargs sudo add-apt-repository -y
-  filter "apt" | xargs apt_install
-  filter "brf" | xargs -n1 brew_install
-  filter "pip" | xargs sudo python3 -m pip install -U "$@"
-  filter "git" | xargs -n1 clonepull
-  filter "ndf" | xargs -n1 nerdfont_install
-  filter "deb" | xargs -n1 deb_install
+  filter "key" | xargs -rn1 sudo apt-key adv --fetch-keys
+  filter "ppa" | xargs -I{} sudo add-apt-repository -y "{}"
+  filter "apt" | xargs -r sudo apt-get install -y
+  filter "brf" | xargs -rn1 brew bundle -v --no-lock
+  filter "pip" | xargs -r sudo python3 -m pip install -U "$@"
+  filter "git" | xargs -I{} clonepull {}
+  filter "ndf" | xargs -I{} nerdfont_install {}
+  filter "deb" | xargs -I{} deb_install {}
   echo "Package Install Complete."
-}
-
-function apt_install() {
-  sudo apt-get -y update --fix-missing && sudo apt-get -y dist-upgrade
-  sudo apt-get -y install "$@"
-  sudo apt-get -y autoremove
-}
-
-function brew_install() {
-  # homebrew-managed installations
-  which brew &>/dev/null || \
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  brew bundle -v --no-lock "$1"
 }
 
 function nerdfont_install() {
   wget -q --show-progress \
     https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$arg.zip \
-    && unzip -qod $HOME/.local/share/fonts \
-    && rm $arg.zip
+    && unzip -qod /usr/local/share/fonts && rm $arg.zip
 }
 
 function deb_install() {
-  DEB=$(basename $1); wget -qo -d $1 && sudo apt-get install ./$DEB && rm $DEB
+  DEB=$(basename $1); wget -qod $1 && sudo apt-get install ./$DEB && rm $DEB
 }
 
 function clonepull() {
@@ -96,12 +88,12 @@ function config() {
 }
 
 function config_ubuntu() {
-  # Set computer name, disable desktop environment
+  # Set computer name, disable desktop environment, clean installs
   hostnamectl set-hostname SkippersMPB
   sudo systemctl set-default multi-user.target
+  sudo apt-get -y autoremove
 
-  # install quartus, configure ros
-  quartus_install
+  # configure ros
   sudo rosdep init && rosdep update
 }
 
@@ -205,4 +197,4 @@ function bigprint() {
   echo ""
 }
 
-function filter() { awk -F '[""]' '/^'"$1"'/{print $2}' Packages/$OS }
+function filter() { awk -F '"' '/^'"$1"'/{print $2}' Packages/$OS; }

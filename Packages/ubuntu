@@ -21,7 +21,6 @@ apt "alsa-utils"                                               # for audio contr
 apt "asciiquarium"                                             #
 apt "autojump"                                                 #
 apt "cmake"                                                    #
-apt "code"                                                     #
 apt "compton"                                                  #
 apt "curl"                                                     #
 apt "feh"                                                      #

@@ -5,8 +5,8 @@
 #===============================================================================
 
 # grab script directory and functions
-if   [ $(uname)          = "Darwin" ]; then OS="osx"
-elif [ $(lsb_release -v) = "Ubuntu" ]; then OS="ubuntu"; fi
+if   [ $(uname)           = "Darwin" ]; then OS="osx"
+elif [ $(lsb_release -is) = "Ubuntu" ]; then OS="ubuntu"; fi
 
 source "functions.sh"
 
