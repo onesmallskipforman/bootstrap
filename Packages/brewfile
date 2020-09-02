@@ -7,8 +7,7 @@ tap "koekeishiya/formulae"                               #
 tap "zegervdv/zathura"                                   #
 
 brew "asciiquarium"                                      # showing off
-brew "autojump"                                          #
-brew "autopep8"                                          #
+brew "autojump"                                          # python formatter
 brew "balena-cli"                                        #
 brew "bat"                                               # cat alternative with syntax highlight (for file manager)
 brew "bc"                                                # terminal calculator
@@ -27,7 +26,6 @@ brew "docker-machine"                                    # required for docker
 brew "dockutil"                                          # tool for configuring osx dock
 brew "enscript"                                          # for converting code to postscript
 brew "figlet"                                            # for writing ascii text
-brew "flake8"                                            #
 brew "fzf"                                               #
 brew "gcc"                                               #
 brew "geckodriver"                                       #
@@ -65,8 +63,6 @@ brew "pidof"                                             # used by pywal
 brew "pipes-sh"                                          #
 brew "platformio"                                        # massive embedded development suite
 brew "poppler"                                           # for pdftotext and pdftoppm
-brew "pycodestyle"                                       # required by autopep8
-brew "pylint"                                            #
 brew "python"                                            #
 brew "redshift"                                          #
 brew "ripgrep"                                           # searcher used with vim

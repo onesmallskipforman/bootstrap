@@ -13,9 +13,6 @@ function dotfiles() {
     git -C "$2" reset --hard origin/master
   }
 
-  # bootstrap scripts and configs
-  # clonepull "$GHUB/bootstrap.git" "$DIR"
-
   # dotfile boostrap
   bigprint "Syncing dotfiles repo to home"
   mkdir -p "Home"
@@ -43,10 +40,10 @@ function prep(){
 function pkg_install() {
   bigprint "Installing Packages."
   filter "key" | xargs sudo apt-key adv --fetch-keys
-  filter "ppa" | xargs sudo add-apt-repository -y;
+  filter "ppa" | xargs sudo add-apt-repository -y
   filter "apt" | xargs apt_install
   filter "brf" | xargs -n1 brew_install
-  filter "pip" | xargs sudo -H python3 -m pip install --user -U "$@"
+  filter "pip" | xargs sudo python3 -m pip install -U "$@"
   filter "git" | xargs -n1 clonepull
   filter "ndf" | xargs -n1 nerdfont_install
   filter "deb" | xargs -n1 deb_install
@@ -80,7 +77,8 @@ function deb_install() {
 function clonepull() {
   # clone, and pull if already cloned from url $1 into dir
   DIR=$HOME/.local/src/$(basename $1 .git)
-  [ ! -d "$DIR/.git" ] && git clone --depth 1 "$1" "$DIR" || git -C "$DIR" pull origin master
+  [ ! -d "$DIR/.git" ] && \
+    git clone --depth 1 "$1" "$DIR" || git -C "$DIR" pull origin master
 }
 
 #===============================================================================
