@@ -27,16 +27,13 @@ apt "gcc"                                                      #
 apt "git"                                                      #
 apt "htop"                                                     #
 apt "inkscape"                                                 # for latex drawings
-apt "libc6:i386"                                               # modelsim dependency
 apt "libconfig-dev"                                            # picom dep
 apt "libdbus-1-dev"                                            # picom dep
 apt "libevdev-dev"                                             # picom dep
 apt "libev-dev"                                                # picom dep
 apt "libgl1-mesa-dev"                                          # picom dep
-apt "libncurses5:i386"                                         # modelsim dependency
 apt "libpcre2-dev"                                             # picom dep
 apt "libpixman-1-dev"                                          # picom dep
-apt "libstdc++6:i386"                                          # modelsim dependency
 apt "libx11-xcb-dev"                                           # picom dep
 apt "libxcb1-dev"                                              # picom dep
 apt "libxcb-composite0-dev"                                    # picom dep
@@ -49,8 +46,11 @@ apt "libxcb-render-util0-dev"                                  # picom dep
 apt "libxcb-shape0-dev"                                        # picom dep
 apt "libxcb-xfixes0-dev"                                       # picom dep
 apt "libxcb-xinerama0-dev"                                     # picom dep
-apt "libxext6:i386"                                            # modelsim dependency
 apt "libxext-dev"                                              # picom dep
+apt "libc6:i386"                                               # modelsim dependency
+apt "libncurses5:i386"                                         # modelsim dependency
+apt "libstdc++6:i386"                                          # modelsim dependency
+apt "libxext6:i386"                                            # modelsim dependency
 apt "libxft2:i386"                                             # modelsim dependency
 apt "make"                                                     #
 apt "neofetch"                                                 #

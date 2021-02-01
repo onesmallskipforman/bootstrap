@@ -43,17 +43,17 @@ function prep(){
 # INSTALLATIONS
 #===============================================================================
 
+function key() { echo $@ | xargs -n1 sudo apt-key adv --fetch-keys }
+function ppa() { echo $@ | xargs -n1 sudo add-apt-repository -y }
+function ndf() { echo $@ | xargs -n1 nerdfont_install }
+function pip() { sudo python3 -m pip install -U $@ }
+function deb() { echo $@ | xargs -n1 deb_install }
+function git() { echo $@ | xargs -n1 clonepull }
+function apt() { sudo apt-get install $@ }
+# function brf() { echo $@ | xargs -rn1 brew bundle -v --no-lock }
+
 function pkg_install() {
-  bigprint "Installing Packages."
-  filter "key" | xargs -rn1 sudo apt-key adv --fetch-keys
-  filter "ppa" | xargs -I{} sudo add-apt-repository -y "{}"
-  filter "apt" | xargs -r sudo apt-get install -y
-  filter "brf" | xargs -rn1 brew bundle -v --no-lock
-  filter "pip" | xargs -r sudo python3 -m pip install -U "$@"
-  filter "git" | xargs -I{} clonepull {}
-  filter "ndf" | xargs -I{} nerdfont_install {}
-  filter "deb" | xargs -I{} deb_install {}
-  echo "Package Install Complete."
+  bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
 }
 
 function nerdfont_install() {
@@ -94,7 +94,10 @@ function config_ubuntu() {
   sudo apt-get -y autoremove
 
   # configure ros
-  sudo rosdep init && rosdep update
+  sudo rosdep init && rosfunny orangutandep update
+
+  # add user to dialup group from serial coms, and video group for brightness management
+  usermod -aG video,dialup $(whoami)
 }
 
 function config_osx() {
