@@ -77,8 +77,6 @@ apt "zsh-syntax-highlighting"                                  #
 
 git "https://github.com/aaron-williamson/base16-alacritty.git" # alacritty base 16 themes
 git "https://github.com/eendroroy/alacritty-theme.git"         # alacritty themes
-git "https://github.com/dexpota/kitty-themes.git"              # kitty themes
-git "https://github.com/kdrag0n/base16-kitty.git"              # kitty base 16 themes
 git "https://github.com/zsh-users/zsh-autosuggestions.git"     # zsh autosuggestions
 git "https://github.com/dylanaraps/pfetch.git"                 # minimal fetch
 git "https://github.com/junegunn/fzf.git"                      # fuzzy finder

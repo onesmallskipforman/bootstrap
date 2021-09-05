@@ -97,11 +97,9 @@ cask "font-saucecodepro-nerd-font"                       # a font
 cask "font-ubuntumono-nerd-font"                         # a font
 cask "homebrew/cask-drivers/ftdi-vcp-driver"             # arduino driver
 cask "inkscape"                                          # for latex drawings
-cask "kitty"                                             # fast terminal with images
 cask "librepcb"                                          # electrical schematic drawing tool
 cask "mactex-no-gui"                                     # latex bundle
 cask "minecraft"                                         #
-cask "slack"                                             #
 cask "spotify"                                           #
 cask "virtualbox"                                        # required for docker
 cask "xctu"                                              #
