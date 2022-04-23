@@ -105,3 +105,4 @@ cask "virtualbox"                                        # required for docker
 cask "xctu"                                              #
 cask "xquartz"                                           # for rendering ssh windows
 cask "zoomus"                                            #
+cask "thunderbird"

@@ -4,23 +4,23 @@
 # SYSTEM PREPS
 #===============================================================================
 
-function dotfiles() {
+function bootstrap_ubuntu() {
 
-  function gitstrap() {
-    git -C "$2" init
-    git -C "$2" remote add origin "$1"
-    git -C "$2" fetch --depth 1 origin master
-    git -C "$2" reset --hard origin/master
-  }
+  prep()
+  dotfiles()
+}
+
+function dotfiles() {
+  bigprint "Syncing dotfiles repo to home"
 
   # dotfile boostrap
-  bigprint "Syncing dotfiles repo to home"
   mkdir -p "Home"
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
   GHUB="https://github.com/onesmallskipforman"
   DIR=$(realpath $(dirname $0))
-  gitstrap "$GHUB/dotfiles.git"  "$DIR/Home"
-  gitstrap "$GHUB/userdata.git"  "$DIR/Home/.local/share"
+  git submodule add -b "$GHUB/dotfiles.git"  "$DIR/Home"
+  git submodule add -b "$GHUB/userdata.git"  "$DIR/Home/.local/share"
+  git submodule update
 
   # symlink
   ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
@@ -28,9 +28,9 @@ function dotfiles() {
 
 function prep(){
   bigprint "Prepping For Bootstrap"
-  which apt-get &>/dev/null && {
-    sudo apt-get -y update --fix-missing && sudo apt-get -y dist-upgrade
-    sudo apt-get install -y git gcc
+  which apt &>/dev/null && {
+    sudo apt -y update --fix-missing && sudo apt-get -y dist-upgrade
+    sudo apt install -y git gcc
   }
   [ $(uname) = "Darwin" ] && {
     sudo softwareupdate -irR && xcode-select --install
@@ -63,7 +63,7 @@ function nerdfont_install() {
 }
 
 function deb_install() {
-  DEB=$(basename $1); wget -qod $1 && sudo apt-get install ./$DEB && rm $DEB
+  DEB=$(basename $1); wget -qod $1 && apt ./$DEB && rm $DEB
 }
 
 function clonepull() {

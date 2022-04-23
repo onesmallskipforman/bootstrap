@@ -1,73 +1,28 @@
-key "http://download.spotify.com/debian/pubkey.gpg"
-key "http://packages.ros.org/ros.key"
-# key "http://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+# only put deps in functions that aren't used anywhere else. addons can be separate i think
 
-ppa "deb http://packages.ros.org/ros/ubuntu bionic main"       #
-ppa "deb http://repository.spotify.com stable non-free"        #
-# ppa "deb https://deb.nodesource.com/node_lts.x bionic main"    # node (for coc.vim)
-ppa "ppa:dawidd0811/neofetch"                                  #
-ppa "ppa:deadsnakes/ppa"                                       # up-to-date versions of python
-ppa "ppa:dobey/redshift-daily"                                 #
-ppa "ppa:drdeimosnn/survive-on-wm"                             # for bspwm, sxhkd, polybar
-ppa "ppa:git-core/ppa"                                         # to get more recent update of git
-ppa "ppa:inkscape.dev/stable"                                  # inkscape repo
-ppa "ppa:mmstick76/alacritty"                                  # alacritty ppa
-ppa "ppa:neovim-ppa/stable"                                    #
-ppa "ppa:neovim-ppa/unstable"                                  # neovim latest unstable
-ppa "ppa:ytvwld/asciiquarium"                                  #
+# idea: apt --ppa <repo> --key <key>
+ppa "ppa:ytvwld/asciiquarium"      && apt "asciiquarium"
+ppa "ppa:drdeimosnn/survive-on-wm" && apt "bspwm" "sxhkd" "polybar" # for bspwm, sxhkd, polybar
+ppa "ppa:git-core/ppa"             && apt "git"
+ppa "ppa:inkscape.dev/stable"      && apt "inkscape"                # for latex drawings
+ppa "ppa:dawidd0811/neofetch"      && apt "neofetch"
+ppa "ppa:neovim-ppa/stable"        && apt "neovim"
+ppa "ppa:deadsnakes/ppa"           && apt "python3" "python3-pip"   # pip and python (both 3.6)
+ppa "ppa:dobey/redshift-daily"     && apt "redshift"
 
 apt "alsa-utils"                                               # for audio controls
-apt "asciiquarium"                                             #
 apt "autojump"                                                 #
 apt "cmake"                                                    #
-apt "compton"                                                  #
 apt "curl"                                                     #
-apt "feh"                                                      #
+apt "feh"                                                      # image viewer
+apt "figlet" && git "https://github.com/xero/figlet-fonts.git" # For writing asciiart text
 apt "gcc"                                                      #
-apt "git"                                                      #
 apt "htop"                                                     #
-apt "inkscape"                                                 # for latex drawings
-apt "libconfig-dev"                                            # picom dep
-apt "libdbus-1-dev"                                            # picom dep
-apt "libevdev-dev"                                             # picom dep
-apt "libev-dev"                                                # picom dep
-apt "libgl1-mesa-dev"                                          # picom dep
-apt "libpcre2-dev"                                             # picom dep
-apt "libpixman-1-dev"                                          # picom dep
-apt "libx11-xcb-dev"                                           # picom dep
-apt "libxcb1-dev"                                              # picom dep
-apt "libxcb-composite0-dev"                                    # picom dep
-apt "libxcb-damage0-dev"                                       # picom dep
-apt "libxcb-image0-dev"                                        # picom dep
-apt "libxcb-present-dev"                                       # picom dep
-apt "libxcb-randr0-dev"                                        # picom dep
-apt "libxcb-render0-dev"                                       # picom dep
-apt "libxcb-render-util0-dev"                                  # picom dep
-apt "libxcb-shape0-dev"                                        # picom dep
-apt "libxcb-xfixes0-dev"                                       # picom dep
-apt "libxcb-xinerama0-dev"                                     # picom dep
-apt "libxext-dev"                                              # picom dep
-apt "libc6:i386"                                               # modelsim dependency
-apt "libncurses5:i386"                                         # modelsim dependency
-apt "libstdc++6:i386"                                          # modelsim dependency
-apt "libxext6:i386"                                            # modelsim dependency
-apt "libxft2:i386"                                             # modelsim dependency
 apt "make"                                                     #
-apt "neofetch"                                                 #
-apt "neovim"                                                   #
-apt "polybar"                                                  # status bar
 apt "pulseaudio"                                               # for audio controls
-apt "python"                                                   # python 2.7 (needed for ROS)
-apt "python3"                                                  # python 3.6
-apt "python3-pip"                                              # pip3 for ubuntu's python3 (3.6)
-apt "redshift"                                                 #
-apt "ros-melodic-desktop-full"                                 #
-apt "software-properties-common"                               # basic stuff like apt-add-repository command. probablly will be needed for lightweight installs
-apt "spotify-client"                                           #
+apt "software-properties-common"                               # basic stuff ie apt-add-repository command. may be needed for lightweight installs
 apt "sxiv"                                                     #
 apt "tty-clock"                                                #
-apt "uthash-dev"                                               # picom dep
-apt "xautomation"                                              # for emulating keypresses to deal with firefox
 apt "xbacklight"                                               # brightness control
 apt "xdotool"                                                  # for grabbing window names (I use it to handle firefox keys)
 apt "xserver-xorg-core"                                        # libinput dependency
@@ -75,15 +30,11 @@ apt "xserver-xorg-input-libinput"                              # allows for sane
 apt "zsh"                                                      #
 apt "zsh-syntax-highlighting"                                  #
 
-git "https://github.com/aaron-williamson/base16-alacritty.git" # alacritty base 16 themes
-git "https://github.com/eendroroy/alacritty-theme.git"         # alacritty themes
 git "https://github.com/zsh-users/zsh-autosuggestions.git"     # zsh autosuggestions
 git "https://github.com/dylanaraps/pfetch.git"                 # minimal fetch
 git "https://github.com/junegunn/fzf.git"                      # fuzzy finder
-git "https://github.com/xero/figlet-fonts.git"                 # figlet fonts
 git "https://github.com/stark/Color-Scripts.git"               # colorscripts
 
-pip "alacritty-colorscheme"                                    # alacritty color changer
 pip "autopep8"                                                 # python style formatter
 pip "flake8"                                                   # python linter
 pip "pip"                                                      # installs pip
@@ -100,3 +51,53 @@ ndf "UbuntuMono"                                               # nerd font
 
 deb "https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb"
 deb "https://launcher.mojang.com/download/Minecraft.deb"
+
+function ros_install() {
+  key "http://packages.ros.org/ros.key"
+  ppa "deb http://packages.ros.org/ros/ubuntu bionic main"
+  apt "python" # python 2.7 (needed for ROS)
+  apt "ros-melodic-desktop-full"
+
+  apt "python-rosdep" "python-rosinstall" "python-rosinstall-generator" "python-wstool" "build-essential"
+  sudo rosdep init && rosfunny orangutandep update
+}; ros_install
+
+function spotify_install() {
+  key "http://download.spotify.com/debian/pubkey.gpg"
+  ppa "deb http://repository.spotify.com stable non-free"
+  apt "spotify-client"
+}; spotify_install
+
+function quartus_install() {
+  # 32-bit architechture for modelsim
+  sudo dpkg --add-architecture i386
+  apt "libc6:i386" "libncurses5:i386" "libstdc++6:i386" "libxext6:i386" "libxft2:i386" # dependencies
+
+  wget 'https://cdrdv2.intel.com/v1/dl/getContent/666224/666242?filename=Quartus-web-13.1.0.162-linux.tar'
+
+  ADIR="$HOME/.local/share/altera"
+
+  # Unzip tar
+  mkdir -p $ADIR/Install
+  tar -C $ADIR/Install -xvf $ADIR/Quartus-web-15.0.0.145-linux.tar
+
+  # install software
+  sudo $ADIR/Install/setup.sh --mode unattended \
+    --unattendedmodeui minimalWithDialogs --installdir /opt/altera/15.0
+
+  # set up permissions for usb blaster
+  echo '# For Altera USB-Blaster permissions. \SUBSYSTEM=="usb",\
+  ENV{DEVTYPE}=="usb_device",\ATTR{idVendor}=="09fb",\ATTR{idProduct}=="6001",\
+  MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\
+  RUN+="/bin/chmod 0666 %c"'| \
+    sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
+}; quartus_install
+
+function alacritty_install() {
+  ppa "ppa:mmstick76/alacritty" && apt "alacritty"
+
+  # addons
+  git "https://github.com/aaron-williamson/base16-alacritty.git"
+  git "https://github.com/eendroroy/alacritty-theme.git"
+  pip "alacritty-colorscheme" # alacritty color changer
+}; alacritty_install
