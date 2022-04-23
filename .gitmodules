@@ -1,0 +1,4 @@
+[submodule "submodules/dotfiles"]
+	path = submodules/dotfiles
+	url = https://github.com/onesmallskipforman/dotfiles
+	branch = master
