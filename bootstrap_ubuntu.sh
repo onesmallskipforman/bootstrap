@@ -63,33 +63,35 @@ function apt_ppa() {
 
 
 function lambda() { while read -r; do eval "$@ $REPLY"; done }
+# function lambda() { while read -r; do echo "$@ $REPLY"; done }
 
-function key() { echo $@ | lambda sudo apt-key adv --fetch-keys }
-function ppa() { echo $@ | lambda sudo add-apt-repository -y    }
-function ndf() { echo $@ | lambda nerdfont_install              }
-function pip() { sudo python3 -m pip install -U $@              }
-function deb() { echo $@ | lambda deb_install                   }
-function git() { echo $@ | lambda clonepull                     }
-function apt() { sudo apt install -y $@                         }
-
-function pkg_install() {
-  bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
-}
+function key() { echo $@ | lambda echo "sudo apt-key adv --fetch-keys" }
+function ppa() { echo $@ | lambda echo "sudo add-apt-repository -y"       }
+function ndf() { echo $@ | lambda nerdfont_install                        }
+function pip() { echo "sudo python3 -m pip install -U $@"                 }
+function deb() { echo $@ | lambda deb_install                             }
+function git() { echo $@ | lambda clonepull                              }
+function apt() { echo "sudo apt install -y $@"                            }
+#
+# function pkg_install() {
+#   bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
+# }
+#
 
 function nerdfont_install() {
-  wget -q --show-progress \
-    https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$arg.zip \
-    && unzip -qod /usr/local/share/fonts && rm $arg.zip
+  URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.zip"
+  echo "wget -q --show-progress $URL && unzip -qod /usr/local/share/fonts && rm $1.zip"
 }
 
 function deb_install() {
-  DEB=$(basename $1); wget -qod $1 && apt ./$DEB && rm $DEB
+  DEB=$(basename $1);
+  echo "wget -qod $1 && apt ./$DEB && rm $DEB"
 }
 
 function clonepull() {
   # clone, and pull if already cloned from url $1 into dir
   DIR=$HOME/.local/src/$(basename $1 .git)
-  [ ! -d "$DIR/.git" ] && git clone --depth 1 "$1" "$DIR" || git -C "$DIR" pull
+  [ ! -d \"$DIR/.git\" ] && echo "git clone --depth 1 \"$1\" \"$DIR\"" || echo "git -C \"$DIR\" pull"
   # git clone --depth 1 "$1" "$DIR" >/dev/null 2>&1 || git -C "$DIR" pull
 }
 
