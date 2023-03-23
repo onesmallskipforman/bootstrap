@@ -37,41 +37,32 @@ function dotfiles() {
   ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
 }
 
-
-
 #===============================================================================
 # INSTALLATIONS
 #===============================================================================
 
-function apt_ppa() {
-  while getopts ":a:r:b:p:h" o; do case "${o}" in
-    h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n" && exit 1 ;;
-    r) dotfilesrepo=${OPTARG} && git ls-remote "$dotfilesrepo" || exit 1 ;;
-    b) repobranch=${OPTARG} ;;
-    p) progsfile=${OPTARG} ;;
-    a) aurhelper=${OPTARG} ;;
-    *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
+function apt() {
+  # while [[ $1 != '-p' ]] || [[ ! -z $1 ]]; do
+  #   PKG="$PKG $1"; shift 1 || break;
+  # done
+  PKG="$1"; shift
+  local OPTARG REPOCMD
+  while getopts ":p:" o; do case "${o}" in
+    p) REPOCMD="sudo add-apt-repository -yu ${OPTARG} && ";;
+    *) printf "Invalid option: -%s\\n" "$OPTARG";;
   esac done
+  echo "${REPOCMD}sudo apt install -y $PKG"
 }
 
-function apt_ppa() {
-  while getopts ":p" o; do case "${o}" in
-    p) progsfile=${OPTARG} ;;
-    *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
-  esac done
-}
+function map() { while read -r; do eval "$@ $REPLY"; done }
 
-
-function lambda() { while read -r; do eval "$@ $REPLY"; done }
-# function lambda() { while read -r; do echo "$@ $REPLY"; done }
-
-function key() { echo $@ | lambda echo "sudo apt-key adv --fetch-keys" }
-function ppa() { echo $@ | lambda echo "sudo add-apt-repository -y"       }
-function ndf() { echo $@ | lambda nerdfont_install                        }
-function pip() { echo "sudo python3 -m pip install -U $@"                 }
-function deb() { echo $@ | lambda deb_install                             }
-function git() { echo $@ | lambda clonepull                              }
-function apt() { echo "sudo apt install -y $@"                            }
+function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
+function ndf() { echo $@ | map nerdfont_install                     }
+function pip() { echo "sudo python3 -m pip install -U $@"           }
+function deb() { echo $@ | map deb_install                          }
+function git() { echo $@ | map clonepull                            }
+# function apt() { echo "sudo apt install -y $@"                        }
+function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"   }
 #
 # function pkg_install() {
 #   bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
@@ -84,15 +75,13 @@ function nerdfont_install() {
 }
 
 function deb_install() {
-  DEB=$(basename $1);
-  echo "wget -qod $1 && apt ./$DEB && rm $DEB"
+  DEB=$(basename $1); echo "wget -qod $1 && apt ./$DEB && rm $DEB"
 }
 
 function clonepull() {
   # clone, and pull if already cloned from url $1 into dir
   DIR=$HOME/.local/src/$(basename $1 .git)
-  [ ! -d \"$DIR/.git\" ] && echo "git clone --depth 1 \"$1\" \"$DIR\"" || echo "git -C \"$DIR\" pull"
-  # git clone --depth 1 "$1" "$DIR" >/dev/null 2>&1 || git -C "$DIR" pull
+  [ ! -d "$DIR/.git" ] && echo "git clone --depth 1 '$1' $DIR" || echo "git -C $DIR pull"
 }
 
 #===============================================================================
@@ -115,11 +104,6 @@ function config() {
 
   echo "OS Config Complete. Restart Required"
 }
-
-#===============================================================================
-# MISCELLANEOUS
-#===============================================================================
-
 
 #===============================================================================
 # UTILITIES
