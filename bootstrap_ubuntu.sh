@@ -4,16 +4,6 @@
 # SYSTEM PREPS
 #===============================================================================
 
-# function bootstrap_ubuntu() {
-#   bigprint "Prepping For Bootstrap"
-#   sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-#   sudo apt install -y git gcc
-#   echo "OS Prep Complete."
-#
-#   dotfiles
-#
-# }
-
 function prep(){
   bigprint "Prepping For Bootstrap"
   sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
@@ -29,9 +19,7 @@ function dotfiles() {
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
   GHUB="https://github.com/onesmallskipforman"
   DIR=$(realpath $(dirname $0))
-  git submodule add -b "$GHUB/dotfiles.git"  "$DIR/Home"
-  git submodule add -b "$GHUB/userdata.git"  "$DIR/Home/.local/share"
-  git submodule update
+  git submodule update --init --recursive
 
   # symlink
   ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
@@ -40,34 +28,26 @@ function dotfiles() {
 #===============================================================================
 # INSTALLATIONS
 #===============================================================================
-
+# TODO: find a way to use key and apt convenience functions in this bigger function
+# TODO: figure out how to pass print info through multiple functions
+# TODO: consider allowing for many of these to have pipe input
+# IDEA: make everything strings and then run "eval" at the top level
 function apt() {
   # while [[ $1 != '-p' ]] || [[ ! -z $1 ]]; do
   #   PKG="$PKG $1"; shift 1 || break;
   # done
-  PKG="$1"; shift
-  local OPTARG REPOCMD
-  while getopts ":p:" o; do case "${o}" in
-    p) REPOCMD="sudo add-apt-repository -yu ${OPTARG} && ";;
+  local PKG="$1"; shift
+  local OPTARG PPACMD KEYCMD
+  while getopts ":p:k:" o; do case "${o}" in
+    p) PPACMD="sudo add-apt-repository -yu ${OPTARG}";;
+    k) KEYCMD="sudo apt-key adv --fetch-keys ${OPTARG}";;
     *) printf "Invalid option: -%s\\n" "$OPTARG";;
   esac done
-  echo "${REPOCMD}sudo apt install -y $PKG"
+  local CMD="sudo apt install -y $PKG"
+  [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
+  [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
+  echo "$CMD"
 }
-
-function map() { while read -r; do eval "$@ $REPLY"; done }
-
-function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
-function ndf() { echo $@ | map nerdfont_install                     }
-function pip() { echo "sudo python3 -m pip install -U $@"           }
-function deb() { echo $@ | map deb_install                          }
-function git() { echo $@ | map clonepull                            }
-# function apt() { echo "sudo apt install -y $@"                        }
-function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"   }
-#
-# function pkg_install() {
-#   bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
-# }
-#
 
 function nerdfont_install() {
   URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.zip"
@@ -83,6 +63,16 @@ function clonepull() {
   DIR=$HOME/.local/src/$(basename $1 .git)
   [ ! -d "$DIR/.git" ] && echo "git clone --depth 1 '$1' $DIR" || echo "git -C $DIR pull"
 }
+
+# function map() { while read -r; do eval "$@ $REPLY"; done } # NOTE: this map only works with newline
+function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done }
+function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
+function ndf() { echo $@ | map nerdfont_install }
+function pip() { echo "sudo python3 -m pip install -U $@"  }
+function deb() { echo $@ | map deb_install }
+# function git() { echo $@ | map clonepull }
+function ghb() { echo $@ | xargs -n1 -I{} echo "https://github.com/{}.git" | map clonepull }
+function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }
 
 #===============================================================================
 # POST-INSTALL CONFIGS

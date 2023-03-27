@@ -2,19 +2,11 @@
 
 # only put deps in functions that aren't used anywhere else. addons can be separate i think
 
-GHB="https://github.com"
+# TODO: idea -> -c flag to add comment about what is getting installed. if nothing, just print package name
+# TODO: figure out how to combine mulitple packages into one call
+# IDEA: while getopts '' OPTARG is false ... do stuff with args
 
-# idea: apt --ppa <repo> --key <key>
-# ppa "ppa:ytvwld/asciiquarium"      && apt "asciiquarium"
-# ppa "ppa:drdeimosnn/survive-on-wm" && apt "bspwm" "sxhkd" "polybar" # for bspwm, sxhkd, polybar
-# ppa "ppa:git-core/ppa"             && apt "git"
-# ppa "ppa:inkscape.dev/stable"      && apt "inkscape"                # for latex drawings
-# ppa "ppa:dawidd0811/neofetch"      && apt "neofetch"
-# ppa "ppa:neovim-ppa/stable"        && apt "neovim"
-# ppa "ppa:deadsnakes/ppa"           && apt "python3" "python3-pip"   # pip and python (both 3.6)
-# ppa "ppa:dobey/redshift-daily"     && apt "redshift"
-#
-
+apt "alacritty"    -p "ppa:mmstick76/alacritty" && ghb "aaron-williamson/base16-alacritty" "eendroroy/alacritty-theme" && pip "alacritty-colorscheme"
 apt "alsa-utils"                                               # for audio controls
 apt "asciiquarium" -p "ppa:ytvwld/asciiquarium"
 apt "autojump"                                                 #
@@ -22,7 +14,7 @@ apt "bspwm"        -p "ppa:drdeimosnn/survive-on-wm"
 apt "cmake"                                                    #
 apt "curl"                                                     #
 apt "feh"                                                      # image viewer
-apt "figlet" && git "$GHB/xero/figlet-fonts.git"               # For writing asciiart text
+apt "figlet" && ghb "xero/figlet-fonts"               # For writing asciiart text
 apt "gcc"                                                      #
 apt "git"          -p "ppa:git-core/ppa"
 apt "htop"                                                     #
@@ -32,9 +24,19 @@ apt "neofetch"     -p "ppa:dawidd0811/neofetch"
 apt "neovim"       -p "ppa:neovim-ppa/stable"
 apt "polybar"      -p "ppa:drdeimosnn/survive-on-wm"
 apt "pulseaudio"                                               # for audio controls
-apt "python3"      -p "ppa:deadsnakes/ppa"
+apt "python3"      -p "ppa:deadsnakes/ppa" && apt "python3-pip"  -p "ppa:deadsnakes/ppa"
+apt "python3-pip"  -p "ppa:deadsnakes/ppa"
 apt "redshift"     -p "ppa:dobey/redshift-daily"
+apt "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" \
+    && apt "python"                      \
+    && apt "python-rosdep"               \
+    && apt "python-rosinstall"           \
+    && apt "python-rosinstall-generator" \
+    && apt "python-wstool"               \
+    && apt "build-essential"
 apt "software-properties-common"                               # basic stuff ie apt-add-repository command. may be needed for lightweight installs
+apt "spotify-client" -p "deb http://repository.spotify.com stable non-free" -k "http://packages.ros.org/ros.key"
+apt "spotify-client" -k "http://packages.ros.org/ros.key" -p "deb http://repository.spotify.com stable non-free"
 apt "sxhkd"        -p "ppa:drdeimosnn/survive-on-wm"
 apt "sxiv"                                                     #
 apt "tty-clock"                                                #
@@ -42,55 +44,30 @@ apt "xbacklight"                                               # brightness cont
 apt "xdotool"                                                  # for grabbing window names (I use it to handle firefox keys)
 apt "xserver-xorg-core"                                        # libinput dependency
 apt "xserver-xorg-input-libinput"                              # allows for sane trackpad expeirence
-apt "zsh zsh-syntax-highlighting" && git "$GHB/zsh-users/zsh-autosuggestions.git" #
+apt "zsh zsh-syntax-highlighting" && ghb "zsh-users/zsh-autosuggestions" #
 
-# git "$GHB/zsh-users/zsh-autosuggestions.git"     # zsh autosuggestions
-git "$GHB/dylanaraps/pfetch.git"                 # minimal fetch
-git "$GHB/junegunn/fzf.git"                      # fuzzy finder
-git "$GHB/stark/Color-Scripts.git"               # colorscripts
+ghb "dylanaraps/pfetch"   # minimal fetch
+ghb "junegunn/fzf"        # fuzzy finder
+ghb "stark/Color-Scripts" # colorscripts
 
-pip "autopep8"                                                 # python style formatter
-pip "flake8"                                                   # python linter
-pip "pip"                                                      # installs pip
-pip "pycodestyle"                                              # python style linter, requred by autopep8
-pip "pylint"                                                   # python linter
-pip "pynvim"                                                   # python support for neovim
+pip "autopep8"       # python style formatter
+pip "flake8"         # python linter
+pip "pip"            # installs pip
+pip "pycodestyle"    # python style linter, requred by autopep8
+pip "pylint"         # python linter
+pip "pynvim"         # python support for neovim
 
-ndf "DejaVuSansMono"                                           # nerd font
-ndf "FiraCode"                                                 # nerd font
-ndf "Hack"                                                     # nerd font
-ndf "RobotoMono"                                               # nerd font
-ndf "SourceCodePro"                                            # nerd font
-ndf "UbuntuMono"                                               # nerd font
+ndf "DejaVuSansMono" # nerd font
+ndf "FiraCode"       # nerd font
+ndf "Hack"           # nerd font
+ndf "RobotoMono"     # nerd font
+ndf "SourceCodePro"  # nerd font
+ndf "UbuntuMono"     # nerd font
 
-deb "$GHB/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb"
+deb "https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb"
 deb "https://launcher.mojang.com/download/Minecraft.deb"
 
-# function alacritty_install() {
-#   echo '\nInstalling Alacritty\n'
-#   ppa "ppa:mmstick76/alacritty" && apt "alacritty"
-#
-#   # addons
-#   git "$GHB/aaron-williamson/base16-alacritty.git" "$GHB/eendroroy/alacritty-theme.git"
-#   pip "alacritty-colorscheme" # alacritty color changer
-# }; alacritty_install
-#
-# function ros_install() {
-#   echo '\nInstalling ROS\n'
-#   key "http://packages.ros.org/ros.key"
-#   ppa "deb http://packages.ros.org/ros/ubuntu bionic main"
-#   apt "python" # python 2.7 (needed for ROS)
-#   apt "ros-melodic-desktop-full" "python-rosdep" "python-rosinstall" "python-rosinstall-generator" "python-wstool" "build-essential"
-#   # sudo rosdep init && rosfunny orangutandep update
-# }; ros_install
-
-#
-# function spotify_install() {
-#   key "http://download.spotify.com/debian/pubkey.gpg"
-#   ppa "deb http://repository.spotify.com stable non-free"
-#   apt "spotify-client"
-# }; spotify_install
-#
+# TODO: idea -> add generic dependency flag -d where you can pass a command like sudo dpkg
 # function quartus_install() {
 #   # 32-bit architechture for modelsim
 #   sudo dpkg --add-architecture i386
