@@ -1,37 +1,29 @@
-# shell functions for configuring and installing various programs
-
 #===============================================================================
-# SYSTEM PREPS
+# PRINT UTILITIES
 #===============================================================================
 
-function prep(){
-  bigprint "Prepping For Bootstrap"
-  sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-  sudo apt install -y git gcc
-  echo "OS Prep Complete."
-}
+function multiecho(){ for i in {1..67}; do echo -n "$1"; done }
+function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo }
+
+#===============================================================================
+# PREP
+#===============================================================================
 
 function dotfiles() {
-  bigprint "Syncing dotfiles repo to home"
 
   # dotfile boostrap
-  mkdir -p "Home"
   mv -n "$HOME"/{.config,.local,.zshenv} "$1/Home" &>/dev/null
-  GHUB="https://github.com/onesmallskipforman"
   DIR=$(realpath $(dirname $0))
-  git submodule update --init --recursive
+  git submodule update --init --recursive # --remote
 
   # symlink
-  ln -sf "$DIR/Home"/{.config,.local,.zshenv} "$HOME"
+  ln -sf "$DIR/dotfiles"/{.config,.local,.zshenv} "$HOME"
 }
 
 #===============================================================================
-# INSTALLATIONS
+# PACKAGE INSTALLATION
 #===============================================================================
-# TODO: find a way to use key and apt convenience functions in this bigger function
-# TODO: figure out how to pass print info through multiple functions
-# TODO: consider allowing for many of these to have pipe input
-# IDEA: make everything strings and then run "eval" at the top level
+
 function apt() {
   # while [[ $1 != '-p' ]] || [[ ! -z $1 ]]; do
   #   PKG="$PKG $1"; shift 1 || break;
@@ -73,33 +65,3 @@ function deb() { echo $@ | map deb_install }
 # function git() { echo $@ | map clonepull }
 function ghb() { echo $@ | xargs -n1 -I{} echo "https://github.com/{}.git" | map clonepull }
 function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }
-
-#===============================================================================
-# POST-INSTALL CONFIGS
-#===============================================================================
-
-function config() {
-  bigprint "Runnung Miscellaneous Post-Package Installs and Configs"
-
-  # default shell to zsh, set os-specific configs
-  sudo chsh -s /bin/zsh $(whoami)
-
-  # Set computer name, disable desktop environment, clean installs
-  hostnamectl set-hostname SkippersMPB
-  sudo systemctl set-default multi-user.target
-  sudo apt -y autoremove
-
-  # add user to dialup group from serial coms, and video group for brightness management
-  usermod -aG video,dialup $(whoami)
-
-  echo "OS Config Complete. Restart Required"
-}
-
-#===============================================================================
-# UTILITIES
-#===============================================================================
-
-function multiecho(){ for i in {1..67}; do echo -n "$1"; done }
-function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo }
-
-function filter() { awk -F '"' '/^'"$1"'/{print $2}' Packages/$OS; }
