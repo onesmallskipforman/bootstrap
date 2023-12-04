@@ -6,7 +6,7 @@ source library.sh
 
 function prep(){
   sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-  sudo apt install -y git gcc
+  sudo apt install -y git gcc software-properties-common
 }
 
 #===============================================================================
@@ -45,7 +45,7 @@ function quartus_install() {
 
   wget 'https://cdrdv2.intel.com/v1/dl/getContent/666224/666242?filename=Quartus-web-13.1.0.162-linux.tar'
 
-  ADIR="$HOME/.local/share/altera"
+  local ADIR="$HOME/.local/share/altera"
 
   # Unzip tar
   mkdir -p $ADIR/Install
@@ -65,70 +65,71 @@ function quartus_install() {
 
 function packages()
 {
-  apt "alacritty"    -p "ppa:mmstick76/alacritty" && ghb "aaron-williamson/base16-alacritty" "eendroroy/alacritty-theme" && pip "alacritty-colorscheme"
-  apt "alsa-utils"                                               # for audio controls
+  apt "alacritty" -p "ppa:mmstick76/alacritty"   \
+      && ghb "aaron-williamson/base16-alacritty" \
+      && ghb "eendroroy/alacritty-theme"         \
+      && pip "alacritty-colorscheme"
+  apt "alsa-utils" # for audio controls
   apt "asciiquarium" -p "ppa:ytvwld/asciiquarium"
-  apt "autojump"                                                 #
-  apt "bspwm"        -p "ppa:drdeimosnn/survive-on-wm"
-  apt "cmake"                                                    #
-  apt "curl"                                                     #
-  apt "feh"                                                      # image viewer
-  apt "figlet" && ghb "xero/figlet-fonts"               # For writing asciiart text
-  apt "gcc"                                                      #
-  apt "git"          -p "ppa:git-core/ppa"
-  apt "htop"                                                     #
-  apt "inkscape"     -p "ppa:inkscape.dev/stable"                # for latex drawings
-  apt "make"                                                     #
-  apt "neofetch"     -p "ppa:dawidd0811/neofetch"
-  apt "neovim"       -p "ppa:neovim-ppa/stable"
-  apt "polybar"      -p "ppa:drdeimosnn/survive-on-wm"
-  apt "pulseaudio"                                               # for audio controls
-  apt "python3"      -p "ppa:deadsnakes/ppa" && apt "python3-pip"  -p "ppa:deadsnakes/ppa"
-  apt "python3-pip"  -p "ppa:deadsnakes/ppa"
-  apt "redshift"     -p "ppa:dobey/redshift-daily"
-  apt "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" \
+  apt "autojump"
+  apt "bspwm" -p "ppa:drdeimosnn/survive-on-wm"
+  apt "cmake"
+  apt "curl"
+  apt "feh" # image viewer
+  apt "figlet" && ghb "xero/figlet-fonts" # For writing asciiart text
+  apt "gcc"
+  apt "git" -p "ppa:git-core/ppa"
+  apt "htop"
+  apt "inkscape" -p "ppa:inkscape.dev/stable" # for latex drawings
+  apt "make"
+  apt "neofetch" -p "ppa:dawidd0811/neofetch"
+  apt "neovim" -p "ppa:neovim-ppa/stable"
+  apt "polybar" -p "ppa:drdeimosnn/survive-on-wm"
+  apt "pulseaudio" # for audio controls
+  apt "python3"  -p "ppa:deadsnakes/ppa" && apt "python3-pip" -p "ppa:deadsnakes/ppa"
+  apt "python3-pip" -p "ppa:deadsnakes/ppa"
+  apt "redshift" -p "ppa:dobey/redshift-daily"
+  apt "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" -k "http://packages.ros.org/ros.key" \
       && apt "python"                      \
       && apt "python-rosdep"               \
       && apt "python-rosinstall"           \
       && apt "python-rosinstall-generator" \
       && apt "python-wstool"               \
       && apt "build-essential"
-  apt "software-properties-common"                               # basic stuff ie apt-add-repository command. may be needed for lightweight installs
-  apt "spotify-client" -p "deb http://repository.spotify.com stable non-free" -k "http://packages.ros.org/ros.key"
-  apt "spotify-client" -k "http://packages.ros.org/ros.key" -p "deb http://repository.spotify.com stable non-free"
-  apt "sxhkd"        -p "ppa:drdeimosnn/survive-on-wm"
-  apt "sxiv"                                                     #
-  apt "tty-clock"                                                #
-  apt "xbacklight"                                               # brightness control
-  apt "xdotool"                                                  # for grabbing window names (I use it to handle firefox keys)
-  apt "xserver-xorg-core"                                        # libinput dependency
-  apt "xserver-xorg-input-libinput"                              # allows for sane trackpad expeirence
+  apt "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
+  apt "spotify-client"                                       \
+      -p "deb http://repository.spotify.com stable non-free" \
+      -k "http://download.spotify.com/debian/pubkey.gpg"
+  apt "sxhkd" -p "ppa:drdeimosnn/survive-on-wm"
+  apt "sxiv"
+  apt "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
+    # sudo apt install perl-tk
+  apt "tty-clock"
+  apt "xbacklight" # brightness control
+  apt "xdotool" # for grabbing window names (I use it to handle firefox keys)
+  apt "xserver-xorg-core" # libinput dependency
+  apt "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
   apt "zsh" \
     && apt "zsh-syntax-highlighting" \
     && ghb "zsh-users/zsh-autosuggestions" \
     && sudo chsh -s /bin/zsh $(whoami)
-
   ghb "dylanaraps/pfetch"   # minimal fetch
   ghb "junegunn/fzf"        # fuzzy finder
   ghb "stark/Color-Scripts" # colorscripts
-
-  pip "autopep8"       # python style formatter
-  pip "flake8"         # python linter
-  pip "pip"            # installs pip
-  pip "pycodestyle"    # python style linter, requred by autopep8
-  pip "pylint"         # python linter
-  pip "pynvim"         # python support for neovim
-
-  ndf "DejaVuSansMono" # nerd font
-  ndf "FiraCode"       # nerd font
-  ndf "Hack"           # nerd font
-  ndf "RobotoMono"     # nerd font
-  ndf "SourceCodePro"  # nerd font
-  ndf "UbuntuMono"     # nerd font
-
+  pip "autopep8"    # python style formatter
+  pip "flake8"      # python linter
+  pip "pip"         # installs pip
+  pip "pycodestyle" # python style linter, requred by autopep8
+  pip "pylint"      # python linter
+  pip "pynvim"      # python support for neovim
+  ndf "DejaVuSansMono"
+  ndf "FiraCode"
+  ndf "Hack"
+  ndf "RobotoMono"
+  ndf "SourceCodePro"
+  ndf "UbuntuMono"
   deb "https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb"
   deb "https://launcher.mojang.com/download/Minecraft.deb"
-
   quartus_install
 }
 
