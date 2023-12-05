@@ -1,5 +1,36 @@
 source library.sh
 
+matlab_install() {
+    # MATLAB INSTALLATION (EXPERIMENTAL)
+    bigprint "Installing MATLAB"
+
+    local version="R2019b"
+    local DMGPATH="$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg"
+    local INSTPATH="/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+
+    function dmg_cleanup() {
+    # remove dmg and installer on exit, failure, etc.
+    local installer=$(basename $1); local mountname=$(dirname $1)
+    pgrep "${installer%.*}"       && killall "${installer%.*}"
+    [ -d  "/Volumes/$mountname" ] && diskutil unmount force "/Volumes/$mountname"
+    rm -f "$2"
+    }
+    trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
+
+    # unzip, mount, and run installer, waiting for installer to close
+    unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
+    hdiutil attach "$DMGPATH" -nobrowse
+    open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
+
+    # symlink tools
+    sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
+    sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
+
+    # undo traps
+    trap - INT ERR TERM EXIT
+    echo "MATLAB Install Complete."
+}
+
 prep(){
     sudo softwareupdate -irR && xcode-select --install
     which brew &>/dev/null || (sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | NONINTERACTIVE=1 /bin/bash -c )
@@ -61,8 +92,6 @@ config() {
     dw com.apple.screencapture type -string "png" # screenshot fmt (BMP, GIF, JPG, PDF, TIFF)
 }
 
-tap() { brew tap --quiet }
-brw() { yes | brew install --quiet $@ }
 packages() {
     # tap "cmacrae/formulae" && brw "cmacrae/formulae/spacebar" --HEAD # status bar for osx
     tap "FelixKratz/formulae" && brw "sketchybar"
@@ -188,39 +217,10 @@ packages() {
 }
 
 bootstrap() {
-    bigprint "Prepping For Bootstrap" && prep && echo "OS Prep Complete."
-    bigprint "Syncing dotfiles repo to home" && dotfiles
-    bigprint "Installing Packages" && packages
-    bigprint "Runnung Miscellaneous Post-Package Installs and Configs" && config && echo "OS Config Complete. Restart Required"
-}
-
-matlab_install() {
-    # MATLAB INSTALLATION (EXPERIMENTAL)
-    bigprint "Installing MATLAB"
-
-    local version="R2019b"
-    local DMGPATH="$XDG_DATA_HOME/matlab/matlab_${version}_maci64.dmg"
-    local INSTPATH="/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-
-    function dmg_cleanup() {
-    # remove dmg and installer on exit, failure, etc.
-    local installer=$(basename $1); local mountname=$(dirname $1)
-    pgrep "${installer%.*}"       && killall "${installer%.*}"
-    [ -d  "/Volumes/$mountname" ] && diskutil unmount force "/Volumes/$mountname"
-    rm -f "$2"
-    }
-    trap "dmg_cleanup $INSTPATH" "$DMGPATH" INT ERR TERM EXIT
-
-    # unzip, mount, and run installer, waiting for installer to close
-    unzip -d $(dirname $DMGPATH) "$DMGPATH.zip"
-    hdiutil attach "$DMGPATH" -nobrowse
-    open -W "/Volumes/matlab_${version}_maci64/InstallForMacOSX.app"
-
-    # symlink tools
-    sudo ln -sf /Applications/MATLAB_${version}.app/bin/matlab       /usr/local/bin/matlab
-    sudo ln -sf /Applications/MATLAB_${version}.app/bin/maci64/mlint /usr/local/bin/mlint
-
-    # undo traps
-    trap - INT ERR TERM EXIT
-    echo "MATLAB Install Complete."
+    supersist
+    bigprint "Prepping For Bootstrap"  ; prep
+    bigprint "Copying dotfiles to home"; dotfiles
+    bigprint "Installing Packages"     ; packages
+    bigprint "Configure OS"            ; config
+    bigprint "OS Config Complete. Restart Required"
 }

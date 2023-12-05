@@ -7,7 +7,7 @@ function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo }
 
 function os() {
     if   [ $(uname)           = "Darwin" ]; then echo "osx"
-    elif [ $(lsb_release -is) = "Ubuntu"     ]; then echo "ubuntu"
+    elif [ $(lsb_release -is) = "Ubuntu" ]; then echo "ubuntu"
     else echo "OS not found"; return 1; fi
 }
 
@@ -20,9 +20,25 @@ function supersist() {
 }
 
 function gate() {
-    # TODO: currently works with bash and not zsh
+    # NOTE: currently works with bash and not zsh
     read -p "This may overwrite existing files in ~/. Are you sure? (y/n): " REPLY;
-    if [[ $REPLY =~ ^[Yy]$ ]]; then eval "$@"; fi;
+    [[ $REPLY =~ ^[Yy]$ ]] || return 1
+}
+
+#===============================================================================
+# MAIN SCRIPT
+#===============================================================================
+
+function menuRun() {
+  # Run sections based on command line arguments
+  for ARG in "$@"; do
+    [ $ARG = "pre" ] || [ $ARG = "all" ] && prep
+    [ $ARG = "dot" ] || [ $ARG = "all" ] && dotfiles
+    [ $ARG = "pkg" ] || [ $ARG = "all" ] && packages
+    [ $ARG = "cfg" ] || [ $ARG = "all" ] && config
+  done
+  bigprint "Completed running dots. Please resart your computer."
+  echo "Some of these changes require a logout/restart to take effect.\n"
 }
 
 #===============================================================================
@@ -91,6 +107,8 @@ function texlive_configure() {
         multirow
 }
 
+function tap() { brew tap --quiet }
+function brw() { yes | brew install --quiet $@ }
 function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
 function ndf() { echo $@ | map nerdfont_install }

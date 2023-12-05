@@ -133,9 +133,11 @@ function packages()
   quartus_install
 }
 
-
-# only put deps in functions that aren't used anywhere else. addons can be separate i think
-# TODO: idea -> -c flag to add comment about what is getting installed. if nothing, just print package name
-# TODO: figure out how to combine mulitple packages into one call
-# IDEA: while getopts '' OPTARG is false ... do stuff with args
-# TODO: idea -> add generic dependency flag -d where you can pass a command like sudo dpkg
+bootstrap() {
+    supersist
+    bigprint "Prepping For Bootstrap"  ; prep
+    bigprint "Copying dotfiles to home"; dotfiles
+    bigprint "Installing Packages"     ; packages
+    bigprint "Configure OS"            ; config
+    bigprint "OS Config Complete. Restart Required"
+}
