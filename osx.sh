@@ -214,7 +214,7 @@ packages() {
 bootstrap() {
     supersist
     bigprint "Prepping For Bootstrap"  ; prep
-    bigprint "Copying dotfiles to home"; dotfiles
+    bigprint "Copying dotfiles to home"; syncDots
     bigprint "Configure OS"            ; config
     bigprint "Installing Packages"     ; packages
     bigprint "OS Config Complete. Restart Required"

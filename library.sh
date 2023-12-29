@@ -45,7 +45,7 @@ function menuRun() {
 # PREP
 #===============================================================================
 
-function copyDotfiles() {
+function copyDots() {
     # identify files, make directories, copy files
     DOTS="dotfiles"
     FILES=$(find $DOTS -type f -not -path '*.git*' | sed "s/^$DOTS\///g" )
@@ -53,14 +53,16 @@ function copyDotfiles() {
     echo $FILES | xargs -n1 -I{} cp dotfiles/{} ~/{}
 }
 
-function symlinkDotfiles() {
+function syncDots() {
     # id all desired top-level targets
-    DOTS="dotfiles"
+    DOTS="$(realpath dotfiles)"
     TARGETS=$(cat \
         <(find $DOTS/.config -mindepth 1 -maxdepth 1) \
-        <(find $DOTS/.local -mindepth 1 -maxdepth 1)  \
+        <(find $DOTS/.local  -mindepth 1 -maxdepth 1)  \
         <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-        | sed "s/$DOTS\///g")
+        | sed "s;$DOTS/;;g")
+    # find if targets exist and copy their contents to dotfiles
+    echo $TARGETS | xargs -n1 -I{} find ~/{} \( -type f -o -type d \) -wholename ~/{} | sed "s;$HOME/;;g" | xargs -n1 -I{} cp -rT $HOME/{} $DOTS/{}
     # remove existing from home
     echo $TARGETS | xargs -n1 -I{} rm -rf ~/{}
     # ensure directories exist
