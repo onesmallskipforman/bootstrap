@@ -65,11 +65,38 @@ function quartus_install() {
 
 function packages()
 {
+
+  sudo apt update && sudo apt upgrade
+
+  sudo DEBIAN_FRONTEND=noninteractive
+  DEBIAN_FRONTEND=noninteractive
+
+  # TODO: specify python version for pip install function
+  # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
+  apt "sudo"
+  apt "tzdata"
+  apt "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
+  apt "less"
+  apt "git" -p "ppa:git-core/ppa"
+  apt "xorg"
+  apt "network-manager"
+
+  # TODO: make sure all (or selected) python versions' programs are on PATH
+  apt "python3" && apt "python3-pip" && pin "pip" # pip installs pip
+      pin "pynvim" # python support for neovim
+  apt "python3.11" -p "ppa:deadsnakes/ppa"
+  apt "python3.11-distutils" -p "ppa:deadsnakes/ppa"
+
+  # TODO: this will require more research
+  # also this is installed as a dep of xorg
+  apt "systemd"
+
+
   apt "alacritty" -p "ppa:mmstick76/alacritty"   \
       && ghb "aaron-williamson/base16-alacritty" \
-      && ghb "eendroroy/alacritty-theme"         \
-      && pip "alacritty-colorscheme"
-  apt "alsa-utils" # for audio controls
+      && ghb "eendroroy/alacritty-theme"
+    # mkdir -p ~/.config/alacritty/themes
+    # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
   apt "asciiquarium" -p "ppa:ytvwld/asciiquarium"
   apt "autojump"
   apt "bspwm" -p "ppa:drdeimosnn/survive-on-wm"
@@ -78,16 +105,13 @@ function packages()
   apt "feh" # image viewer
   apt "figlet" && ghb "xero/figlet-fonts" # For writing asciiart text
   apt "gcc"
-  apt "git" -p "ppa:git-core/ppa"
   apt "htop"
   apt "inkscape" -p "ppa:inkscape.dev/stable" # for latex drawings
   apt "make"
   apt "neofetch" -p "ppa:dawidd0811/neofetch"
   apt "neovim" -p "ppa:neovim-ppa/stable"
   apt "polybar" -p "ppa:drdeimosnn/survive-on-wm"
-  apt "pulseaudio" # for audio controls
-  apt "python3"  -p "ppa:deadsnakes/ppa" && apt "python3-pip" -p "ppa:deadsnakes/ppa"
-  apt "python3-pip" -p "ppa:deadsnakes/ppa"
+  apt "pulseaudio" "alsa-utils" # for audio controls
   apt "redshift" -p "ppa:dobey/redshift-daily"
   apt "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" -k "http://packages.ros.org/ros.key" \
       && apt "python"                      \
@@ -96,7 +120,6 @@ function packages()
       && apt "python-rosinstall-generator" \
       && apt "python-wstool"               \
       && apt "build-essential"
-  apt "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
   apt "spotify-client"                                       \
       -p "deb http://repository.spotify.com stable non-free" \
       -k "http://download.spotify.com/debian/pubkey.gpg"
@@ -116,12 +139,6 @@ function packages()
   ghb "dylanaraps/pfetch"   # minimal fetch
   ghb "junegunn/fzf"        # fuzzy finder
   ghb "stark/Color-Scripts" # colorscripts
-  pip "autopep8"    # python style formatter
-  pip "flake8"      # python linter
-  pip "pip"         # installs pip
-  pip "pycodestyle" # python style linter, requred by autopep8
-  pip "pylint"      # python linter
-  pip "pynvim"      # python support for neovim
   ndf "DejaVuSansMono"
   ndf "FiraCode"
   ndf "Hack"

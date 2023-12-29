@@ -45,7 +45,7 @@ function menuRun() {
 # PREP
 #===============================================================================
 
-function dotfiles() {
+function copyDotfiles() {
     # identify files, make directories, copy files
     DOTS="dotfiles"
     FILES=$(find $DOTS -type f -not -path '*.git*' | sed "s/^$DOTS\///g" )
@@ -53,21 +53,25 @@ function dotfiles() {
     echo $FILES | xargs -n1 -I{} cp dotfiles/{} ~/{}
 }
 
+function symlinkDotfiles() {
+    # id all desired top-level targets
+    DOTS="dotfiles"
+    TARGETS=$(cat \
+        <(find $DOTS/.config -mindepth 1 -maxdepth 1) \
+        <(find $DOTS/.local -mindepth 1 -maxdepth 1)  \
+        <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+        | sed "s/$DOTS\///g")
+    # remove existing from home
+    echo $TARGETS | xargs -n1 -I{} rm -rf ~/{}
+    # ensure directories exist
+    echo $TARGETS | xargs -n1 dirname | sort -u | xargs -n1 -I{} mkdir -p ~/{}
+    # symlink dotfiles to home
+    echo $TARGETS | xargs -n1 -I{} ln -sf $PWD/dotfiles/{} ~/{}
+}
+
 #===============================================================================
 # PACKAGE INSTALLATION
 #===============================================================================
-
-function brw() {
-  local PKG="$1"; shift
-  local OPTARG TAPCMD
-  while getopts ":t:" o; do case "${o}" in
-    t) TAPCMD="brew tap ${OPTARG}";;
-    *) printf "Invalid option: -%s\\n" "$OPTARG";;
-  esac done
-  local CMD="brew instrall $PKG"
-  [ ! -z "$TAPCMD" ] && CMD="$TAPCMD && $CMD"
-  echo "$CMD"
-}
 
 function apt() {
   local PKG="$1"; shift; local OPTARG PPACMD KEYCMD
@@ -76,7 +80,7 @@ function apt() {
     k) KEYCMD="sudo apt-key adv --fetch-keys ${OPTARG}";;
     *) printf "Invalid option: -%s\\n" "$OPTARG";;
   esac done
-  local CMD="sudo apt install -y $PKG"
+  local CMD="sudo apt install -y -f $PKG"
   [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
   [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
   echo "$CMD"
@@ -87,15 +91,10 @@ nerdfont_install() {
   wget -q --show-progress $URL && unzip -qod /usr/local/share/fonts && rm $1.zip
 }
 
-function clonepull() {
-  # clone, and pull if already cloned from url $1 into dir
-  DIR=$HOME/.local/src/$(basename $1 .git)
-  [ ! -d "$DIR/.git" ] && echo "git clone --depth 1 '$1' $DIR" || echo "git -C $DIR pull"
-}
 
 function texlive_configure() {
     sudo tlmgr update --self
-    sudo tmlgr install \
+    sudo tlmgr install \
         latexmk \
         xelatex \
         preprint \
@@ -107,12 +106,16 @@ function texlive_configure() {
         multirow
 }
 
+function cln() {
+  DIR=$HOME/.local/src/$(basename $1 .git)
+  [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
+}
 function tap() { brew tap --quiet }
-function brw() { yes | brew install --quiet $@ }
+function brw() { yes | brew install --force --no-quarantine --overwrite $@ }
 function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
 function ndf() { echo $@ | map nerdfont_install }
-function pin() { python3 -m pip install --user -U $@ }
+function pin() { python3 -m pip install --user --upgrade $@ }
 function deb() { DEB=$(basename $1); wget -qod $1 && apt ./$DEB && rm $DEB }
-function ghb() { echo $@ | xargs -n1 -I{} echo "https://github.com/{}.git" | map clonepull }
+function ghb() { cln "https://github.com/$1.git" }
 function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }
