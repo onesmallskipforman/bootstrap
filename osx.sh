@@ -202,7 +202,7 @@ packages() {
     brw "xquartz" # for x11 forwading
     brw "thunderbird"
     brw "zoom"
-    brw "zegervdv/zathura/zathura" --HEAD "zegervdv/zathura/girara" "zegervdv/zathura/zathura-pdf-poppler" && zathura_configure
+    brw "zegervdv/zathura/zathura" --HEAD "zegervdv/zathura/girara" --HEAD "zegervdv/zathura/zathura-pdf-poppler" && zathura_configure
     ghb "stark/Color-Scripts"
     pin "https://github.com/dylanaraps/pywal/archive/master.zip" && brw "pidof"
 
