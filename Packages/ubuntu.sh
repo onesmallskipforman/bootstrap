@@ -72,6 +72,7 @@ apt "xbacklight"                                               # brightness cont
 apt "xdotool"                                                  # for grabbing window names (I use it to handle firefox keys)
 apt "xserver-xorg-core"                                        # libinput dependency
 apt "xserver-xorg-input-libinput"                              # allows for sane trackpad expeirence
+apt "zathura"
 apt "zsh"                                                      #
 apt "zsh-syntax-highlighting"                                  #
 

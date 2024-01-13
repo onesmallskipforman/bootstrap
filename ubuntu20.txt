@@ -1,0 +1,80 @@
+latex installs:
+    install latexmk
+        includes latexmk command
+        depends on texlive-latex-base
+            includes pdflatek
+    alternatively install texlive-latex-base
+        then run sudo tlmgr install latexmk
+    install ghostscript
+        includes ps2pdf
+    install enscript
+        includes enscript which converts textfile to postscript (use with ps2pdf)
+
+installs needed for bspwm
+    feh
+    zsh
+    zsh config (has zprofile with tty3 check)
+    x11 config
+
+update sudoers for openconnect command
+
+installf cfs-utils for mounting temp stuff
+
+install fonts
+
+modify editor for visudo (can only use sudo visudo for sudoers)
+    see answers in https://askubuntu.com/questions/539243/how-to-change-visudo-editor-from-nano-to-vim
+
+
+ask jamil if you can set up vpn/openconnect with hardware token
+
+
+need to fix zsh vi mode cursor
+
+document which firefox files need to be copied
+
+document which firefox files need to be copied . they need to be removed and recopied. rsync won't work. figure out which one might cause errors
+https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data
+
+update password
+
+
+sudo apt install ripgrep (for fzf)
+
+
+figure out what all options are for italics: https://github.com/ellisonleao/gruvbox.nvim/issues/220
+
+
+migrate this: https://github.com/nvim-tree/nvim-tree.lua/wiki/Migrating-To-on_attach
+
+
+new way to handle bufferline colors: https://github.com/akinsho/bufferline.nvim/issues/724
+
+
+update fzf paths when installing with apt: https://github.com/junegunn/fzf/issues/1866
+
+
+get accustomed to fzf fuzzy completion and keybinds: https://github.com/junegunn/fzf#fuzzy-completion-for-bash-and-zsh
+
+
+install aws command: mentioned here https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+unzip awscliv2.zip
+sudo ./aws/install
+
+
+aws sso configure per taylor's steps
+
+
+add rofi, arandr, autorandr
+
+figure out broken nvim icons
+
+add rofi config for colors
+rofi-theme-selector
+do i need wal working or are these themes part of rofi??
+
+
+sudo apt install clangd for nvim
+    TODO: unclear if nvim actually sees this or always downloads its own

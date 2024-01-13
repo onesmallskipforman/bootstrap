@@ -4,6 +4,7 @@
 # SYSTEM PREPS
 #===============================================================================
 
+# TODO: need to figure out what to do when i already have configs copied and symlinked, especially with untracked changes
 function dotfiles() {
 
   function gitstrap() {
@@ -43,34 +44,28 @@ function prep(){
 # INSTALLATIONS
 #===============================================================================
 
-function key() { echo $@ | xargs -n1 sudo apt-key adv --fetch-keys }
-function ppa() { echo $@ | xargs -n1 sudo add-apt-repository -y }
-function ndf() { echo $@ | xargs -n1 nerdfont_install }
-function pip() { sudo python3 -m pip install -U $@ }
-function deb() { echo $@ | xargs -n1 deb_install }
-function git() { echo $@ | xargs -n1 clonepull }
-function apt() { sudo apt-get install $@ }
-# function brf() { echo $@ | xargs -rn1 brew bundle -v --no-lock }
-
-function pkg_install() {
-  bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
+map() { local f="$1"; shift; for i in "$@"; do "$f" "$i"; done; }
+run() { echo $@ } #|| eval $@ }
+key() { echo sudo apt-key adv --fetch-keys $1 }
+ppa() { echo add-apt-repository -y $1 }
+pip() { echo sudo python3 -m pip install -U $1 }
+deb() { DEB=$(basename $1); echo wget -qod $1 '&&' sudo apt-get install ./$DEB '&&' rm $DEB }
+apt() { echo sudo apt-get install $1 }
+ndf() {
+  # TODO: add line that doesn't use README and stuff from zip contents
+  URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.zip"
+  echo wget -q --show-progress $URL '&&' unzip -qod $HOME/.local/share/fonts $1.zip '&&' rm $1.zip
 }
-
-function nerdfont_install() {
-  wget -q --show-progress \
-    https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/$arg.zip \
-    && unzip -qod /usr/local/share/fonts && rm $arg.zip
-}
-
-function deb_install() {
-  DEB=$(basename $1); wget -qod $1 && sudo apt-get install ./$DEB && rm $DEB
-}
-
-function clonepull() {
+git() {
   # clone, and pull if already cloned from url $1 into dir
   DIR=$HOME/.local/src/$(basename $1 .git)
-  [ ! -d "$DIR/.git" ] && \
-    git clone --depth 1 "$1" "$DIR" || git -C "$DIR" pull origin master
+  echo [ ! -d "$DIR/.git" ] '&&' \
+    git clone --depth 1 "$1" "$DIR" '||' git -C "$DIR" pull origin master
+}
+# brf() { echo $@ | xargs -rn1 brew bundle -v --no-lock }
+
+pkg_install() {
+  bigprint "Installing Packages."; source Packages/$OS; echo "Complete."
 }
 
 #===============================================================================
