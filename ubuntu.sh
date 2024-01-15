@@ -63,6 +63,19 @@ function quartus_install() {
     sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
 }
 
+function install_nvim() {
+    LINK='https://github.com/neovim/neovim/releases/download/v0.9.4/nvim-linux64.tar.gz'
+    SDIR=$HOME/.local/src
+    MDIR=$HOME/.local/share/man
+    BDIR=$HOME/.local/bin
+    mkdir -p $SDIR $MDIR $BDIR
+
+    wget -qO- $LINK | tar xzv -C $SDIR && {
+        ln -sf $SDIR/nvim-linux64/bin/nvim $BDIR/nvim
+        ln -sf $SDIR/nvim-linux64/man/man1/nvim.1 $MDIR/man1/nvim.1
+    }
+}
+
 function packages()
 {
 
@@ -80,6 +93,10 @@ function packages()
   apt "git" -p "ppa:git-core/ppa"
   apt "xorg"
   apt "network-manager"
+
+  # TODO: see if you can specify npm version
+  install_nvim && pin "pynvim" && apt "npm"
+
 
   # TODO: make sure all (or selected) python versions' programs are on PATH
   apt "python3" && apt "python3-pip" && pin "pip" # pip installs pip
@@ -137,7 +154,7 @@ function packages()
     && ghb "zsh-users/zsh-autosuggestions" \
     && sudo chsh -s /bin/zsh $(whoami)
   ghb "dylanaraps/pfetch"   # minimal fetch
-  ghb "junegunn/fzf"        # fuzzy finder
+  ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion # fuzzy finder
   ghb "stark/Color-Scripts" # colorscripts
   ndf "DejaVuSansMono"
   ndf "FiraCode"

@@ -143,7 +143,8 @@ packages() {
     brw "font-robotomono-nerd-font"
     brw "font-saucecodepro-nerd-font"
     brw "font-ubuntumono-nerd-font"
-    brw "fzf" && $(brew --prefix)/opt/fzf/install --all --xdg
+    brw "fzf" && $(brew --prefix)/opt/fzf/install --all --xdg --completion
+    #TODO: replace with 'ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion'
     brw "gcc"
     brw "geckodriver"
     brw "ghostscript" # for ps2pdf with enscript
