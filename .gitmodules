@@ -1,4 +1,4 @@
-[submodule "submodules/dotfiles"]
-	path = dotfiles
-	url = https://github.com/onesmallskipforman/dotfiles.git
-	branch = master
+[submodule "dotfiles"]
+    path = dotfiles
+    url = https://github.com/onesmallskipforman/dotfiles.git
+    branch = master
