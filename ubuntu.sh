@@ -97,6 +97,8 @@ function packages()
   # TODO: see if you can specify npm version
   install_nvim && pin "pynvim" && apt "npm"
 
+  # TODO: consider grabbing latest instead of version
+  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.5.0/fastfetch-2.5.0-Linux.deb'
 
   # TODO: make sure all (or selected) python versions' programs are on PATH
   apt "python3" && apt "python3-pip" && pin "pip" # pip installs pip
