@@ -147,7 +147,7 @@ function packages()
   apt "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
     # sudo apt install perl-tk
   apt "tty-clock"
-  apt "xbacklight" # brightness control
+  apt "brightnessctl" # brightness control
   apt "xdotool" # for grabbing window names (I use it to handle firefox keys)
   apt "xserver-xorg-core" # libinput dependency
   apt "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
@@ -164,7 +164,6 @@ function packages()
   ndf "RobotoMono"
   ndf "SourceCodePro"
   ndf "UbuntuMono"
-  deb "https://github.com/haikarainen/light/releases/download/v1.2/light_1.2_amd64.deb"
   deb "https://launcher.mojang.com/download/Minecraft.deb"
   quartus_install
 }
