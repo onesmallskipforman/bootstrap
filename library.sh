@@ -2,8 +2,8 @@
 # PRINT UTILITIES
 #===============================================================================
 
-function multiecho(){ for i in {1..67}; do echo -n "$1"; done }
-function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo }
+function multiecho(){ for i in {1..67}; do echo -n "$1"; done; }
+function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo; }
 
 function os() {
     if   [ $(uname)           = "Darwin" ]; then echo "osx"
@@ -112,12 +112,12 @@ function cln() {
   DIR=$HOME/.local/src/$(basename $1 .git)
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
 }
-function tap() { brew tap --quiet }
-function brw() { yes | brew install --force --no-quarantine --overwrite $@ }
-function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done }
-function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
-function ndf() { echo $@ | map nerdfont_install }
-function pin() { python3 -m pip install --user --upgrade $@ }
-function deb() { DEB=$(basename $1); wget -qod $1 && apti "./$DEB" && rm $DEB }
-function ghb() { cln "https://github.com/$1.git" $2 }
-function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }
+function tap() { brew tap --quiet; }
+function brw() { yes | brew install --force --no-quarantine --overwrite $@; }
+function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done; }
+function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
+function ndf() { echo $@ | map nerdfont_install; }
+function pin() { python3 -m pip install --user --upgrade $@; }
+function deb() { DEB=$(basename $1); wget -qod $1 && apti "./$DEB" && rm $DEB; }
+function ghb() { cln "https://github.com/$1.git" $2; }
+function ppa() { echo $@ | map echo "sudo add-apt-repository -yu" ; }
