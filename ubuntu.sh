@@ -79,93 +79,191 @@ function install_nvim() {
 function packages()
 {
 
-  sudo apt update && sudo apt upgrade
+  #############################################################################
+  # LAYER 1: Command-Line Fundamentals
+  #############################################################################
 
+  sudo apt update && sudo apt upgrade
   sudo DEBIAN_FRONTEND=noninteractive
   DEBIAN_FRONTEND=noninteractive
+  # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
 
+  # TODO: add some 'layer 1 install group and make sure it includes a font'
   # TODO: specify python version for pip install function
   # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
-  apt "sudo"
-  apt "tzdata"
-  apt "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
-  apt "less"
-  apt "git" -p "ppa:git-core/ppa"
-  apt "xorg"
-  apt "network-manager"
+  apt install "sudo"
+  apti "tzdata"
+  apti "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
+  apti "less"
+  apti "git" -p "ppa:git-core/ppa"
+  apti "xorg"
+  apti "network-manager" # i think this has nmtui
+  {
+    apti "zsh"
+    apti "zsh-syntax-highlighting"
+    ghb "zsh-users/zsh-autosuggestions"
+    sudo chsh -s /bin/zsh $(whoami)
+  }
 
-  # TODO: see if you can specify npm version
-  install_nvim && pin "pynvim" && apt "npm"
 
-  # TODO: consider grabbing latest instead of version
-  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.5.0/fastfetch-2.5.0-Linux.deb'
+  # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need)
+
+
+  {
+      ndf "DejaVuSansMono"
+      ndf "FiraCode"
+      ndf "Hack"
+      ndf "RobotoMono"
+      ndf "SourceCodePro"
+      ndf "UbuntuMono"
+  }
+
+  {
+      deb "https://zoom.us/client/latest/zoom_amd64.deb"
+  }
+
+
+
+
+  { #STEAM
+
+    ppa multiverse
+    apti steam # TODO: not really sure what the difference is
+    # apti steam-installer
+    apti steamcmd
+
+
+
+  }
+
+
+  { # PICOM
+    apti libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libpcre2-dev \
+        libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev        \
+        libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev   \
+        libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev                 \
+        libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev               \
+        libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
+
+    # TODO: alternatively use tar
+    ghb "yshui/picom.git" ~/.local/src/picom
+    meson setup --buildtype=release ~/.local/src/picom/build ~/.local/src/picom
+    sudo ninja -C ~/.local/src/picom/build install
+  }
+
+  apti arandr
+  apti autorandr
+  apti rofi && ghb "newmanls/rofi-themes-collection"
+
+  apti "bspwm" -p "ppa:drdeimosnn/survive-on-wm"
+  apti "sxhkd" -p "ppa:drdeimosnn/survive-on-wm"
+  apti "cmake"
+  apti "make"
+  apti "curl"
+  apti "feh" # image viewer
+  apti "figlet" && ghb "xero/figlet-fonts" # For writing asciiart text
+  apti "gcc"
+  apti "htop"
+  apti "neofetch" -p "ppa:dawidd0811/neofetch"
+  apti "pulseaudio" "alsa-utils" # for audio controls
+
+  apti "cifs-utils" # tool for mounding temp drives
+
+  apti "tty-clock"
+  apti "brightnessctl" # brightness control
+  apti "xdotool" # for grabbing window names (I use it to handle firefox keys)
+  apti "xserver-xorg-core" # libinput dependency
+  apti "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
+
 
   # TODO: make sure all (or selected) python versions' programs are on PATH
-  apt "python3" && apt "python3-pip" && pin "pip" # pip installs pip
+  apti "python3" && apt "python3-pip" && pin "pip" # pip installs pip
       pin "pynvim" # python support for neovim
-  apt "python3.11" -p "ppa:deadsnakes/ppa"
-  apt "python3.11-distutils" -p "ppa:deadsnakes/ppa"
-
-  # TODO: this will require more research
-  # also this is installed as a dep of xorg
-  apt "systemd"
+  apti "python3.11" -p "ppa:deadsnakes/ppa"
+  apti "python3.11-distutils" -p "ppa:deadsnakes/ppa"
 
 
-  apt "alacritty" -p "ppa:mmstick76/alacritty"   \
+
+  #############################################################################
+  # LAYER 2: Key Programs
+  #############################################################################
+
+  apti "alacritty" -p "ppa:mmstick76/alacritty"   \
       && ghb "aaron-williamson/base16-alacritty" \
       && ghb "eendroroy/alacritty-theme"
     # mkdir -p ~/.config/alacritty/themes
     # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
-  apt "asciiquarium" -p "ppa:ytvwld/asciiquarium"
-  apt "autojump"
-  apt "bspwm" -p "ppa:drdeimosnn/survive-on-wm"
-  apt "cmake"
-  apt "curl"
-  apt "feh" # image viewer
-  apt "figlet" && ghb "xero/figlet-fonts" # For writing asciiart text
-  apt "gcc"
-  apt "htop"
-  apt "inkscape" -p "ppa:inkscape.dev/stable" # for latex drawings
-  apt "make"
-  apt "neofetch" -p "ppa:dawidd0811/neofetch"
-  apt "neovim" -p "ppa:neovim-ppa/stable"
-  apt "polybar" -p "ppa:drdeimosnn/survive-on-wm"
-  apt "pulseaudio" "alsa-utils" # for audio controls
-  apt "redshift" -p "ppa:dobey/redshift-daily"
-  apt "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" -k "http://packages.ros.org/ros.key" \
-      && apt "python"                      \
-      && apt "python-rosdep"               \
-      && apt "python-rosinstall"           \
-      && apt "python-rosinstall-generator" \
-      && apt "python-wstool"               \
-      && apt "build-essential"
-  apt "spotify-client"                                       \
-      -p "deb http://repository.spotify.com stable non-free" \
-      -k "http://download.spotify.com/debian/pubkey.gpg"
-  apt "sxhkd" -p "ppa:drdeimosnn/survive-on-wm"
-  apt "sxiv"
-  apt "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
-    # sudo apt install perl-tk
-  apt "tty-clock"
-  apt "brightnessctl" # brightness control
-  apt "xdotool" # for grabbing window names (I use it to handle firefox keys)
-  apt "xserver-xorg-core" # libinput dependency
-  apt "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
-  apt "zsh" \
-    && apt "zsh-syntax-highlighting" \
-    && ghb "zsh-users/zsh-autosuggestions" \
-    && sudo chsh -s /bin/zsh $(whoami)
-  ghb "dylanaraps/pfetch"   # minimal fetch
-  ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion # fuzzy finder
-  ghb "stark/Color-Scripts" # colorscripts
-  ndf "DejaVuSansMono"
-  ndf "FiraCode"
-  ndf "Hack"
-  ndf "RobotoMono"
-  ndf "SourceCodePro"
-  ndf "UbuntuMono"
-  deb "https://launcher.mojang.com/download/Minecraft.deb"
-  quartus_install
+
+  apti "firefox"
+
+  apti "polybar" -p "ppa:drdeimosnn/survive-on-wm"
+  apti "redshift" -p "ppa:dobey/redshift-daily"
+
+
+  # TODO: see if you can specify npm version
+  install_nvim && pin "pynvim" && apti "npm"
+
+  ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && apti ripgrep # fuzzy finder
+
+
+  # TODO: consider grabbing latest instead of version
+  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.5.0/fastfetch-2.5.0-Linux.deb'
+
+
+
+  #############################################################################
+  # LAYER 3: Extra
+  #############################################################################
+
+  { # GUIX
+    cd /tmp
+    wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+    chmod +x guix-install.sh
+    ./guix-install.sh
+    guix pull
+
+    guix install nyxt
+  }
+
+
+  # TODO: this will require more research
+  # also this is installed as a dep of xorg
+  apti "systemd"
+
+  { # VPN
+    apti "openconnect"
+    sudo echo "$(whoami) ALL=(root) NOPASSWD: /usr/bin/openconnect, /usr/bin/pkill" | sudo tee /private/etc/sudoers.d/$(whoami)
+  }
+
+  # apti "asciiquarium" -p "ppa:ytvwld/asciiquarium"
+  # apti "autojump"
+  # apti "ros-melodic-desktop-full" -p "deb http://packages.ros.org/ros/ubuntu bionic main" -k "http://packages.ros.org/ros.key" \
+  #     && apti "python"                      \
+  #     && apti "python-rosdep"               \
+  #     && apti "python-rosinstall"           \
+  #     && apti "python-rosinstall-generator" \
+  #     && apti "python-wstool"               \
+  #     && apti "build-essential"
+  # apti "spotify-client"                                       \
+  #     -p "deb http://repository.spotify.com stable non-free" \
+  #     -k "http://download.spotify.com/debian/pubkey.gpg"
+  # apti "sxiv"
+  # {
+  #     apti "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
+  #     apti "inkscape" -p "ppa:inkscape.dev/stable" # for latex drawings
+  #     # sudo apti install perl-tk # for tlmgr gui
+  #     apti "ghostscript" # installs ps2pdf
+  #     apti "enscript" # converts textfile to postscript (use with ps2pdf)
+  # }
+
+
+
+
+  # ghb "dylanaraps/pfetch"   # minimal fetch
+  # ghb "stark/Color-Scripts" # colorscripts
+
+  # deb "https://launcher.mojang.com/download/Minecraft.deb"
+  # quartus_install
 }
 
 bootstrap() {

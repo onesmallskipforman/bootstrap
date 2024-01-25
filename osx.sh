@@ -122,7 +122,10 @@ packages() {
     brw "asciiquarium" "pipes-sh" "tty-clock" # showing off
     brw "autojump" # python formatter
     brw "balenaetcher"
-    brw "basictex" && texlive_configure # latex (full package: mactex) # TODO: double-check you may need brew install --cask to run installer
+    {
+        brw "basictex" && texlive_configure # latex (full package: mactex) # TODO: double-check you may need brew install --cask to run installer
+        brw "inkscape" # for latex drawings
+    }
     brw "bat" "ccat" "highlight" # cat variant with highlight (for file mgr)
     brw "bc" "calc" # terminal calculators
     brw "calcurse"
@@ -195,7 +198,6 @@ packages() {
     brw "firefox" && firefox -setDefaultBrowser -silent
     brw "fliqlo" # screensaver
     brw "ftdi-vcp-driver" # arduino driver
-    brw "inkscape" # for latex drawings
     brw "librepcb" # electrical schematic drawing tool
     brw "minecraft" && ln -sf "$HOME/.config/minecraft/options.txt" "$HOME/Library/ApplicationSupport/Minecraft/options.txt"
     brw "spotify" && ln -sf "$HOME/.local/share/spotify/prefs" "$HOME/Library/ApplicationSupport/Spotify/prefs"

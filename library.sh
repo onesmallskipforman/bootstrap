@@ -75,7 +75,7 @@ function syncDots() {
 # PACKAGE INSTALLATION
 #===============================================================================
 
-function apt() {
+function apti() {
   local PKG="$1"; shift; local OPTARG PPACMD KEYCMD
   while getopts ":p:k:" o; do case "${o}" in
     p) PPACMD="sudo add-apt-repository -yu ${OPTARG}";;
@@ -89,10 +89,10 @@ function apt() {
 }
 
 nerdfont_install() {
-  URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.zip"
-  wget -q --show-progress $URL && unzip -qod /usr/local/share/fonts && rm $1.zip
+  local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
+  wget -qO- --show-progress $URL | xz -d | tar xvf - -C ~/.local/share/fonts
+  # wget -qO- --show-progress $URL | tar Jxvf - -C ~/.local/share/fonts # NOTE: this version requires gnu tar
 }
-
 
 function texlive_configure() {
     sudo tlmgr update --self
@@ -119,5 +119,5 @@ function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
 function ndf() { echo $@ | map nerdfont_install }
 function pin() { python3 -m pip install --user --upgrade $@ }
 function deb() { DEB=$(basename $1); wget -qod $1 && apt ./$DEB && rm $DEB }
-function ghb() { cln "https://github.com/$1.git" }
+function ghb() { cln "https://github.com/$1.git" $2 }
 function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }
