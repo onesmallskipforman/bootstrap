@@ -85,7 +85,7 @@ function apti() {
   local CMD="sudo apt install -y -f $PKG"
   [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
   [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
-  echo "$CMD"
+  eval "$CMD"
 }
 
 nerdfont_install() {
@@ -118,6 +118,6 @@ function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys" }
 function ndf() { echo $@ | map nerdfont_install }
 function pin() { python3 -m pip install --user --upgrade $@ }
-function deb() { DEB=$(basename $1); wget -qod $1 && apt ./$DEB && rm $DEB }
+function deb() { DEB=$(basename $1); wget -qod $1 && apti "./$DEB" && rm $DEB }
 function ghb() { cln "https://github.com/$1.git" $2 }
 function ppa() { echo $@ | map echo "sudo add-apt-repository -yu"  }

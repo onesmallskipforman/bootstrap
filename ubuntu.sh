@@ -6,7 +6,8 @@ source library.sh
 
 function prep(){
   sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-  sudo apt install -y git gcc software-properties-common
+  sudo dpkg --add-architecture i386
+  # sudo apt install -y git gcc software-properties-common
 }
 
 #===============================================================================
@@ -18,7 +19,7 @@ function config() {
   sudo chsh -s /bin/zsh $(whoami)
 
   # Set computer name, disable desktop environment, clean installs
-  hostnamectl set-hostname Skipper
+  # hostnamectl set-hostname Skipper #TODO: make this more interesting or device-specific
   sudo systemctl set-default multi-user.target
   sudo apt -y autoremove
 
@@ -91,12 +92,13 @@ function packages()
   # TODO: add some 'layer 1 install group and make sure it includes a font'
   # TODO: specify python version for pip install function
   # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
-  apt install "sudo"
+  which sudo || apt install "sudo"
   apti "tzdata"
   apti "software-properties-common" # basic stuff ie apt-add-repository command. may be needed for lightweight installs
   apti "less"
   apti "git" -p "ppa:git-core/ppa"
   apti "xorg"
+  apti "gcc"
   apti "network-manager" # i think this has nmtui
   {
     apti "zsh"
@@ -118,12 +120,7 @@ function packages()
       ndf "UbuntuMono"
   }
 
-  {
-      deb "https://zoom.us/client/latest/zoom_amd64.deb"
-  }
-
-
-
+  deb "https://zoom.us/client/latest/zoom_amd64.deb"
 
   { #STEAM
 
@@ -131,9 +128,6 @@ function packages()
     apti steam # TODO: not really sure what the difference is
     # apti steam-installer
     apti steamcmd
-
-
-
   }
 
 
@@ -188,11 +182,26 @@ function packages()
   # LAYER 2: Key Programs
   #############################################################################
 
-  apti "alacritty" -p "ppa:mmstick76/alacritty"   \
-      && ghb "aaron-williamson/base16-alacritty" \
-      && ghb "eendroroy/alacritty-theme"
-    # mkdir -p ~/.config/alacritty/themes
-    # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+  # apti "alacritty" -p "ppa:mmstick76/alacritty"   \
+  #     && ghb "aaron-williamson/base16-alacritty" \
+  #     && ghb "eendroroy/alacritty-theme"
+  #   # mkdir -p ~/.config/alacritty/themes
+  #   # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
+
+  {
+    ghb "alacritty/alacritty.git" ~/.local/src/alacritty
+
+    apti cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+
+    cd ~/.local/src/alacritty
+    cargo install alacritty
+    # cargo build --release
+    # cargo build --release --no-default-features --features=x11
+    sudo ninja -C ~/.local/src/picom/build install
+  }
+
+
+
 
   apti "firefox"
 
@@ -215,24 +224,24 @@ function packages()
   # LAYER 3: Extra
   #############################################################################
 
-  { # GUIX
-    cd /tmp
-    wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
-    chmod +x guix-install.sh
-    ./guix-install.sh
-    guix pull
+  # { # GUIX
+  #   cd /tmp
+  #   wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+  #   chmod +x guix-install.sh
+  #   ./guix-install.sh
+  #   guix pull
+  #
+  #   guix install nyxt
+  # }
 
-    guix install nyxt
-  }
 
-
-  # TODO: this will require more research
-  # also this is installed as a dep of xorg
-  apti "systemd"
+  # # TODO: this will require more research
+  # # also this is installed as a dep of xorg
+  # apti "systemd"
 
   { # VPN
     apti "openconnect"
-    sudo echo "$(whoami) ALL=(root) NOPASSWD: /usr/bin/openconnect, /usr/bin/pkill" | sudo tee /private/etc/sudoers.d/$(whoami)
+    sudo echo "$(whoami) ALL=(root) NOPASSWD: /usr/bin/openconnect, /usr/bin/pkill" | sudo tee /etc/sudoers.d/$(whoami)
   }
 
   # apti "asciiquarium" -p "ppa:ytvwld/asciiquarium"
