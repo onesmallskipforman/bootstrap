@@ -79,7 +79,7 @@ function install_nvim() {
 
 
 function alacritty_install() {
-    ghb "alacritty/alacritty.git" ~/.local/src/alacritty
+    ghb "alacritty/alacritty" ~/.local/src/alacritty
 
     apti cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
 
@@ -87,8 +87,22 @@ function alacritty_install() {
     cargo install alacritty
     # cargo build --release
     # cargo build --release --no-default-features --features=x11
+}
+
+function picom_install() { # PICOM
+    apti libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libpcre2-dev \
+        libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev        \
+        libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev   \
+        libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev                 \
+        libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev               \
+        libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
+
+    # TODO: alternatively use tar
+    ghb "yshui/picom.git" ~/.local/src/picom
+    meson setup --buildtype=release ~/.local/src/picom/build ~/.local/src/picom
     sudo ninja -C ~/.local/src/picom/build install
 }
+
 
 function packages()
 {
@@ -143,20 +157,7 @@ function packages()
     apti steamcmd
   }
 
-
-  { # PICOM
-    apti libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libpcre2-dev \
-        libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev        \
-        libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev   \
-        libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev                 \
-        libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev               \
-        libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
-
-    # TODO: alternatively use tar
-    ghb "yshui/picom.git" ~/.local/src/picom
-    meson setup --buildtype=release ~/.local/src/picom/build ~/.local/src/picom
-    sudo ninja -C ~/.local/src/picom/build install
-  }
+  picom_install
 
   apti arandr
   apti autorandr
