@@ -90,6 +90,7 @@ function apti() {
 
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
+  mkdir -p ~/.local/share/fonts
   wget -qO- --show-progress $URL | xz -d | tar xvf - -C ~/.local/share/fonts
   # wget -qO- --show-progress $URL | tar Jxvf - -C ~/.local/share/fonts # NOTE: this version requires gnu tar
 }

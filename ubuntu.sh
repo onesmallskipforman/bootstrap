@@ -206,7 +206,7 @@ function packages()
   apti "firefox"
 
   apti "polybar" -p "ppa:drdeimosnn/survive-on-wm"
-  apti "redshift" -p "ppa:dobey/redshift-daily"
+  apti "redshift"
 
 
   # TODO: see if you can specify npm version
