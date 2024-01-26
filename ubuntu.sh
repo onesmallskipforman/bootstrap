@@ -77,6 +77,19 @@ function install_nvim() {
     }
 }
 
+
+function alacritty_install() {
+    ghb "alacritty/alacritty.git" ~/.local/src/alacritty
+
+    apti cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+
+    cd ~/.local/src/alacritty
+    cargo install alacritty
+    # cargo build --release
+    # cargo build --release --no-default-features --features=x11
+    sudo ninja -C ~/.local/src/picom/build install
+}
+
 function packages()
 {
 
@@ -188,17 +201,7 @@ function packages()
   #   # mkdir -p ~/.config/alacritty/themes
   #   # git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
 
-  {
-    ghb "alacritty/alacritty.git" ~/.local/src/alacritty
-
-    apti cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
-
-    cd ~/.local/src/alacritty
-    cargo install alacritty
-    # cargo build --release
-    # cargo build --release --no-default-features --features=x11
-    sudo ninja -C ~/.local/src/picom/build install
-  }
+  alacritty_install
 
 
 
