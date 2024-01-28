@@ -75,18 +75,20 @@ function syncDots() {
 # PACKAGE INSTALLATION
 #===============================================================================
 
-function apti() {
-  local PKG="$1"; shift; local OPTARG PPACMD KEYCMD
-  while getopts ":p:k:" o; do case "${o}" in
-    p) PPACMD="sudo add-apt-repository -yu ${OPTARG}";;
-    k) KEYCMD="sudo apt-key adv --fetch-keys ${OPTARG}";;
-    *) printf "Invalid option: -%s\\n" "$OPTARG";;
-  esac done
-  local CMD="sudo apt install -y -f $PKG"
-  [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
-  [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
-  eval "$CMD"
-}
+# function ain() {
+#   local PKG="$1"; shift; local OPTARG PPACMD KEYCMD
+#   while getopts ":p:k:" o; do case "${o}" in
+#     p) PPACMD="sudo add-apt-repository -yu ${OPTARG}";;
+#     k) KEYCMD="sudo apt-key adv --fetch-keys ${OPTARG}";;
+#     *) printf "Invalid option: -%s\\n" "$OPTARG";;
+#   esac done
+#   local CMD="sudo apt install -y -f $PKG"
+#   [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
+#   [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
+#   eval "$CMD"
+# }
+
+
 
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
@@ -109,6 +111,11 @@ function texlive_configure() {
         multirow
 }
 
+function addSudoers() {
+  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee /etc/sudoers.d/$(whoami)
+}
+
+
 function cln() {
   DIR=$HOME/.local/src/$(basename $1 .git)
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
@@ -119,6 +126,7 @@ function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done; }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
 function pin() { python3 -m pip install --user --upgrade $@; }
-function deb() { DEB=$(basename $1); wget -qod $1 && apti "./$DEB" && rm $DEB; }
+function deb() { DEB=$(basename $1); wget -qod $1 && ain "./$DEB" && rm $DEB; }
 function ghb() { cln "https://github.com/$1.git" $2; }
-function ppa() { echo $@ | map echo "sudo add-apt-repository -yu" ; }
+function ppa() { echo $@ | map "sudo add-apt-repository -yu" ; }
+function ain() { sudo apt install $@; }
