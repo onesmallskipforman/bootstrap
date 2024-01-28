@@ -125,8 +125,11 @@ function brw() { yes | brew install --force --no-quarantine --overwrite $@; }
 function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done; }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
+  # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
 function deb() { DEB=$(basename $1); wget -qod $1 && ain "./$DEB" && rm $DEB; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { echo $@ | map "sudo add-apt-repository -yu" ; }
 function ain() { sudo apt install $@; }
+function gin() { guix install $@; }
+function fcn() { echo install_$@; } # TODO: make this mappable

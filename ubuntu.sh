@@ -15,7 +15,6 @@ function prep(){
 # POST-INSTALL CONFIGS
 #===============================================================================
 
-
 function config() {
   # Set computer name, disable desktop environment, clean installs
 
@@ -23,6 +22,7 @@ function config() {
   # hostnamectl set-hostname $HN
   grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" /etc/hosts
 
+  # NOTE: you need systemd for these
   # sudo systemctl enable multi-user.target --force
   # sudo systemctl set-default multi-user.target
   sudo systemctl set-default multi-user.target
@@ -54,31 +54,29 @@ function launchRl() {
   # install RL
   steamcmd +login +quit
   steamcmd +app_update $RLID validate +quit
-
-
 }
 
 function install_steam() {
-  ppa "multiverse" && ain "steam-installer" "steamcmd" # ain "steam" # TODO: not really sure what the difference is
+  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: steam-installer is 64bit version
 
+  # TODO: modify configs automatically
+  # I wonder if i can throw paths within these files into steamcmd hmmmmmmmmmm
   # compatibility  settings found in $HOME/.steam/debian-installation/config/config.vdf
   # launch opotion settings found in $HOME/.steam/debian-installation/userdata/276429030/config/localconfig.vdf
 
   # bakkesmod for rocket league
-  # last used https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/tag/2.0.34
-  # as in https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe
-  wget -qO /tmp 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
-  unzip /tmp/BakkesModSetup.zip
-  # TODO: define variable from bakkesmod script
-  # TODO: not sure if absolute path is needed for setup script
-  WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 BakkesModSetup.exe
+  wget -qP /tmp 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe' # alternatively 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
+  unzip -od /tmp /tmp/BakkesModSetup.zip
+  COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950/pfx"
+  PROTON="$HOME/.steam/debian-installation/steamapps/common/Proton 7.0/dist"
+  WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 /tmp/BakkesModSetup.exe
 }
 
 #===============================================================================
 # INSTALLATIONS
 #===============================================================================
 
-function quartus_install() {
+function install_quartus() {
   # 32-bit architechture for modelsim
   sudo dpkg --add-architecture i386
   ain "libc6:i386" "libncurses5:i386" "libstdc++6:i386" "libxext6:i386" "libxft2:i386" # dependencies
@@ -116,8 +114,7 @@ function install_nvim() {
   }
 }
 
-
-function alacritty_install() {
+function install_alacritty() {
   ghb "alacritty/alacritty"
 
   ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
@@ -131,7 +128,7 @@ function alacritty_install() {
   ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
 }
 
-function picom_install() { # PICOM
+function install_picom() { # PICOM
   ain libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libpcre2-dev \
       libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev        \
       libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev   \
@@ -145,33 +142,48 @@ function picom_install() { # PICOM
   sudo ninja -C ~/.local/src/picom/build install
 }
 
+function install_python3() {
+  ain "python3" "python3-pip" "python3-venv" && pin "pip"
+  ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
+}
+
+function install_guix() {
+  wget -qP /tmp https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+  chmod +x /tmp/guix-install.sh && /tmp/guix-install.sh
+  guix pull && guix package -u
+}
+
+function install_tex() {
+  ain "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
+  ain "ghostscript" # installs ps2pdf
+  ain "enscript"    # converts textfile to postscript (use with ps2pdf)
+  ppa "ppa:inkscape.dev/stable" && ain "inkscape" # for latex drawings
+}
+
+function install_ros() {
+  ppa "deb http://packages.ros.org/ros/ubuntu bionic main"
+  # TODO: fix key add  -k "http://packages.ros.org/ros.key"
+  ain "ros-melodic-desktop-full"
+  ain "python"
+  ain "python-rosdep"
+  ain "python-rosinstall"
+  ain "python-rosinstall-generator"
+  ain "python-wstool"
+  ain "build-essential"
+}
+
 function packages()
 {
-
-  #############################################################################
-  # LAYER 1: Command-Line Fundamentals
-  #############################################################################
-
+  # basics
   sudo apt update && sudo apt upgrade
   sudo DEBIAN_FRONTEND=noninteractive
-  DEBIAN_FRONTEND=noninteractive
-  # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
-
-  # TODO: specify python version for pip install function
-  # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
-  ain "tzdata"
+  DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
+  ain "tzdata" # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
   ain "software-properties-common" # essentials (ie apt-add-repository)
-  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && sudo chsh -s /bin/zsh $(whoami)
-  # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
-
-
+  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && sudo chsh -s /bin/zsh $(whoami) # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
   ppa "ppa:git-core/ppa" && ain "git"
-  ain "python3" "python3-pip" "python3-venv" && pin "pip" \
-    && ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
-  wget -P /tmp https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh && {
-    chmod +x /tmp/guix-install.sh && /tmp/guix-install.sh
-    guix pull && guix package -u
-  }
+  fcn "python3"
+  fcn "guix"
   ain "less"
   ain "systemd"
   ain "xorg"
@@ -188,18 +200,16 @@ function packages()
   ain "xserver-xorg-core" # libinput dependency
   ain "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
   ain "pulseaudio" "alsa-utils" "pavucontrol" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need)
-  ain "arandr"
-  ain "autorandr"
-  ain "rofi" && ghb "newmanls/rofi-themes-collection"
-  ain "bspwm" -p "ppa:drdeimosnn/survive-on-wm"
-  ain "sxhkd" -p "ppa:drdeimosnn/survive-on-wm"
+  ain "arandr" # for saving and loading monitor layouts
+  ain "autorandr" # gui for managing monitor layouts
+  ain "rofi"; ghb "newmanls/rofi-themes-collection"
+  ppa "ppa:drdeimosnn/survive-on-wm" && ain "bspwm" "sxhkd" "polybar"
   ain "redshift"
-  ain "polybar" -p "ppa:drdeimosnn/survive-on-wm"
-  picom_install
+  fcn "picom"
   ndf "Hack" "DejaVuSansMono" "FiraCode" "RobotoMono" "SourceCodePro" "UbuntuMono" # TODO: reduce fonts
 
   # silly terminal scripts to show off
-  ain "figlet" && ghb "xero/figlet-fonts" # For writing asciiart text # TODO: probably need to symlink the fonts somewhere
+  ain "figlet"; ghb "xero/figlet-fonts" # For writing asciiart text
   ain "tty-clock" # terminal digial clock
   ppa "ppa:dawidd0811/neofetch" && ain "neofetch"
   ppa "ppa:ytvwld/asciiquarium" && ain "asciiquarium"
@@ -210,48 +220,33 @@ function packages()
   # essential gui/advanced tui programs
   ain "firefox"
   ain "feh" "sxiv" # image viewer
-  alacritty_install
-  install_nvim && pin "pynvim" && ain "npm" # TODO: see if you can specify npm version
+  fcn "alacritty"
+  fcn "nvim" && pin "pynvim" && ain "npm" # TODO: see if you can specify npm version
   ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain "autojump"
   ain "htop"
   ain "openconnect"; addSudoers "/usr/bin/openconnect, /usr/bin/pkill"
-  ain "texlive-latex-base" && texlive_configure; { # tex (full pkg: texlive-full)
-    ain "ghostscript" # installs ps2pdf
-    ain "enscript"    # converts textfile to postscript (use with ps2pdf)
-    ain "inkscape" -p "ppa:inkscape.dev/stable" # for latex drawings
-  }
-  guix install nyxt
+  fcn "tex"
+  gin "nyxt"
 
-  # gaming
-  install_steam
+  # gaming/school/work
+  fcn "steam"
   deb "https://launcher.mojang.com/download/Minecraft.deb"
+  deb "https://zoom.us/client/latest/zoom_amd64.deb"
+  fcn "ros"
   # ain "spotify-client"                                       \
   #     -p "deb http://repository.spotify.com stable non-free" \
   #     -k "http://download.spotify.com/debian/pubkey.gpg"
+  # fcn "quartus"
   # TODO: add discord
-
-  # probably just school/work
-  deb "https://zoom.us/client/latest/zoom_amd64.deb"
-  ppa "deb http://packages.ros.org/ros/ubuntu bionic main" && {
-  # ain "ros-melodic-desktop-full" #  -k "http://packages.ros.org/ros.key" \
-    ain "ros-melodic-desktop-full"
-    ain "python"
-    ain "python-rosdep"
-    ain "python-rosinstall"
-    ain "python-rosinstall-generator"
-    ain "python-wstool"
-    ain "build-essential"
-  }
-  # quartus_install
   # TODO: add slack
 }
 
 bootstrap() {
-    supersist
-    bigprint "Prepping For Bootstrap"  ; prep
-    bigprint "Copying dotfiles to home"; syncDots
-    bigprint "Installing Packages"     ; packages
-    bigprint "Configure OS"            ; config
-    bigprint "OS Config Complete. Restart Required"
+  supersist
+  bigprint "Prepping For Bootstrap"  ; prep
+  bigprint "Copying dotfiles to home"; syncDots
+  bigprint "Installing Packages"     ; packages
+  bigprint "Configure OS"            ; config
+  bigprint "OS Config Complete. Restart Required"
 }
