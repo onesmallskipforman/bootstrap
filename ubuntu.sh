@@ -15,9 +15,16 @@ function prep(){
 # POST-INSTALL CONFIGS
 #===============================================================================
 
+
 function config() {
   # Set computer name, disable desktop environment, clean installs
-  # hostnamectl set-hostname Skipper #TODO: make this more interesting or device-specific
+
+  local HN="wb-sgonzalez"
+  # hostnamectl set-hostname $HN
+  grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" /etc/hosts
+
+  # sudo systemctl enable multi-user.target --force
+  # sudo systemctl set-default multi-user.target
   sudo systemctl set-default multi-user.target
   sudo apt -y autoremove
 }
@@ -27,6 +34,44 @@ function bootstrap() {
   bigprint "Syncing dotfiles repo to home" && dotfiles
   bigprint "Syncing dotfiles repo to home" && packages
   bigprint "Runnung Miscellaneous Post-Package Installs and Configs" && config && echo "OS Config Complete. Restart Required"
+}
+
+# TODO: move this to personal scripts or aliases or rc file
+function launchRl() {
+  # This finds all ids-name pairs
+  # find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { print appid" "name }' {} \;
+
+  # get rocket league id
+  RLID=$(find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { if (name == "Rocket League") print appid }' {} \;)
+
+  # launch RL
+  steam steam://rungameid/$RLID
+  # steam steam://rungameid/252950
+
+  # TODO: hmm looks like these id are static so as long as you have it saved
+  # in a file you don't need to search for it
+
+  # install RL
+  steamcmd +login +quit
+  steamcmd +app_update $RLID validate +quit
+
+
+}
+
+function install_steam() {
+  ppa "multiverse" && ain "steam-installer" "steamcmd" # ain "steam" # TODO: not really sure what the difference is
+
+  # compatibility  settings found in $HOME/.steam/debian-installation/config/config.vdf
+  # launch opotion settings found in $HOME/.steam/debian-installation/userdata/276429030/config/localconfig.vdf
+
+  # bakkesmod for rocket league
+  # last used https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/tag/2.0.34
+  # as in https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe
+  wget -qO /tmp 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
+  unzip /tmp/BakkesModSetup.zip
+  # TODO: define variable from bakkesmod script
+  # TODO: not sure if absolute path is needed for setup script
+  WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 BakkesModSetup.exe
 }
 
 #===============================================================================
@@ -73,7 +118,7 @@ function install_nvim() {
 
 
 function alacritty_install() {
-  ghb "alacritty/alacritty" ~/.local/src/alacritty
+  ghb "alacritty/alacritty"
 
   ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
 
@@ -95,7 +140,7 @@ function picom_install() { # PICOM
       libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
 
   # TODO: alternatively use tar
-  ghb "yshui/picom.git" ~/.local/src/picom
+  ghb "yshui/picom"
   meson setup --buildtype=release ~/.local/src/picom/build ~/.local/src/picom
   sudo ninja -C ~/.local/src/picom/build install
 }
@@ -116,7 +161,10 @@ function packages()
   # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
   ain "tzdata"
   ain "software-properties-common" # essentials (ie apt-add-repository)
-  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions"; sudo chsh -s /bin/zsh $(whoami)
+  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && sudo chsh -s /bin/zsh $(whoami)
+  # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
+
+
   ppa "ppa:git-core/ppa" && ain "git"
   ain "python3" "python3-pip" "python3-venv" && pin "pip" \
     && ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
@@ -139,7 +187,7 @@ function packages()
   ain "xdotool" # for grabbing window names (I use it to handle firefox keys)
   ain "xserver-xorg-core" # libinput dependency
   ain "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
-  ain "pulseaudio" "alsa-utils" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need)
+  ain "pulseaudio" "alsa-utils" "pavucontrol" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need)
   ain "arandr"
   ain "autorandr"
   ain "rofi" && ghb "newmanls/rofi-themes-collection"
@@ -176,7 +224,7 @@ function packages()
   guix install nyxt
 
   # gaming
-  ppa "multiverse" && ain "steam-installer" "steamcmd" # ain "steam" # TODO: not really sure what the difference is
+  install_steam
   deb "https://launcher.mojang.com/download/Minecraft.deb"
   # ain "spotify-client"                                       \
   #     -p "deb http://repository.spotify.com stable non-free" \
