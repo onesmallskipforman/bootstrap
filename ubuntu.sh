@@ -172,6 +172,13 @@ function install_ros() {
   ain "build-essential"
 }
 
+# TODO: use this for osx install as well
+function install_node20() {
+  apt "npm"
+  sudo npm install -g n
+  sudo n v20.11.0 # sudo n stable
+}
+
 function packages()
 {
   # basics
@@ -221,7 +228,7 @@ function packages()
   ain "firefox"
   ain "feh" "sxiv" # image viewer
   fcn "alacritty"
-  fcn "nvim" && pin "pynvim" && ain "npm" # TODO: see if you can specify npm version
+  fcn "nvim" && pin "pynvim" && fcn "node20" # TODO: see if you can specify npm version
   ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain "autojump"
   ain "htop"
