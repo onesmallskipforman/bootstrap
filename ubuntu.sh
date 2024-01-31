@@ -179,6 +179,17 @@ function install_node20() {
   sudo n v20.11.0 # sudo n stable
 }
 
+function install_extension() {
+  local URL=$1
+  local DIR=$(mktemp -d)
+  local XPI=$DIR/tmp.xpi
+  wget -qO $XPI $URL
+  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
+  cp $XPI ~/.mozilla/firefox/b7jmddu3.default-release/extensions/$NAME
+  # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
+  rm -r $DIR
+}
+
 function packages()
 {
   # basics
@@ -200,6 +211,7 @@ function packages()
   ain "curl"
   ain "network-manager" # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
   ain "cifs-utils" # tool for mounding temp drives
+  ain "jq"
 
   # Desktop Environment
   ain "brightnessctl" # brightness control
@@ -228,13 +240,18 @@ function packages()
   ain "firefox"
   ain "feh" "sxiv" # image viewer
   fcn "alacritty"
-  fcn "nvim" && pin "pynvim" && fcn "node20" # TODO: see if you can specify npm version
+  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "calc"
   ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain "autojump"
   ain "htop"
   ain "openconnect"; addSudoers "/usr/bin/openconnect, /usr/bin/pkill"
   fcn "tex"
   gin "nyxt"
+  ain "firefox" && {
+    install_extension https://addons.mozilla.org/firefox/downloads/file/4223104/darkreader-4.9.76.xpi
+    install_extension https://addons.mozilla.org/firefox/downloads/file/4216633/ublock_origin-1.55.0.xpi
+  }
+  ain "thunderbird"
 
   # gaming/school/work
   fcn "steam"
