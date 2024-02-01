@@ -54,21 +54,21 @@ function copyDots() {
 }
 
 function syncDots() {
-    # id all desired top-level targets
-    DOTS="$(realpath dotfiles)"
-    TARGETS=$(cat \
-        <(find $DOTS/.config -mindepth 1 -maxdepth 1) \
-        <(find $DOTS/.local  -mindepth 1 -maxdepth 1)  \
-        <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-        | sed "s;$DOTS/;;g")
-    # find if targets exist and copy their contents to dotfiles
-    echo $TARGETS | xargs -n1 -I{} find ~/{} \( -type f -o -type d \) -wholename ~/{} | sed "s;$HOME/;;g" | xargs -n1 -I{} cp -rT $HOME/{} $DOTS/{}
-    # remove existing from home
-    echo $TARGETS | xargs -n1 -I{} rm -rf ~/{}
-    # ensure directories exist
-    echo $TARGETS | xargs -n1 dirname | sort -u | xargs -n1 -I{} mkdir -p ~/{}
-    # symlink dotfiles to home
-    echo $TARGETS | xargs -n1 -I{} ln -sf $PWD/dotfiles/{} ~/{}
+  # id all desired top-level targets
+  DOTS="$(realpath dotfiles)"
+  TARGETS=$(cat \
+    <(find $DOTS/.config -mindepth 1 -maxdepth 1) \
+    <(find $DOTS/.local  -mindepth 1 -maxdepth 1)  \
+    <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+    | sed "s;$DOTS/;;g")
+  # find if targets exist and copy their contents to dotfiles
+  echo $TARGETS | xargs -n1 -I{} find ~/{} \( -type f -o -type d \) -wholename ~/{} | sed "s;$HOME/;;g" | xargs -n1 -I{} cp -rT $HOME/{} $DOTS/{}
+  # remove existing from home
+  echo $TARGETS | xargs -n1 -I{} sudo rm -rf ~/{}
+  # ensure directories exist
+  echo $TARGETS | xargs -n1 dirname | sort -u | xargs -n1 -I{} mkdir -p ~/{}
+  # symlink dotfiles to home
+  echo $TARGETS | xargs -n1 -I{} ln -sf $PWD/dotfiles/{} ~/{}
 }
 
 #===============================================================================
