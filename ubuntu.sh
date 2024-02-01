@@ -240,7 +240,7 @@ function packages()
   ain "firefox"
   ain "feh" "sxiv" # image viewer
   fcn "alacritty"
-  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "calc"
+  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "xsel" "calc"
   ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain "autojump"
   ain "htop"
