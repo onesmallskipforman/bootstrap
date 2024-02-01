@@ -198,7 +198,10 @@ function packages()
   DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
   ain "tzdata" # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
   ain "software-properties-common" # essentials (ie apt-add-repository)
-  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && sudo chsh -s /bin/zsh $(whoami) # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
+  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && {
+    sudo chsh -s /bin/zsh $(whoami) # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
+    ain "vim-gtk" "xsel" "xclip" # need a verison of vim with +clipboard enabled to properly yank
+  }
   ppa "ppa:git-core/ppa" && ain "git"
   fcn "python3"
   fcn "guix"
@@ -212,6 +215,7 @@ function packages()
   ain "network-manager" # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
   ain "cifs-utils" # tool for mounding temp drives
   ain "jq"
+  ain "xsel" "xclip"
 
   # Desktop Environment
   ain "brightnessctl" # brightness control
@@ -240,7 +244,7 @@ function packages()
   ain "firefox"
   ain "feh" "sxiv" # image viewer
   fcn "alacritty"
-  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "xsel" "calc"
+  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "calc" # TODO: not sure if i need xsel and/or xclip here
   ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain "autojump"
   ain "htop"
