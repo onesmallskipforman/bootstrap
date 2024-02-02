@@ -179,16 +179,29 @@ function install_node20() {
   sudo n v20.11.0 # sudo n stable
 }
 
-function install_extension() {
-  local URL=$1
+function install_ff_extension() {
+  local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
   local DIR=$(mktemp -d)
   local XPI=$DIR/tmp.xpi
   wget -qO $XPI $URL
   local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  cp $XPI ~/.mozilla/firefox/b7jmddu3.default-release/extensions/$NAME
+  cp $XPI $(find ~/.mozilla/firefox -wholename '*.default-release')/extensions/$NAME
+  # NOTE: need to install in system to use unsigned non-mozilla extensions
+  # TODO: figure out if behavior is similar with thunderbird
   # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
   rm -r $DIR
 }
+
+function install_tb_extension() {
+  local URL="https://addons.thunderbird.net/thunderbird/downloads/latest/$1"
+  local DIR=$(mktemp -d)
+  local XPI=$DIR/tmp.xpi
+  wget -qO $XPI $URL
+  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
+  cp $XPI $(find ~/.thunderbird -wholename '*.default-release')/extensions/$NAME
+  rm -r $DIR
+}
+
 
 function packages()
 {
@@ -252,8 +265,14 @@ function packages()
   fcn "tex"
   gin "nyxt"
   ain "firefox" && {
-    install_extension https://addons.mozilla.org/firefox/downloads/file/4223104/darkreader-4.9.76.xpi
-    install_extension https://addons.mozilla.org/firefox/downloads/file/4216633/ublock_origin-1.55.0.xpi
+    install_ff_extension darkreader
+    install_ff_extension ublock-origin
+    install_ff_extension vimium-ff
+  }
+  ain "thunderbird" && {
+    install_tb_extension darkreader
+    install_tb_extension tbsync
+    install_tb_extension eas-4-tbsync
   }
   ain "thunderbird"
 
