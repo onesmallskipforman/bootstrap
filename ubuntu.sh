@@ -116,19 +116,16 @@ function install_nvim() {
 
 function install_alacritty() {
   ghb "alacritty/alacritty"
-
   ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
-
-  cd ~/.local/src/alacritty
-  cargo build --release
-  # cargo build --release --no-default-features --features=x11
+  cargo build --release --manifest-path=~/.local/src/alacritty/Cargo.toml
+  # cargo build --release --no-default-features --features=x11 --manifest-path=~/.local/src/alacritty/Cargo.toml
 
   # ghb "aaron-williamson/base16-alacritty"
   ghb 'alacritty/alacritty-theme'
   ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
 }
 
-function install_picom() { # PICOM
+function install_picom() {
   ain libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libpcre2-dev \
       libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev        \
       libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev   \
@@ -142,15 +139,41 @@ function install_picom() { # PICOM
   sudo ninja -C ~/.local/src/picom/build install
 }
 
+function install_polybar() {
+  # requirements
+  ain build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libuv1-dev libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python3-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev
+  # optional for all features
+  ain libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+  pin jinja2==3.0.3
+  ~/.local/src/polybar-3.7.1/build.sh -A --all-features
+
+  # wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C ~/.local/src
+  # cmake -S ~/.local/src/polybar-3.7.1 -B ~/.local/src/polybar-3.7.1/build
+  # make -C ~/.local/src/polybar-3.7.1/build -j$(nproc)
+  # sudo make -C ~/.local/src/polybar-3.7.1/build install
+}
+
 function install_python3() {
   ain "python3" "python3-pip" "python3-venv" && pin "pip"
   ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
 }
 
 function install_guix() {
-  wget -qP /tmp https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
-  chmod +x /tmp/guix-install.sh && /tmp/guix-install.sh
+  DIR=$(mktemp -d)
+  wget -qP $DIR https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+  chmod +x $DIR/guix-install.sh && $DIR/guix-install.sh
   guix pull && guix package -u
+  rm -rf $DIR
+
+  # hint: Consider setting the necessary environment variables by running:
+  #
+  #      GUIX_PROFILE="/home/skipper/.config/guix/current"
+  #      . "$GUIX_PROFILE/etc/profile"
+  #
+  # Alternately, see `guix package --search-paths -p "/home/skipper/.config/guix/current"'.
+  #
+  #
+  # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
 }
 
 function install_tex() {
@@ -239,7 +262,8 @@ function packages()
   ain "arandr" # for saving and loading monitor layouts
   ain "autorandr" # gui for managing monitor layouts
   ain "rofi"; ghb "newmanls/rofi-themes-collection"
-  ppa "ppa:drdeimosnn/survive-on-wm" && ain "bspwm" "sxhkd" "polybar"
+  ppa "ppa:drdeimosnn/survive-on-wm" && ain "bspwm" "sxhkd"
+  fcn "polybar"
   ain "redshift"
   fcn "picom"
   ndf "Hack" "DejaVuSansMono" "FiraCode" "RobotoMono" "SourceCodePro" "UbuntuMono" # TODO: reduce fonts
@@ -264,6 +288,13 @@ function packages()
   ain "openconnect"; addSudoers "/usr/bin/openconnect, /usr/bin/pkill"
   fcn "tex"
   gin "nyxt"
+
+  pin pywal && {
+    pin colorthief
+    pin haishoku
+    pin colorz
+  }
+
   ain "firefox" && {
     install_ff_extension darkreader
     install_ff_extension ublock-origin
