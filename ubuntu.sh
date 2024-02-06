@@ -153,6 +153,17 @@ function install_polybar() {
   # sudo make -C ~/.local/src/polybar-3.7.1/build install
 }
 
+function install_go() {
+  DIR=/usr/local
+  URL="https://go.dev/dl/go1.21.6.linux-amd64.tar.gz"
+  sudo rm -rf $DIR/go
+  wget -qO- $URL | sudo tar xvz -C $DIR
+  # export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin > ~/.config/zsh/.zshrc
+  # TODO: idea
+  # a directory of files to source each with its own export statements
+  # can easily add to this directory when you install something that needs to modify PATH
+}
+
 function install_python3() {
   ain "python3" "python3-pip" "python3-venv" && pin "pip"
   ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
@@ -273,7 +284,7 @@ function packages()
   ain "tty-clock" # terminal digial clock
   ppa "ppa:dawidd0811/neofetch" && ain "neofetch"
   ppa "ppa:ytvwld/asciiquarium" && ain "asciiquarium"
-  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.5.0/fastfetch-2.5.0-Linux.deb' # TODO: consider grabbing latest instead of version
+  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.7.1/fastfetch-2.7.1-Linux.deb' # TODO: consider grabbing latest instead of version
   ghb "dylanaraps/pfetch"   # minimal fetch # TODO: may need to check this shows up in path
   ghb "stark/Color-Scripts" # colorscripts  # TODO: may need to check this shows up in path
 
@@ -289,11 +300,16 @@ function packages()
   fcn "tex"
   gin "nyxt"
 
-  pin pywal && {
+  ghb "eylles/pywal16" && {
+    pin ~/.local/src/pywal16
     pin colorthief
     pin haishoku
     pin colorz
+    fcn go
+    go install github.com/thefryscorer/schemer2@latest
   }
+
+
 
   ain "firefox" && {
     install_ff_extension darkreader

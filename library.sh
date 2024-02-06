@@ -127,7 +127,7 @@ function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function deb() { DEB=$(basename $1); wget -qod $1 && ain "./$DEB" && rm $DEB; }
+function deb() { T=$(mktemp -d) wget -qO $T/deb $1 && ain $T/deb && rm -r $T; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { echo $@ | map "sudo add-apt-repository -yu" ; }
 function ain() { sudo apt install $@; }
