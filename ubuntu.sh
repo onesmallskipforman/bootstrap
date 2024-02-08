@@ -263,6 +263,7 @@ function packages()
   ain "cifs-utils" # tool for mounding temp drives
   ain "jq"
   ain "xsel" "xclip"
+  ain "bluez" "bluez-tools" "blueman" && sudo service bluetooth start
 
   # Desktop Environment
   ain "brightnessctl" # brightness control
