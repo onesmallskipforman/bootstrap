@@ -197,18 +197,18 @@ function install_tex() {
 function install_ros() {
   ppa "deb http://packages.ros.org/ros/ubuntu bionic main"
   # TODO: fix key add  -k "http://packages.ros.org/ros.key"
-  ain "ros-melodic-desktop-full"
-  ain "python"
-  ain "python-rosdep"
-  ain "python-rosinstall"
-  ain "python-rosinstall-generator"
-  ain "python-wstool"
-  ain "build-essential"
+  ain ros-melodic-desktop-full
+  ain python
+  ain python-rosdep
+  ain python-rosinstall
+  ain python-rosinstall-generator
+  ain python-wstool
+  ain build-essential
 }
 
 # TODO: use this for osx install as well
 function install_node20() {
-  apt "npm"
+  apt npm
   sudo npm install -g n
   sudo n v20.11.0 # sudo n stable
 }
@@ -288,33 +288,39 @@ function install_siglo() {
   sudo ninja -C ~/.local/src/siglo/build install
 }
 
+function install_spotify() {
+  curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  ppa 'deb http://repository.spotify.com stable non-free'
+  ain spotify-client
+}
+
 function packages()
 {
   # basics
   sudo apt update && sudo apt upgrade
   sudo DEBIAN_FRONTEND=noninteractive
   DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
-  ain "tzdata" # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
-  ain "software-properties-common" # essentials (ie apt-add-repository)
-  ain "zsh" "zsh-syntax-highlighting" "zsh-autosuggestions" && {
-    sudo chsh -s /bin/zsh $(whoami) # ghb "zsh-users/zsh-autosuggestions" # TODO: consider getting both of these straight from github
-    ain "vim-gtk" "xsel" "xclip" # need a verison of vim with +clipboard enabled to properly yank
+  ain tzdata # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
+  ain software-properties-common # essentials (ie apt-add-repository)
+  ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
+    sudo chsh -s /bin/zsh $(whoami) # ghb zsh-users/zsh-autosuggestions # TODO: consider getting both of these straight from github
+    ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
-  ppa "ppa:git-core/ppa" && ain "git"
-  fcn "python3"
-  fcn "guix"
-  ain "less"
-  ain "systemd"
-  ain "xorg"
-  ain "gcc"
-  ain "make"
-  ain "cmake"
-  ain "curl"
-  ain "network-manager" # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
-  ain "cifs-utils" # tool for mounding temp drives
-  ain "jq"
-  ain "xsel" "xclip"
-  ain "bluez" "bluez-tools" "blueman" && {
+  ppa ppa:git-core/ppa && ain git
+  fcn python3
+  fcn guix
+  ain less
+  ain systemd
+  ain xorg
+  ain gcc
+  ain make
+  ain cmake
+  ain curl
+  ain network-manager # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
+  ain cifs-utils # tool for mounding temp drives
+  ain jq
+  ain xsel xclip
+  ain bluez bluez-tools blueman && {
     sudo service bluetooth start
     fcn bluez
     fcn itd
@@ -323,42 +329,42 @@ function packages()
   }
 
   # Desktop Environment
-  ain "brightnessctl" # brightness control
-  ain "xdotool" # for grabbing window names (I use it to handle firefox keys)
-  ain "xserver-xorg-core" # libinput dependency
-  ain "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
-  ain "pulseaudio" "alsa-utils" "pavucontrol" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need). Also make sure this is set up in systemctl
-  ain "arandr" # for saving and loading monitor layouts
-  ain "autorandr" # gui for managing monitor layouts
-  ain "rofi"; ghb "newmanls/rofi-themes-collection"
-  ppa "ppa:drdeimosnn/survive-on-wm" && ain "bspwm" "sxhkd"
-  fcn "polybar"
-  ain "redshift"
-  fcn "picom"
-  ndf "Hack" "DejaVuSansMono" "FiraCode" "RobotoMono" "SourceCodePro" "UbuntuMono" # TODO: reduce fonts
+  ain brightnessctl # brightness control
+  ain xdotool # for grabbing window names (I use it to handle firefox keys)
+  ain xserver-xorg-core # libinput dependency
+  ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
+  ain pulseaudio alsa-utils pavucontrol # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need). Also make sure this is set up in systemctl
+  ain arandr # for saving and loading monitor layouts
+  ain autorandr # gui for managing monitor layouts
+  ain rofi; ghb newmanls/rofi-themes-collection
+  ppa ppa:drdeimosnn/survive-on-wm && ain bspwm sxhkd
+  fcn polybar
+  ain redshift
+  fcn picom
+  ndf Hack DejaVuSansMono FiraCode RobotoMono SourceCodePro UbuntuMono # TODO: reduce fonts
 
   # silly terminal scripts to show off
-  ain "figlet"; ghb "xero/figlet-fonts" # For writing asciiart text
-  ain "tty-clock" # terminal digial clock
-  ppa "ppa:dawidd0811/neofetch" && ain "neofetch"
-  ppa "ppa:ytvwld/asciiquarium" && ain "asciiquarium"
+  ain figlet; ghb xero/figlet-fonts # For writing asciiart text
+  ain tty-clock # terminal digial clock
+  ppa ppa:dawidd0811/neofetch && ain neofetch
+  ppa ppa:ytvwld/asciiquarium && ain asciiquarium
   deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.7.1/fastfetch-2.7.1-Linux.deb' # TODO: consider grabbing latest instead of version
-  ghb "dylanaraps/pfetch"   # minimal fetch # TODO: may need to check this shows up in path
-  ghb "stark/Color-Scripts" # colorscripts  # TODO: may need to check this shows up in path
+  ghb dylanaraps/pfetch   # minimal fetch # TODO: may need to check this shows up in path
+  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
 
   # essential gui/advanced tui programs
-  ain "firefox"
-  ain "feh" "sxiv" # image viewer
-  fcn "alacritty"
-  fcn "nvim" && pin "pynvim" && fcn "node20" && ain "calc" # TODO: not sure if i need xsel and/or xclip here
-  ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
-  ain "autojump"
-  ain "htop"
-  ain "openconnect"; addSudoers "/usr/bin/openconnect, /usr/bin/pkill"
-  fcn "tex"
-  gin "nyxt"
+  ain firefox
+  ain feh sxiv # image viewer
+  fcn alacritty
+  fcn nvim && pin pynvim && fcn node20 && ain calc # TODO: not sure if i need xsel and/or xclip here
+  ghb junegunn/fzf && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
+  ain autojump
+  ain htop
+  ain openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
+  fcn tex
+  gin nyxt
 
-  ghb "eylles/pywal16" && {
+  ghb eylles/pywal16 && {
     pin ~/.local/src/pywal16
     pin colorthief
     pin haishoku
@@ -369,26 +375,25 @@ function packages()
 
 
 
-  ain "firefox" && {
+  ain firefox && {
     install_ff_extension darkreader
     install_ff_extension ublock-origin
     install_ff_extension vimium-ff
   }
-  ain "thunderbird" && {
+  ain thunderbird && {
     install_tb_extension darkreader
     install_tb_extension tbsync
     install_tb_extension eas-4-tbsync
   }
-  ain "thunderbird"
+  ain thunderbird
 
   # gaming/school/work
-  fcn "steam"
-  deb "https://launcher.mojang.com/download/Minecraft.deb"
-  deb "https://zoom.us/client/latest/zoom_amd64.deb"
-  fcn "ros"
-  # ain "spotify-client"                                       \
-  #     -p "deb http://repository.spotify.com stable non-free" \
-  #     -k "http://download.spotify.com/debian/pubkey.gpg"
+  fcn steam
+  deb https://launcher.mojang.com/download/Minecraft.deb
+  deb https://zoom.us/client/latest/zoom_amd64.deb
+  fcn ros
+  fcn spotify
+
   # fcn "quartus"
   # TODO: add discord
   # TODO: add slack
