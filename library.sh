@@ -132,4 +132,4 @@ function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { echo $@ | map "sudo add-apt-repository -yu" ; }
 function ain() { sudo apt install $@; }
 function gin() { guix install $@; }
-function fcn() { echo install_$@; } # TODO: make this mappable
+function fcn() { eval install_$@; } # TODO: make this mappable

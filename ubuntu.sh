@@ -307,19 +307,19 @@ function install_pipewire() {
   systemctl --user --now enable  pipewire pipewire-pulse
 
   # pipewire-media-session
-  sudo apt install -y pipewire-media-session && {
+  sudo apt install -y pipewire-media-session; {
     systemctl --user daemon-reload
     systemctl --user --now disable wireplumber
     systemctl --user --now enable  pipewire-media-session
   }
 
   # wireplumber
-  sudo add-apt-repository -yu ppa:pipewire-debian/wireplumber-upstream && {
-    sudo apt install -y wireplumber
-    systemctl --user daemon-reload
-    systemctl --user --now disable pipewire-media-session
-    systemctl --user --now enable  wireplumber
-  }
+  # sudo add-apt-repository -yu ppa:pipewire-debian/wireplumber-upstream; {
+  #   sudo apt install -y wireplumber
+  #   systemctl --user daemon-reload
+  #   systemctl --user --now disable pipewire-media-session
+  #   systemctl --user --now enable  wireplumber
+  # }
 
   # NOTE: if running into issues, try removing config files at /etc/pipewire
 
