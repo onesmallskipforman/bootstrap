@@ -294,6 +294,46 @@ function install_spotify() {
   ain spotify-client
 }
 
+function install_pipewire() {
+  # pipewire
+  sudo apt install -y pulseaudio-utils # for pactl
+  sudo add-apt-repository -yu ppa:pipewire-debian/pipewire-upstream && {
+    sudo apt install -y pipewire libspa-0.2-bluetooth pipewire-audio-client-libraries # libspa-0.2-jack # if jack needed but i dont think it is
+    sudo apt install -y pipewire-libcamera # not really needed but running the wireplumber binary complains
+  }
+  systemctl --user daemon-reload
+  systemctl --user --now disable pulseaudio # covers both .service and .socket
+  systemctl --user --now mask    pulseaudio
+  systemctl --user --now enable  pipewire pipewire-pulse
+
+  # pipewire-media-session
+  sudo apt install -y pipewire-media-session && {
+    systemctl --user daemon-reload
+    systemctl --user --now disable wireplumber
+    systemctl --user --now enable  pipewire-media-session
+  }
+
+  # wireplumber
+  sudo add-apt-repository -yu ppa:pipewire-debian/wireplumber-upstream && {
+    sudo apt install -y wireplumber
+    systemctl --user daemon-reload
+    systemctl --user --now disable pipewire-media-session
+    systemctl --user --now enable  wireplumber
+  }
+
+  # NOTE: if running into issues, try removing config files at /etc/pipewire
+
+  # TODO: consider copying default configs
+  # alsa
+  # sudo cp /usr/share/doc/pipewire/examples/alsa.conf.d/99-pipewire-default.conf /etc/alsa/conf.d/
+  # jack
+  # sudo cp /usr/share/doc/pipewire/examples/ld.so.conf.d/pipewire-jack-*.conf /etc/ld.so.conf.d/
+
+  # TODO: does not seem to correctly remove pipewire-media session when enabled
+  # removes currently-enabled between wireplumber and pipewire-media-session
+  # systemctl --user --now disable pipewire-session-manager
+}
+
 function packages()
 {
   # basics
@@ -333,7 +373,7 @@ function packages()
   ain xdotool # for grabbing window names (I use it to handle firefox keys)
   ain xserver-xorg-core # libinput dependency
   ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
-  ain pulseaudio alsa-utils pavucontrol # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need). Also make sure this is set up in systemctl
+  ain pulseaudio alsa-utils pavucontrol && fcn pipewire # for audio controls
   ain arandr # for saving and loading monitor layouts
   ain autorandr # gui for managing monitor layouts
   ain rofi; ghb newmanls/rofi-themes-collection
