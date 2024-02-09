@@ -236,6 +236,57 @@ function install_tb_extension() {
   rm -r $DIR
 }
 
+function install_bluez() {
+  # TODO: not sure if i want experimental features
+  # https://www.makeuseof.com/install-bluez-latest-version-on-ubuntu/
+  # NOTE: this install seams to not overwrite the 'bluetoothd' symlink which will keep the older version
+  # not really an issue, but im not sure why this happens or how to safely replace it
+
+  ain build-essential libreadline-dev libical-dev libdbus-1-dev libudev-dev libglib2.0-dev python3-docutils
+
+  DIR=$HOME/.local/src/bluez
+  mkdir -p $DIR
+  wget -qO- http://www.kernel.org/pub/linux/bluetooth/bluez-5.66.tar.gz | tar xzv -C $DIR --strip-components=1
+
+  cd $DIR && ./configure
+  # $DIR/configure --srcdir=$DIR
+  make -C $DIR
+  sudo make -C $DIR install
+
+  sudo systemctl daemon-reload
+  sudo systemctl unmask bluetooth.service # TODO: find out what unmask does
+  sudo systemctl restart bluetooth
+}
+
+function install_itl() {
+  DIR=$(mktemp -d)
+  wget -qO $DIR/d.deb https://gitea.elara.ws/Elara6331/itd/releases/download/v1.1.0/itd-1.1.0-linux-x86_64.deb
+  sudo apt install -y $DIR/d.deb
+
+  # systemctl --user start  itd # starts service right now, could also use 'restart'
+  systemctl --user enable itd # sets up service hooks to start on boot
+  # or just run 'itd' or 'ITD_LOGGING_LEVEL=debug itd'
+}
+
+function install_waspos() {
+  # TODO: need some authentication to get the latest CI builds
+  # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
+  # See https://stackoverflow.com/questions/27254312/download-github-build-artifact-release-using-wget-curl
+  DIR=$HOME/.local/src/wasp-os
+  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xvz -C $DIR --trip-components=1
+}
+
+function install_siglo() {
+  sudo apt install libgtk-3-dev python3-pip meson python3-dbus gtk-update-icon-cache desktop-file-utils gettext appstream-util libglib2.0-dev
+  # TODO: I don't really like having to change meson just for this
+  # Check out pipx
+  python3 -m pip install --user --upgrade gatt requests black meson=0.55.0
+
+  git -C ~/.local/src clone https://github.com/theironrobin/siglo.git
+  # mkdir ~/.local/src/siglo/build
+  meson ~/.local/src/siglo/build
+  sudo ninja -C ~/.local/src/siglo/build install
+}
 
 function packages()
 {
@@ -263,14 +314,20 @@ function packages()
   ain "cifs-utils" # tool for mounding temp drives
   ain "jq"
   ain "xsel" "xclip"
-  ain "bluez" "bluez-tools" "blueman" && sudo service bluetooth start
+  ain "bluez" "bluez-tools" "blueman" && {
+    sudo service bluetooth start
+    fcn bluez
+    fcn itd
+    fcn waspos
+    fcn siglo
+  }
 
   # Desktop Environment
   ain "brightnessctl" # brightness control
   ain "xdotool" # for grabbing window names (I use it to handle firefox keys)
   ain "xserver-xorg-core" # libinput dependency
   ain "xserver-xorg-input-libinput" # allows for sane trackpad expeirence
-  ain "pulseaudio" "alsa-utils" "pavucontrol" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need)
+  ain "pulseaudio" "alsa-utils" "pavucontrol" # for audio controls # TODO: install pavucontrol+pulseaudio (figure out what commands you actually need). Also make sure this is set up in systemctl
   ain "arandr" # for saving and loading monitor layouts
   ain "autorandr" # gui for managing monitor layouts
   ain "rofi"; ghb "newmanls/rofi-themes-collection"
