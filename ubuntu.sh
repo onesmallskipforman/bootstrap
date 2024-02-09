@@ -360,12 +360,14 @@ function packages()
   ain cifs-utils # tool for mounding temp drives
   ain jq
   ain xsel xclip
-  ain bluez bluez-tools blueman && {
+  ain bluez bluez-tools blueman rfkill && {
     sudo service bluetooth start
+    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     fcn bluez
     fcn itd
     fcn waspos
     fcn siglo
+    bluetoothctl power on
   }
 
   # Desktop Environment
