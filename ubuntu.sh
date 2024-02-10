@@ -370,6 +370,26 @@ function packages()
     bluetoothctl power on
   }
 
+  ain slock physlock xsecurelock i3lock i3lock-fancy vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
+  # xss-lock --transfer-sleep-lock -- i3lock --nofork
+  #
+  # https://github.com/google/xsecurelock?tab=readme-ov-file#automatic-locking
+  # xset s 300 5
+  # xss-lock -n /usr/lib/xsecurelock/dimmer -l -- xsecurelock
+  #
+  # Dim the screen after three minutes of inactivity, lock the screen two minutes later using i3lock:
+  # xset s 180 120
+  # xss-lock -n dim-screen.sh -- i3lock -n
+  #
+  # SECURITY CONSIDERATIONS
+  #    To make sure a locked screen can not be bypassed by switching VTs or killing the X server with Ctrl+Alt+Backspace, it is recommended to disable
+  #    both in xorg.conf(5) for maximum security:
+  #
+  #    Section "ServerFlags"
+  #            Option "DontVTSwitch" "True"
+  #            Option "DontZap"      "True"
+  #    EndSection
+
   # Desktop Environment
   ain brightnessctl # brightness control
   ain xdotool # for grabbing window names (I use it to handle firefox keys)
