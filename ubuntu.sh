@@ -145,9 +145,9 @@ function install_polybar() {
   # optional for all features
   ain libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
   pin jinja2==3.0.3
-  ~/.local/src/polybar-3.7.1/build.sh -A --all-features
 
-  # wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C ~/.local/src
+  wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C ~/.local/src
+  ~/.local/src/polybar-3.7.1/build.sh -A --all-features
   # cmake -S ~/.local/src/polybar-3.7.1 -B ~/.local/src/polybar-3.7.1/build
   # make -C ~/.local/src/polybar-3.7.1/build -j$(nproc)
   # sudo make -C ~/.local/src/polybar-3.7.1/build install
