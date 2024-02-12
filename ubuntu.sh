@@ -428,6 +428,7 @@ function packages()
 
   ghb eylles/pywal16 && {
     pin ~/.local/src/pywal16
+    ain imagemagick
     pin colorthief
     pin haishoku
     pin colorz
