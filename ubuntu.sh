@@ -195,9 +195,11 @@ function install_tex() {
 }
 
 function install_ros() {
-  ppa "deb http://packages.ros.org/ros/ubuntu bionic main"
+  ppa "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main"
   # TODO: fix key add  -k "http://packages.ros.org/ros.key"
-  ain ros-melodic-desktop-full
+  ain cmake
+  ain ros-*-desktop-full
+  ain ros-*-plotjuggler-ros
   ain python
   ain python-rosdep
   ain python-rosinstall
@@ -332,6 +334,64 @@ function install_pipewire() {
   # TODO: does not seem to correctly remove pipewire-media session when enabled
   # removes currently-enabled between wireplumber and pipewire-media-session
   # systemctl --user --now disable pipewire-session-manager
+}
+
+function install_chafa() {
+  ghb hpjansson/chafa
+  ./autogen.sh --srcdir=~/.local/src/chafa
+  make -C ~/.local/src/chafa
+  sudo make -C ~/.local/src/chafa install
+  #  NOTE: (from compilation messages) may need to run 'sudo ldconfig'
+}
+
+function install_gcc10() {
+  sudo add-apt-repository -yu ppa:ubuntu-toolchain-r/test
+  sudo apt install -y gcc-10 g++-10
+  sudo ln -sf /usr/bin/g++-10 /usr/bin/g++ # was previously linked to /usr/bin/g++-9
+}
+
+function install_uberzugpp() {
+  sudo apt install -y libssl-dev libvips-dev libsixel-dev libchafa-dev libtbb-dev
+  python3 -m pip install --user --upgrade cmake
+
+  # INSTALL LATEST CHAFA AND NEWER GCC
+  install_chafa
+  install_gcc10
+  git -C ~/.local/src clone 'https://github.com/jstkdng/ueberzugpp.git'
+  # cd ~/.local/src/ueberzugpp
+  # mkdir build
+  cmake -DCMAKE_BUILD_TYPE=Release -S ~/.local/src/ueberzugpp -B ~/.local/src/ueberzugpp/build
+  cd ~/.local/src/ueberzugpp/build
+  cmake --build .
+}
+
+function install_xsecurelock() {
+  sudo apt install -y xscreensaver
+  git -C ~/.local/src clone https://github.com/google/xsecurelock.git
+  cd ~/.local/src/xsecurelock
+  sh autogen.sh
+  ./configure --with-pam-service-name=xscreensaver # alternatively 'common-auth'
+  make -C ~/.local/src/xsecurelock
+  sudo make -C ~/.local/src/xsecurelock install
+}
+
+function install_i3lock_color() {
+  sudo apt install -y autoconf gcc make pkg-config libpam0g-dev libcairo2-dev libfontconfig1-dev libxcb-composite0-dev libev-dev libx11-xcb-dev libxcb-xkb-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-image0-dev libxcb-util-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libjpeg-dev
+  git -C ~/.local/src clone https://github.com/Raymo111/i3lock-color.git
+  cd ~/.local/src/i3lock-color
+  ./install-i3lock-color.sh
+}
+
+function install_i3lock() {
+  git -C ~/.local/src clone https://github.com/i3/i3lock.git
+  sudo apt install -y libxcb-xinerama0-dev libxkbcommon-x11-dev libpam-dev libpam0g-dev
+
+  meson setup --buildtype=release ~/.local/src/i3lock/build ~/.local/src/i3lock
+  sudo ninja -C ~/.local/src/i3lock/build install -Dprefix=/usr
+
+  # these from the docs didn't seem to work. maybe needed sudo?
+  # meson .. -Dprefix=/usr
+  # ninja
 }
 
 function packages()
