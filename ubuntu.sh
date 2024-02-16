@@ -147,6 +147,7 @@ function install_polybar() {
   pin jinja2==3.0.3
 
   wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C ~/.local/src
+  cd ~/.local/src/polybar-3.7.1
   ~/.local/src/polybar-3.7.1/build.sh -A --all-features
   # cmake -S ~/.local/src/polybar-3.7.1 -B ~/.local/src/polybar-3.7.1/build
   # make -C ~/.local/src/polybar-3.7.1/build -j$(nproc)
