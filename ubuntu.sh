@@ -56,6 +56,35 @@ function launchRl() {
   steamcmd +app_update $RLID validate +quit
 }
 
+function installWorkshopMap()
+  local DIR=$(mktemp -d)
+  local URL=$1
+  local PLG=$(echo $URL | xargs -i basename {} .zip)
+  wget -qO $DIR/plg.zip $URL
+  unzip $DIR/plg.zip -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+  rm -r $DIR
+}
+
+function installLocalWorkshopMap()
+{
+  local ZIP=$1
+  unzip $ZIP -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+}
+
+function installBakkesmodPlugin()
+  local DIR=$(mktemp -d)
+  local ID=$1
+  wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
+  unzip $DIR/plugin.zip 'plugins/*' -d ~/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
+  rm -r $DIR
+}
+
+function installWorkshopTextures() {
+  # TODO: find download link for workshop textures so i can wget from https://videogamemods.com/rocketleague/mods/workshop-textures/
+  TXR="$HOME/Downloads/Workshop-textures.zip"
+  unzip $TXR -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
+}
+
 function install_steam() {
   ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: steam-installer is 64bit version
 
@@ -70,6 +99,36 @@ function install_steam() {
   COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950/pfx"
   PROTON="$HOME/.steam/debian-installation/steamapps/common/Proton 7.0/dist"
   WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 /tmp/BakkesModSetup.exe
+
+  # bakkesmod plugins
+  installBakkesmodPlugin '286' # Speedflip Trainer
+  installBakkesmodPlugin '108' # AlphaConsole
+  installBakkesmodPlugin '223' # Workshop Map Loader and Downloader
+  installBakkesmodPlugin '196' # Custom Map Loader (Local Files)
+
+  # workshop textures
+  installWorkshopTextures
+
+  # workshop maps
+  # TODO: figure out how to check api to just need number and not the name of the plugin
+  # NOTE: could also check 'https://lethamyr.com/maps'
+  # TODO: map a list of URLs
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/703/packages/generic/NoobDribbleBydmc/V1.0.0/NoobDribbleBydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1185/packages/generic/thepath/v1.2.2/thepath.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/715/packages/generic/SpeedJumpRings1Bydmc/V1.0.0/SpeedJumpRings1Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/741/packages/generic/AirDribbleChallenge/V1.0.0/AirDribbleChallenge.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/755/packages/generic/LethamyrsTinyRingsMap/V1.0.0/LethamyrsTinyRingsMap.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1199/packages/generic/thundasurges-rings/V1.0.0/thundasurges-rings.zip'
 }
 
 #===============================================================================
@@ -189,9 +248,11 @@ function install_guix() {
 }
 
 function install_tex() {
-  ain "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
+  # ain "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
+  # ain "texlive" && texlive_configure # tex (full pkg: texlive-full)
   ain "ghostscript" # installs ps2pdf
   ain "enscript"    # converts textfile to postscript (use with ps2pdf)
+  ain "entr" # run arbitrary commands when files change
   ppa "ppa:inkscape.dev/stable" && ain "inkscape" # for latex drawings
 }
 
@@ -366,6 +427,11 @@ function install_uberzugpp() {
   cmake --build .
 }
 
+function install_uberzugpy() {
+  git clone https://github.com/ueber-devel/ueberzug.git ~/.local/src/ueberzug
+  python3 -m pip install --user --upgrade ~/.local/src/ueberzug
+}
+
 function install_xsecurelock() {
   sudo apt install -y xscreensaver
   git -C ~/.local/src clone https://github.com/google/xsecurelock.git
@@ -393,6 +459,11 @@ function install_i3lock() {
   # these from the docs didn't seem to work. maybe needed sudo?
   # meson .. -Dprefix=/usr
   # ninja
+}
+
+function install_zathura_pywal() {
+  ghb GideonWolfe/Zathura-Pywal
+  cd ~/.local/src/Zathura-Pywal && ./install.sh
 }
 
 function packages()
@@ -486,6 +557,8 @@ function packages()
   ain openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
   fcn tex
   gin nyxt
+  ain zathura && fcn zathura_pywal
+  deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
 
   ghb eylles/pywal16 && {
     pin ~/.local/src/pywal16
