@@ -557,7 +557,7 @@ function packages()
   ain openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
   fcn tex
   gin nyxt
-  ain zathura && fcn zathura_pywal
+  ain zathura zathura-pdf-poppler && fcn zathura_pywal
   deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
 
   ghb eylles/pywal16 && {
