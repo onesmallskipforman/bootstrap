@@ -56,7 +56,7 @@ function launchRl() {
   steamcmd +app_update $RLID validate +quit
 }
 
-function installWorkshopMap()
+function installWorkshopMap() {
   local DIR=$(mktemp -d)
   local URL=$1
   local PLG=$(echo $URL | xargs -i basename {} .zip)
@@ -71,7 +71,7 @@ function installLocalWorkshopMap()
   unzip $ZIP -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
 }
 
-function installBakkesmodPlugin()
+function installBakkesmodPlugin() {
   local DIR=$(mktemp -d)
   local ID=$1
   wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
@@ -174,6 +174,7 @@ function install_nvim() {
 }
 
 function install_alacritty() {
+  # TODO: can i install directly from github link?
   ghb "alacritty/alacritty"
   ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
   cargo build --release --manifest-path=~/.local/src/alacritty/Cargo.toml
@@ -182,6 +183,12 @@ function install_alacritty() {
   # ghb "aaron-williamson/base16-alacritty"
   ghb 'alacritty/alacritty-theme'
   ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
+}
+
+function install_joshuto() {
+  # TODO: add dep for rust, fzf (optional), and zoxide (optional)
+  sudo apt install -y cargo xsel xclip
+  cargo install --git https://github.com/kamiyaa/joshuto.git --force
 }
 
 function install_picom() {
@@ -283,7 +290,9 @@ function install_ff_extension() {
   local XPI=$DIR/tmp.xpi
   wget -qO $XPI $URL
   local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  cp $XPI $(find ~/.mozilla/firefox -wholename '*.default-release')/extensions/$NAME
+  local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
+  mkdir -p $EXTDIR
+  cp $XPI $EXTDIR/$NAME
   # NOTE: need to install in system to use unsigned non-mozilla extensions
   # TODO: figure out if behavior is similar with thunderbird
   # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
@@ -479,7 +488,7 @@ function packages()
     ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
   ppa ppa:git-core/ppa && ain git
-  fcn python3
+  fcn python3 && pin pipx
   fcn guix
   ain less
   ain systemd
@@ -559,6 +568,7 @@ function packages()
   gin nyxt
   ain zathura zathura-pdf-poppler && fcn zathura_pywal
   deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
+  fcn joshuto
 
   ghb eylles/pywal16 && {
     pin ~/.local/src/pywal16
