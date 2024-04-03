@@ -556,6 +556,8 @@ function packages()
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
 
   # essential gui/advanced tui programs
+  ain scrot main # screenshot utility
+  ain ffmpeg # screen record utility
   ain firefox
   ain feh sxiv # image viewer
   fcn alacritty
