@@ -401,6 +401,11 @@ function install_pipewire() {
   }
 
   # wireplumber
+  # NOTE: if i recall correctly wireplumber has some weird delays. not sure if that's
+  # why i opted for pipewire-media-session
+  # TODO: clean this up. even if we're not using the service, wpctl is useful
+  sudo add-apt-repository -yu ppa:pipewire-debian/wireplumber-upstream
+  sudo apt install -y wireplumber
   # sudo add-apt-repository -yu ppa:pipewire-debian/wireplumber-upstream; {
   #   sudo apt install -y wireplumber
   #   systemctl --user daemon-reload
