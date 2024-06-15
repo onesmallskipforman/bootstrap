@@ -135,6 +135,20 @@ function install_steam() {
 # INSTALLATIONS
 #===============================================================================
 
+function install_tmux() {
+  sudo apt install -qy libevent-dev ncurses-dev build-essential bison pkg-config
+
+  DIR=$(mktemp -d)
+  wget -qO- https://github.com/tmux/tmux/releases/download/3.4/tmux-3.4.tar.gz | tar xvz -C $DIR
+  cd $DIR/tmux-3.4
+
+  sh autogen.sh
+  ./configure
+  make && sudo make install
+
+  rm -rf $DIR
+}
+
 function install_quartus() {
   # 32-bit architechture for modelsim
   sudo dpkg --add-architecture i386
@@ -560,8 +574,10 @@ function packages()
   ain ffmpeg # screen record utility
   ain firefox
   ain feh sxiv # image viewer
+  ain mpv # video player
   fcn alacritty
   fcn nvim && pin pynvim && fcn node20 && ain calc # TODO: not sure if i need xsel and/or xclip here
+  fcn tmux
   ghb junegunn/fzf && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
   ain autojump
   ain htop
