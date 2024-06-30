@@ -42,7 +42,7 @@ function launchRl() {
   # find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { print appid" "name }' {} \;
 
   # get rocket league id
-  RLID=$(find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { if (name == "Rocket League") print appid }' {} \;)
+  local RLID=$(find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { if (name == "Rocket League") print appid }' {} \;)
 
   # launch RL
   steam steam://rungameid/$RLID
@@ -62,7 +62,6 @@ function installWorkshopMap() {
   local PLG=$(echo $URL | xargs -i basename {} .zip)
   wget -qO $DIR/plg.zip $URL
   unzip $DIR/plg.zip -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
-  rm -r $DIR
 }
 
 function installLocalWorkshopMap()
@@ -76,12 +75,11 @@ function installBakkesmodPlugin() {
   local ID=$1
   wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
   unzip $DIR/plugin.zip 'plugins/*' -d ~/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
-  rm -r $DIR
 }
 
 function installWorkshopTextures() {
   # TODO: find download link for workshop textures so i can wget from https://videogamemods.com/rocketleague/mods/workshop-textures/
-  TXR="$HOME/Downloads/Workshop-textures.zip"
+  local TXR="$HOME/Downloads/Workshop-textures.zip"
   unzip $TXR -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
 }
 
@@ -96,9 +94,9 @@ function install_steam() {
   # bakkesmod for rocket league
   wget -qP /tmp 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe' # alternatively 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
   unzip -od /tmp /tmp/BakkesModSetup.zip
-  COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950/pfx"
-  PROTON="$HOME/.steam/debian-installation/steamapps/common/Proton 7.0/dist"
-  WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 /tmp/BakkesModSetup.exe
+  local COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950/pfx"
+  local PROTON="$HOME/.steam/debian-installation/steamapps/common/Proton 7.0/dist"
+  local WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 /tmp/BakkesModSetup.exe
 
   # bakkesmod plugins
   installBakkesmodPlugin '286' # Speedflip Trainer
@@ -138,15 +136,14 @@ function install_steam() {
 function install_tmux() {
   sudo apt install -qy libevent-dev ncurses-dev build-essential bison pkg-config
 
-  DIR=$(mktemp -d)
-  wget -qO- https://github.com/tmux/tmux/releases/download/3.4/tmux-3.4.tar.gz | tar xvz -C $DIR
-  cd $DIR/tmux-3.4
+  local URL='https://github.com/tmux/tmux/releases/download/3.4/tmux-3.4.tar.gz'
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  cd $DIR
 
   sh autogen.sh
   ./configure
   make && sudo make install
-
-  rm -rf $DIR
 }
 
 function install_quartus() {
@@ -154,49 +151,45 @@ function install_quartus() {
   sudo dpkg --add-architecture i386
   ain "libc6:i386" "libncurses5:i386" "libstdc++6:i386" "libxext6:i386" "libxft2:i386" # dependencies
 
-  wget 'https://cdrdv2.intel.com/v1/dl/getContent/666224/666242?filename=Quartus-web-13.1.0.162-linux.tar'
-
-  local ADIR="$HOME/.local/share/altera"
-
-  # Unzip tar
-  mkdir -p $ADIR/Install
-  tar -C $ADIR/Install -xvf $ADIR/Quartus-web-15.0.0.145-linux.tar
-
-  # install software
-  sudo $ADIR/Install/setup.sh --mode unattended \
-    --unattendedmodeui minimalWithDialogs --installdir /opt/altera/15.0
+  local URL='https://cdrdv2.intel.com/v1/dl/getContent/666220/666242?filename=Quartus-web-13.1.0.162-linux.tar'
+  local DIR="$(mktemp -d)"
+  wget -qO- $URL | tar xv -C $DIR
+  sudo $DIR/setup.sh --mode unattended --unattendedmodeui minimalWithDialogs --installdir /opt/altera/15.0
 
   # set up permissions for usb blaster
   echo '# For Altera USB-Blaster permissions. \SUBSYSTEM=="usb",\
-  ENV{DEVTYPE}=="usb_device",\ATTR{idVendor}=="09fb",\ATTR{idProduct}=="6001",\
-  MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\
-  RUN+="/bin/chmod 0666 %c"'| \
+  local ENV{DEVTYPE}=="usb_device",\ATTR{idVendor}=="09fb",\ATTR{idProduct}=="6001",\
+  local MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\
+  local RUN+="/bin/chmod 0666 %c"'| \
     sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
 }
 
 function install_nvim() {
-  LINK='https://github.com/neovim/neovim/releases/download/v0.9.4/nvim-linux64.tar.gz'
-  SDIR=$HOME/.local/src
-  MDIR=$HOME/.local/share/man
-  BDIR=$HOME/.local/bin
-  mkdir -p $SDIR $MDIR $BDIR
+  local URL='https://github.com/neovim/neovim/releases/download/v0.9.4/nvim-linux64.tar.gz'
+  local DIR=$(mktemp -d)
 
-  wget -qO- $LINK | tar xzv -C $SDIR && {
-      ln -sf $SDIR/nvim-linux64/bin/nvim $BDIR/nvim
-      ln -sf $SDIR/nvim-linux64/man/man1/nvim.1 $MDIR/man1/nvim.1
-  }
+  wget -qO- $URL | tar xvz -C $DIR
+  cp $DIR/nvim-linux64/bin/nvim        ~/.local/bin/nvim
+  cp $DIR/nvim-linux64/man/man1/nvim.1 ~/.local/share/man/man1/nvim.1
 }
 
 function install_alacritty() {
   # TODO: can i install directly from github link?
   ghb "alacritty/alacritty"
-  ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
-  cargo build --release --manifest-path=~/.local/src/alacritty/Cargo.toml
-  # cargo build --release --no-default-features --features=x11 --manifest-path=~/.local/src/alacritty/Cargo.toml
+  local URL = 'https://github.com/alacritty/alacritty/archive/refs/tags/v0.13.2.tar.gz'
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
 
-  # ghb "aaron-williamson/base16-alacritty"
-  ghb 'alacritty/alacritty-theme'
-  ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
+  ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+  cargo build --release --manifest-path=$DIR/Cargo.toml
+  # cargo build --release --no-default-features --features=x11 --manifest-path=$DIR/Cargo.toml
+
+  # local URL='https://github.com/alacritty/alacritty-theme/archive/refs/heads/master.tar.gz'
+  # wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  # local URL='https://github.com/aarowill/base16-alacritty/archive/refs/heads/master.tar.gz'
+  # wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+
+  # ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
 }
 
 function install_joshuto() {
@@ -213,30 +206,36 @@ function install_picom() {
       libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev               \
       libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
 
-  # TODO: alternatively use tar
-  ghb "yshui/picom"
-  meson setup --buildtype=release ~/.local/src/picom/build ~/.local/src/picom
-  sudo ninja -C ~/.local/src/picom/build install
+  local DIR=$(mktemp -d)
+  wget -qO - 'https://github.com/yshui/picom/archive/refs/tags/v11.2.tar.gz' | tar xvz -C $DIR --strip-components=1
+  meson setup --buildtype=release $DIR/build $DIR
+  sudo ninja -C $DIR/build install
 }
 
 function install_polybar() {
   # requirements
-  ain build-essential git cmake cmake-data pkg-config python3-sphinx python3-packaging libuv1-dev libcairo2-dev libxcb1-dev libxcb-util0-dev libxcb-randr0-dev libxcb-composite0-dev python3-xcbgen xcb-proto libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev
+  ain build-essential git cmake cmake-data pkg-config python3-sphinx          \
+      python3-packaging libuv1-dev libcairo2-dev libxcb1-dev libxcb-util0-dev \
+      libxcb-randr0-dev libxcb-composite0-dev python3-xcbgen xcb-proto        \
+      libxcb-image0-dev libxcb-ewmh-dev libxcb-icccm4-dev
   # optional for all features
-  ain libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev libnl-genl-3-dev
+  ain libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev          \
+      libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev \
+      libnl-genl-3-dev
   pin jinja2==3.0.3
 
-  wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C ~/.local/src
-  cd ~/.local/src/polybar-3.7.1
-  ~/.local/src/polybar-3.7.1/build.sh -A --all-features
+  local DIR=$(mktemp -d)
+  wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C $DIR --strip-components=1
+  cd $DIR
+  $DIR/build.sh -A --all-features
   # cmake -S ~/.local/src/polybar-3.7.1 -B ~/.local/src/polybar-3.7.1/build
   # make -C ~/.local/src/polybar-3.7.1/build -j$(nproc)
   # sudo make -C ~/.local/src/polybar-3.7.1/build install
 }
 
 function install_go() {
-  DIR=/usr/local
-  URL="https://go.dev/dl/go1.21.6.linux-amd64.tar.gz"
+  local DIR=/usr/local
+  local URL="https://go.dev/dl/go1.21.6.linux-amd64.tar.gz"
   sudo rm -rf $DIR/go
   wget -qO- $URL | sudo tar xvz -C $DIR
   # export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin > ~/.config/zsh/.zshrc
@@ -251,11 +250,10 @@ function install_python3() {
 }
 
 function install_guix() {
-  DIR=$(mktemp -d)
+  local DIR=$(mktemp -d)
   wget -qP $DIR https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
   chmod +x $DIR/guix-install.sh && $DIR/guix-install.sh
   guix pull && guix package -u
-  rm -rf $DIR
 
   # hint: Consider setting the necessary environment variables by running:
   #
@@ -293,7 +291,7 @@ function install_ros() {
 
 # TODO: use this for osx install as well
 function install_node20() {
-  apt npm
+  ain npm
   sudo npm install -g n
   sudo n v20.11.0 # sudo n stable
 }
@@ -310,7 +308,6 @@ function install_ff_extension() {
   # NOTE: need to install in system to use unsigned non-mozilla extensions
   # TODO: figure out if behavior is similar with thunderbird
   # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
-  rm -r $DIR
 }
 
 function install_tb_extension() {
@@ -320,7 +317,6 @@ function install_tb_extension() {
   wget -qO $XPI $URL
   local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
   cp $XPI $(find ~/.thunderbird -wholename '*.default-release')/extensions/$NAME
-  rm -r $DIR
 }
 
 function install_bluez() {
@@ -331,7 +327,7 @@ function install_bluez() {
 
   ain build-essential libreadline-dev libical-dev libdbus-1-dev libudev-dev libglib2.0-dev python3-docutils
 
-  DIR=$HOME/.local/src/bluez
+  local DIR=$HOME/.local/src/bluez
   mkdir -p $DIR
   wget -qO- http://www.kernel.org/pub/linux/bluetooth/bluez-5.66.tar.gz | tar xzv -C $DIR --strip-components=1
 
@@ -346,7 +342,7 @@ function install_bluez() {
 }
 
 function install_itl() {
-  DIR=$(mktemp -d)
+  local DIR=$(mktemp -d)
   wget -qO $DIR/d.deb https://gitea.elara.ws/Elara6331/itd/releases/download/v1.1.0/itd-1.1.0-linux-x86_64.deb
   sudo apt install -y $DIR/d.deb
 
@@ -359,8 +355,8 @@ function install_waspos() {
   # TODO: need some authentication to get the latest CI builds
   # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
   # See https://stackoverflow.com/questions/27254312/download-github-build-artifact-release-using-wget-curl
-  DIR=$HOME/.local/src/wasp-os
-  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xvz -C $DIR --trip-components=1
+  local DIR=$HOME/.local/src/wasp-os
+  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xvz -C $DIR --strip-components=1
 }
 
 function install_siglo() {
@@ -434,10 +430,15 @@ function install_chafa() {
   #  NOTE: (from compilation messages) may need to run 'sudo ldconfig'
 }
 
-function install_gcc10() {
+function install_gcc() {
   sudo add-apt-repository -yu ppa:ubuntu-toolchain-r/test
-  sudo apt install -y gcc-10 g++-10
-  sudo ln -sf /usr/bin/g++-10 /usr/bin/g++ # was previously linked to /usr/bin/g++-9
+  sudo apt install -y gcc-$1 g++-$1
+  # was previously linked to /usr/bin/g++-9
+  sudo update-alternatives \
+    --install /usr/bin/gcc gcc /usr/bin/gcc-$1 $1 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-$1 \
+      --slave /usr/bin/gcov gcov /usr/bin/gcov-$1
+  # sudo update-alternatives --set gcc /usr/bin/gcc-$1
 }
 
 function install_uberzugpp() {
@@ -446,7 +447,7 @@ function install_uberzugpp() {
 
   # INSTALL LATEST CHAFA AND NEWER GCC
   install_chafa
-  install_gcc10
+  install_gcc 10
   git -C ~/.local/src clone 'https://github.com/jstkdng/ueberzugpp.git'
   # cd ~/.local/src/ueberzugpp
   # mkdir build
@@ -471,7 +472,11 @@ function install_xsecurelock() {
 }
 
 function install_i3lock_color() {
-  sudo apt install -y autoconf gcc make pkg-config libpam0g-dev libcairo2-dev libfontconfig1-dev libxcb-composite0-dev libev-dev libx11-xcb-dev libxcb-xkb-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-image0-dev libxcb-util-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev libjpeg-dev
+  aib autoconf gcc make pkg-config libpam0g-dev libcairo2-dev                 \
+      libfontconfig1-dev libxcb-composite0-dev libev-dev libx11-xcb-dev       \
+      libxcb-xkb-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-image0-dev \
+      libxcb-util-dev libxcb-xrm-dev libxkbcommon-dev libxkbcommon-x11-dev    \
+      libjpeg-dev
   git -C ~/.local/src clone https://github.com/Raymo111/i3lock-color.git
   cd ~/.local/src/i3lock-color
   ./install-i3lock-color.sh
@@ -479,7 +484,7 @@ function install_i3lock_color() {
 
 function install_i3lock() {
   git -C ~/.local/src clone https://github.com/i3/i3lock.git
-  sudo apt install -y libxcb-xinerama0-dev libxkbcommon-x11-dev libpam-dev libpam0g-dev
+  ain libxcb-xinerama0-dev libxkbcommon-x11-dev libpam-dev libpam0g-dev
 
   meson setup --buildtype=release ~/.local/src/i3lock/build ~/.local/src/i3lock
   sudo ninja -C ~/.local/src/i3lock/build install -Dprefix=/usr
@@ -490,8 +495,11 @@ function install_i3lock() {
 }
 
 function install_zathura_pywal() {
-  ghb GideonWolfe/Zathura-Pywal
-  cd ~/.local/src/Zathura-Pywal && ./install.sh
+  local SHA="f5b6d4a452079d9b2cde070ac3b8c742b6952703"
+  local URL="https://github.com/matthewlscarlson/zathura-pywal/archive/$SHA.tar.gz"
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  sudo make -C $DIR install
 }
 
 function packages()
@@ -499,7 +507,7 @@ function packages()
   # basics
   sudo apt update && sudo apt upgrade
   sudo DEBIAN_FRONTEND=noninteractive
-  DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
+  local DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
   ain tzdata # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
   ain software-properties-common # essentials (ie apt-add-repository)
   ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
@@ -571,8 +579,8 @@ function packages()
   ppa ppa:dawidd0811/neofetch && ain neofetch
   ppa ppa:ytvwld/asciiquarium && ain asciiquarium
   deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.7.1/fastfetch-2.7.1-Linux.deb' # TODO: consider grabbing latest instead of version
-  ghb dylanaraps/pfetch   # minimal fetch # TODO: may need to check this shows up in path
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
+  cargo install macchina # fetch
 
   # essential gui/advanced tui programs
   ain main # screenshot utility
