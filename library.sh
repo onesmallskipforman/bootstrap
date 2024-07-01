@@ -75,46 +75,49 @@ function syncDots() {
 # PACKAGE INSTALLATION
 #===============================================================================
 
-# function ain() {
-#   local PKG="$1"; shift; local OPTARG PPACMD KEYCMD
-#   while getopts ":p:k:" o; do case "${o}" in
-#     p) PPACMD="sudo add-apt-repository -yu ${OPTARG}";;
-#     k) KEYCMD="sudo apt-key adv --fetch-keys ${OPTARG}";;
-#     *) printf "Invalid option: -%s\\n" "$OPTARG";;
-#   esac done
-#   local CMD="sudo apt install -y -f $PKG"
-#   [ ! -z "$PPACMD" ] && CMD="$PPACMD && $CMD"
-#   [ ! -z "$KEYCMD" ] && CMD="$KEYCMD && $CMD"
-#   eval "$CMD"
-# }
-
-
-
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
-  mkdir -p ~/.local/share/fonts
-  wget -qO- --show-progress $URL | xz -d | tar xvf - -C ~/.local/share/fonts
-  # wget -qO- --show-progress $URL | tar Jxvf - -C ~/.local/share/fonts # NOTE: this version requires gnu tar
+  local DIR=~/.local/share/fonts/$(echo $1 | sed 's/.*/\L&/')
+  mkdir -p $DIR
+  wget -qO- --show-progress $URL | xz -d | tar xvf - -C $DIR --wildcards "*.[ot]tf"
+  # wget -qO- --show-progress $URL | tar Jxvf - # NOTE: this version requires gnu tar
 }
 
-function texlive_configure() {
-    sudo tlmgr update --self
-    sudo tlmgr install \
-        latexmk \
-        xelatex \
-        preprint \
-        titlesec \
-        helvetic \
-        enumitem \
-        xifthen \
-        relsize \
-        multirow
+install_fonts() {
+  # TODO: reduce fonts
+  # TODO: consider https://github.com/getnf/getnf/tree/main
+  ndf Hack DejaVuSansMono FiraCode RobotoMono SourceCodePro UbuntuMono
+}
+
+install_getnf() {
+  curl -fsSL https://raw.githubusercontent.com/getnf/getnf/main/install.sh | bash
+}
+
+function install_texlive() {
+  local DIR=$(mktemp -d)
+  local URL='https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
+  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  perl $DIR/install-tl \
+    --no-gui \
+    --no-interaction \
+    --scheme=scheme-minimal \
+    --texdir      ~/.local/texlive \
+    --texmfhome   ${XDG_DATA_HOME:-~/.local/share}/texm \
+    --texmfvar    ${XDG_CACHE_HOME:-~/.cache}/texlive/texmf-var \
+    --texmfconfig ${XDG_CONFIG_HOME:-~/.config}/texlive/texmf-config
+
+  tlmgr update --self
+  tlmgr update --all
+  tlmgr install \
+    latexmk xetex preprint titlesec helvetic enumitem xifthen relsize multirow
+
+  # uninstall
+  # tlmgr remove --all; rm -rf  ~/.local/texlive
 }
 
 function addSudoers() {
   sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee /etc/sudoers.d/$(whoami)
 }
-
 
 function cln() {
   DIR=$HOME/.local/src/$(basename $1 .git)

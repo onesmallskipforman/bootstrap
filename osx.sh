@@ -122,9 +122,11 @@ packages() {
     brw "asciiquarium" "pipes-sh" "tty-clock" # showing off
     brw "autojump" # python formatter
     brw "balenaetcher"
-    {
-        brw "basictex" && texlive_configure # latex (full package: mactex) # TODO: double-check you may need brew install --cask to run installer
-        brw "inkscape" # for latex drawings
+    fcn texlive && {
+      brw enscript    # for converting code to postscript
+      brw entr        # run arbitrary commands when files change, for live edit
+      brw ghostscript # for ps2pdf with enscript
+      brw inkscape    # for latex drawings
     }
     brw "bat" "ccat" "highlight" # cat variant with highlight (for file mgr)
     brw "bc" "calc" # terminal calculators
@@ -137,20 +139,13 @@ packages() {
     brw "discord"
     brw "dmenu"
     brw "docker" "docker-credential-helper" "docker-compose" "colima"
-    brw "enscript" # for converting code to postscript
     brw "FelixKratz/formulae/sketchybar"
     brw "figlet" && ghb "xero/figlet-fonts.git" # for writing ascii text
-    brw "font-dejavusansmono-nerd-font"
-    brw "font-fira-code-nerd-font"
-    brw "font-hack-nerd-font"
-    brw "font-robotomono-nerd-font"
-    brw "font-saucecodepro-nerd-font"
-    brw "font-ubuntumono-nerd-font"
+    fcn fonts
     brw "fzf" && $(brew --prefix)/opt/fzf/install --all --xdg --completion
     #TODO: replace with 'ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion'
     brw "gcc"
     brw "geckodriver"
-    brw "ghostscript" # for ps2pdf with enscript
     brw "glow" # terminal markdown highlighting
     brw "gnu-getopt"
     brw "gnu-typist"

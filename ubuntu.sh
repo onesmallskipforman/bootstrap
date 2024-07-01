@@ -266,15 +266,6 @@ function install_guix() {
   # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
 }
 
-function install_tex() {
-  # ain "texlive-latex-base" && texlive_configure # tex (full pkg: texlive-full)
-  # ain "texlive" && texlive_configure # tex (full pkg: texlive-full)
-  ain "ghostscript" # installs ps2pdf
-  ain "enscript"    # converts textfile to postscript (use with ps2pdf)
-  ain "entr" # run arbitrary commands when files change
-  ppa "ppa:inkscape.dev/stable" && ain "inkscape" # for latex drawings
-}
-
 function install_ros() {
   ppa "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main"
   # TODO: fix key add  -k "http://packages.ros.org/ros.key"
@@ -571,7 +562,7 @@ function packages()
   fcn polybar
   ain redshift
   fcn picom
-  ndf Hack DejaVuSansMono FiraCode RobotoMono SourceCodePro UbuntuMono # TODO: reduce fonts
+  ain fontcofig; fcn fonts
 
   # silly terminal scripts to show off
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text
@@ -595,7 +586,13 @@ function packages()
   ain autojump
   ain htop
   ain openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
-  fcn tex
+  fcn texlive && {
+    ain enscript    # converts textfile to postscript (use with ps2pdf)
+    ain entr        # run arbitrary commands when files change, for live edit
+    ain ghostscript # installs ps2pdf
+    ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
+  }
+
   gin nyxt
   ain zathura zathura-pdf-poppler && fcn zathura_pywal
   deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
