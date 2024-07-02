@@ -77,7 +77,7 @@ function syncDots() {
 
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
-  local DIR=~/.local/share/fonts/$(echo $1 | sed 's/.*/\L&/')
+  local DIR=$( [ $(uname) = "Darwin" ] && echo ~/Library/Fonts || echo ~/.local/share/fonts)/$(echo $1 | echo $1 | sed 's/.*/\l&/')
   mkdir -p $DIR
   wget -qO- --show-progress $URL | xz -d | tar xvf - -C $DIR --wildcards "*.[ot]tf"
   # wget -qO- --show-progress $URL | tar Jxvf - # NOTE: this version requires gnu tar
@@ -109,7 +109,16 @@ function install_texlive() {
   tlmgr update --self
   tlmgr update --all
   tlmgr install \
-    latexmk xetex preprint titlesec helvetic enumitem xifthen relsize multirow
+    latex-bin \
+    latexmk \
+    xetex \
+    preprint \
+    titlesec \
+    helvetic \
+    enumitem \
+    xifthen \
+    relsize \
+    multirow
 
   # uninstall
   # tlmgr remove --all; rm -rf  ~/.local/texlive
