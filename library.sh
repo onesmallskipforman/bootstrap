@@ -100,7 +100,7 @@ function install_texlive() {
   perl $DIR/install-tl \
     --no-gui \
     --no-interaction \
-    --scheme=scheme-minimal \
+    --scheme=scheme-basic \
     --texdir      ~/.local/texlive \
     --texmfhome   ${XDG_DATA_HOME:-~/.local/share}/texm \
     --texmfvar    ${XDG_CACHE_HOME:-~/.cache}/texlive/texmf-var \
@@ -108,17 +108,7 @@ function install_texlive() {
 
   tlmgr update --self
   tlmgr update --all
-  tlmgr install \
-    latex-bin \
-    latexmk \
-    xetex \
-    preprint \
-    titlesec \
-    helvetic \
-    enumitem \
-    xifthen \
-    relsize \
-    multirow
+  tlmgr install scheme-full
 
   # uninstall
   # tlmgr remove --all; rm -rf  ~/.local/texlive
