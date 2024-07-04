@@ -1,5 +1,5 @@
 #===============================================================================
-# PRINT UTILITIES
+# UTILITIES
 #===============================================================================
 
 function multiecho(){ for i in {1..67}; do echo -n "$1"; done; }
@@ -17,12 +17,6 @@ function supersist() {
 
     # Keep-alive: update existing `sudo` time stamp until the script has finished
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-}
-
-function gate() {
-    # NOTE: currently works with bash and not zsh
-    read -p "This may overwrite existing files in ~/. Are you sure? (y/n): " REPLY;
-    [[ $REPLY =~ ^[Yy]$ ]] || return 1
 }
 
 #===============================================================================
@@ -119,17 +113,17 @@ function addSudoers() {
 }
 
 function cln() {
-  DIR=$HOME/.local/src/$(basename $1 .git)
+  local DIR=$HOME/.local/src/$(basename $1 .git)
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
 }
 function tap() { brew tap --quiet; }
 function brw() { yes | brew install --force --no-quarantine --overwrite $@; }
-function map() { cat | tr ' ' '\n' | while read -r; do eval "$@ $REPLY"; done; }
+function map() { cat | tr ' ' '\n' | while read -r a; do eval "$@ $a"; done; }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function deb() { T=$(mktemp -d) wget -qO $T/t.deb $1 && ain $T/t.deb && rm -r $T; }
+function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
 function ain() { sudo apt install -y $@; }
