@@ -710,6 +710,7 @@ function packages()
     install_ff_extension darkreader
     install_ff_extension ublock-origin
     install_ff_extension vimium-ff
+    install_ff_extension youtube-recommended-videos
   }
   ain thunderbird && {
     install_tb_extension darkreader
