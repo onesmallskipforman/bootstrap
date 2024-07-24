@@ -1,0 +1,1 @@
+python3 parse_ff_bookmarks.py  | sed "s/^https\{0,1\}:\/\/\([^\/]*\)\([^\t]*\)\t\(.*\)\t\(.*\)/\1\t\3/g" | column -ts$'\t' | sed -r $'s/ \([^ ]\)/\u00a0\\1/g' | fzf -d $' +' --cycle --preview='echo {2}'   --preview-window='down,1' --with-nth='1,2'

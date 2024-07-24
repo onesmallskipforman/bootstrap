@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. $HOME/.cache/wal/colors.sh
+XSECURELOCK_SHOW_KEYBOARD_LAYOUT=0 \
+XSECURELOCK_BACKGROUND_COLOR=$background \
+XSECURELOCK_AUTH_BACKGROUND_COLOR=$background \
+XSECURELOCK_AUTH_FOREGROUND_COLOR=$foreground \
+xsecurelock
