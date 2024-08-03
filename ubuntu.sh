@@ -100,7 +100,7 @@ function launchRl() {
   local RLID=$(find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { if (name == "Rocket League") print appid }' {} \;)
 
   # launch RL
-  steam steam://rungameid/$RLID
+  steam -silent steam://rungameid/$RLID
   # steam steam://rungameid/252950
 
   # TODO: hmm looks like these id are static so as long as you have it saved
