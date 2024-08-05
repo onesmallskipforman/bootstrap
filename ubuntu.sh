@@ -139,19 +139,17 @@ function installWorkshopTextures() {
 }
 
 function install_steam() {
-  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: steam-installer is 64bit version
-
-  # TODO: modify configs automatically
-  # I wonder if i can throw paths within these files into steamcmd hmmmmmmmmmm
-  # compatibility  settings found in $HOME/.steam/debian-installation/config/config.vdf
-  # launch opotion settings found in $HOME/.steam/debian-installation/userdata/276429030/config/localconfig.vdf
+  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: 64bit version
 
   # bakkesmod for rocket league
-  wget -qP /tmp 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe' # alternatively 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
-  unzip -od /tmp /tmp/BakkesModSetup.zip
-  local COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950/pfx"
-  local PROTON="$HOME/.steam/debian-installation/steamapps/common/Proton 7.0/dist"
-  local WINEESYNC=1 WINEPREFIX="$COMPATDATA" "$PROTON"/bin/wine64 /tmp/BakkesModSetup.exe
+  # alternatively 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
+  local URL='https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe'
+  local DIR=$(mktemp -d)
+  wget -qP $DIR $URL && unzip $DIR/BakkesModSetup.zip -d $DIR
+
+  local COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950"
+  local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
+  local WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
 
   # bakkesmod plugins
   installBakkesmodPlugin '286' # Speedflip Trainer
