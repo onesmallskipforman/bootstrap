@@ -54,8 +54,9 @@ function syncDots() {
   # id all desired top-level targets
   DOTS="$(realpath dotfiles)"
   TARGETS=$(cat \
-    <(find $DOTS/.config -mindepth 1 -maxdepth 1) \
-    <(find $DOTS/.local  -mindepth 1 -maxdepth 1)  \
+    <(find $DOTS/.config      -mindepth 1 -maxdepth 1) \
+    <(find $DOTS/.local/bin   -mindepth 1 -maxdepth 1)  \
+    <(find $DOTS/.local/share -mindepth 1 -maxdepth 1)  \
     <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
     | sed "s;$DOTS/;;g")
   # find if targets exist and copy their contents to dotfiles
