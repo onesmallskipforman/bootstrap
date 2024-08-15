@@ -107,6 +107,7 @@ function install_texlive() {
   tlmgr update --self
   tlmgr update --all
   tlmgr install scheme-full
+  fmtutil-user --missing # create missing format files
 
   # uninstall
   # tlmgr remove --all; rm -rf  ~/.local/texlive

@@ -301,7 +301,10 @@ function install_picom() {
       libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
 
   local DIR=$(mktemp -d)
-  wget -qO - 'https://github.com/yshui/picom/archive/refs/tags/v11.2.tar.gz' | tar xvz -C $DIR --strip-components=1
+  local VER=refs/tags/v11.2
+  # local VER=c3e18a6e7a9299d9be421bcfc249bb348087d1ea # animations
+
+  wget -qO - "https://github.com/yshui/picom/archive/$VER.tar.gz" | tar xvz -C $DIR --strip-components=1
   meson setup --buildtype=release $DIR/build $DIR
   sudo ninja -C $DIR/build install
 }
