@@ -594,7 +594,6 @@ function packages()
   # basics
   sudo apt update && sudo apt upgrade
   sudo DEBIAN_FRONTEND=noninteractive
-  local DEBIAN_FRONTEND=noninteractive # https://stackoverflow.com/questions/44331836/apt-get-install-tzdata-noninteractive
   ain tzdata # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
   ain software-properties-common # essentials (ie apt-add-repository)
   ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
