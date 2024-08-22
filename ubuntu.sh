@@ -8,7 +8,6 @@ function prep(){
   which sudo || { apt -y update && apt install -y "sudo"; }
   sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
   sudo dpkg --add-architecture i386
-  # sudo apt install -y git gcc software-properties-common
 }
 
 #===============================================================================
