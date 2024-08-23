@@ -414,7 +414,7 @@ function install_bluez() {
 
   ain build-essential libreadline-dev libical-dev libdbus-1-dev libudev-dev libglib2.0-dev python3-docutils
 
-  local DIR=$HOME/.local/src/bluez
+  local DIR=$(mktemp -d)
   mkdir -p $DIR
   wget -qO- http://www.kernel.org/pub/linux/bluetooth/bluez-5.66.tar.gz | tar xzv -C $DIR --strip-components=1
 
@@ -442,7 +442,7 @@ function install_waspos() {
   # TODO: need some authentication to get the latest CI builds
   # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
   # See https://stackoverflow.com/questions/27254312/download-github-build-artifact-release-using-wget-curl
-  local DIR=$HOME/.local/src/wasp-os
+  local DIR=$(mktemp -d)
   wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xvz -C $DIR --strip-components=1
 }
 
