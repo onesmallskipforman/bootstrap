@@ -131,6 +131,6 @@ function pin() { python3 -m pip install --user --upgrade $@; }
 function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
-function ain() { DEBIAN_FRONTEND=noninteractive sudo apt install -y $@; }
+function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function gin() { guix install $@; }
 function fcn() { eval install_$@; } # TODO: make this mappable

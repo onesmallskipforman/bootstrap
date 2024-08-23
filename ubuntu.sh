@@ -348,7 +348,7 @@ function install_python3() {
 function install_guix() {
   local DIR=$(mktemp -d)
   wget -qP $DIR https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
-  chmod +x $DIR/guix-install.sh && $DIR/guix-install.sh
+  chmod +x $DIR/guix-install.sh && yes | sudo $DIR/guix-install.sh
   guix pull && guix package -u
 
   # hint: Consider setting the necessary environment variables by running:
@@ -418,8 +418,8 @@ function install_bluez() {
   mkdir -p $DIR
   wget -qO- http://www.kernel.org/pub/linux/bluetooth/bluez-5.66.tar.gz | tar xzv -C $DIR --strip-components=1
 
-  cd $DIR && ./configure
-  # $DIR/configure --srcdir=$DIR
+  # cd $DIR && ./configure
+  $DIR/configure --srcdir=$DIR
   make -C $DIR
   sudo make -C $DIR install
 
@@ -447,7 +447,7 @@ function install_waspos() {
 }
 
 function install_siglo() {
-  sudo apt install libgtk-3-dev python3-pip meson python3-dbus gtk-update-icon-cache desktop-file-utils gettext appstream-util libglib2.0-dev
+  sudo apt install -y libgtk-3-dev python3-pip meson python3-dbus gtk-update-icon-cache desktop-file-utils gettext appstream-util libglib2.0-dev
   # TODO: I don't really like having to change meson just for this
   # Check out pipx
   python3 -m pip install --user --upgrade gatt requests black meson=0.55.0
@@ -593,23 +593,27 @@ function packages()
 {
   # basics
   sudo apt update && sudo apt upgrade
-  sudo DEBIAN_FRONTEND=noninteractive
-  ain tzdata # TODO: check if tzdata is needed for /etc/timezone to be correct with noninteractive
-  ain software-properties-common # essentials (ie apt-add-repository)
+  yes | unminimize
+  ain wget curl
+
+  ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+  # ln -fs /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
+  ain tzdata
+
+  # ain software-properties-common # essentials (ie apt-add-repository)
   ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
     sudo chsh -s /bin/zsh $(whoami) # ghb zsh-users/zsh-autosuggestions # TODO: consider getting both of these straight from github
     ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
   ppa ppa:git-core/ppa && ain git
   fcn python3 && pin pipx
-  fcn guix
   ain less
   ain systemd
+  fcn guix
   ain xorg
   ain gcc
   ain make
   ain cmake
-  ain curl
   ain network-manager # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
   ain cifs-utils # tool for mounding temp drives
   ain jq
