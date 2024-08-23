@@ -134,3 +134,4 @@ function ppa() { sudo add-apt-repository -yu $1 ; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function gin() { guix install $@; }
 function fcn() { eval install_$@; } # TODO: make this mappable
+function pac() { sudo pacman -Sy --noconfirm $@; }

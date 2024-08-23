@@ -10,7 +10,6 @@ function prep() {
   # local HN="Skipper"
   # hostnamectl set-hostname $HN
 }
-function pac() { sudo pacman -Sy --noconfirm $@; }
 
 function packages()
 {
