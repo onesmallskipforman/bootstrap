@@ -113,9 +113,35 @@ function install_texlive() {
   # tlmgr remove --all; rm -rf  ~/.local/texlive
 }
 
+
+function install_ff_extension() {
+  local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
+  local DIR=$(mktemp -d)
+  local XPI=$DIR/tmp.xpi
+  wget -qO $XPI $URL
+  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
+  local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
+  mkdir -p $EXTDIR
+  cp $XPI $EXTDIR/$NAME
+  # NOTE: need to install in system to use unsigned non-mozilla extensions
+  # TODO: figure out if behavior is similar with thunderbird
+  # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
+}
+
+function install_tb_extension() {
+  local URL="https://addons.thunderbird.net/thunderbird/downloads/latest/$1"
+  local DIR=$(mktemp -d)
+  local XPI=$DIR/tmp.xpi
+  wget -qO $XPI $URL
+  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
+  cp $XPI $(find ~/.thunderbird -wholename '*.default-release')/extensions/$NAME
+}
+
 function addSudoers() {
   sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee /etc/sudoers.d/$(whoami)
 }
+
+function custom_install() { eval install_$1; }
 
 function cln() {
   local DIR=$HOME/.local/src/$(basename $1 .git)
@@ -128,10 +154,13 @@ function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
+function pix() { pipx install $@; }
 function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function gin() { guix install $@; }
-function fcn() { eval install_$@; } # TODO: make this mappable
+function fcn() { echo $@ | map custom_install; }
 function pac() { sudo pacman -Sy --noconfirm $@; }
+function ffe() { echo $@ | map install_ff_extension; }
+function tbe() { echo $@ | map install_tb_extension; }

@@ -5,9 +5,15 @@ source library.sh
 #===============================================================================
 
 function prep(){
-  which sudo || { apt -y update && apt install -y "sudo"; }
-  sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-  sudo dpkg --add-architecture i386
+  which sudo >/dev/null || { apt update -y && apt install -y sudo; }
+  # sudo apt install wget curl
+  # ln -s /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
+  ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+  echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
+  useradd -m -s /bin/zsh skipper
+  # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
+  # sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
+  # sudo dpkg --add-architecture i386
 }
 
 #===============================================================================
@@ -16,16 +22,7 @@ function prep(){
 
 function config() {
   # Set computer name, disable desktop environment, clean installs
-
-  local HN="wb-sgonzalez"
-  # hostnamectl set-hostname $HN
-  grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" /etc/hosts
-
-  # NOTE: you need systemd for these
-  # sudo systemctl enable multi-user.target --force
-  # sudo systemctl set-default multi-user.target
-  sudo systemctl set-default multi-user.target
-  sudo apt -y autoremove
+  sudo systemctl set-default multi-user.target # sudo systemctl enable multi-user.target --force
 }
 
 function bootstrap() {
@@ -213,7 +210,7 @@ function install_qutebrowser() {
 
   local URL='https://github.com/qutebrowser/qutebrowser/releases/download/v3.2.1/qutebrowser-3.2.1.tar.gz'
   local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
 
   python3 -m pip install -U --user pipx
   ~/.local/share/pipx/shared/bin/pip install -U pip
@@ -231,7 +228,7 @@ function install_tmux() {
 
   local URL='https://github.com/tmux/tmux/releases/download/3.4/tmux-3.4.tar.gz'
   local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
   cd $DIR
 
   sh autogen.sh
@@ -246,7 +243,7 @@ function install_quartus() {
 
   local URL='https://cdrdv2.intel.com/v1/dl/getContent/666220/666242?filename=Quartus-web-13.1.0.162-linux.tar'
   local DIR="$(mktemp -d)"
-  wget -qO- $URL | tar xv -C $DIR
+  wget -qO- $URL | tar x -C $DIR
   sudo $DIR/setup.sh --mode unattended --unattendedmodeui minimalWithDialogs --installdir /opt/altera/15.0
 
   # set up permissions for usb blaster
@@ -258,10 +255,10 @@ function install_quartus() {
 }
 
 function install_nvim() {
-  local URL='https://github.com/neovim/neovim/releases/download/v0.9.4/nvim-linux64.tar.gz'
+  local URL='https://github.com/neovim/neovim/releases/download/v0.10.1/nvim-linux64.tar.gz'
   local DIR=$(mktemp -d)
 
-  wget -qO- $URL | tar xvz -C $DIR
+  wget -qO- $URL | tar xz -C $DIR
   cp $DIR/nvim-linux64/bin/nvim        ~/.local/bin/nvim
   cp $DIR/nvim-linux64/man/man1/nvim.1 ~/.local/share/man/man1/nvim.1
 }
@@ -271,16 +268,16 @@ function install_alacritty() {
   ghb "alacritty/alacritty"
   local URL = 'https://github.com/alacritty/alacritty/archive/refs/tags/v0.13.2.tar.gz'
   local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
 
   ain cargo cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
   cargo build --release --manifest-path=$DIR/Cargo.toml
   # cargo build --release --no-default-features --features=x11 --manifest-path=$DIR/Cargo.toml
 
   # local URL='https://github.com/alacritty/alacritty-theme/archive/refs/heads/master.tar.gz'
-  # wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  # wget -qO- $URL | tar xz -C $DIR --strip-components=1
   # local URL='https://github.com/aarowill/base16-alacritty/archive/refs/heads/master.tar.gz'
-  # wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  # wget -qO- $URL | tar xz -C $DIR --strip-components=1
 
   # ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
 }
@@ -303,7 +300,7 @@ function install_picom() {
   local VER=refs/tags/v11.2
   # local VER=c3e18a6e7a9299d9be421bcfc249bb348087d1ea # animations
 
-  wget -qO - "https://github.com/yshui/picom/archive/$VER.tar.gz" | tar xvz -C $DIR --strip-components=1
+  wget -qO - "https://github.com/yshui/picom/archive/$VER.tar.gz" | tar xz -C $DIR --strip-components=1
   meson setup --buildtype=release $DIR/build $DIR
   sudo ninja -C $DIR/build install
 }
@@ -318,10 +315,10 @@ function install_polybar() {
   ain libxcb-xkb-dev libxcb-xrm-dev libxcb-cursor-dev libasound2-dev          \
       libpulse-dev i3-wm libjsoncpp-dev libmpdclient-dev libcurl4-openssl-dev \
       libnl-genl-3-dev
-  pin jinja2==3.0.3
+  pix jinja2==3.0.3
 
   local DIR=$(mktemp -d)
-  wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xvz -C $DIR --strip-components=1
+  wget -qO - 'https://github.com/polybar/polybar/releases/download/3.7.1/polybar-3.7.1.tar.gz' | tar xz -C $DIR --strip-components=1
   cd $DIR
   $DIR/build.sh -A --all-features
   # cmake -S ~/.local/src/polybar-3.7.1 -B ~/.local/src/polybar-3.7.1/build
@@ -333,16 +330,11 @@ function install_go() {
   local DIR=/usr/local
   local URL="https://go.dev/dl/go1.21.6.linux-amd64.tar.gz"
   sudo rm -rf $DIR/go
-  wget -qO- $URL | sudo tar xvz -C $DIR
+  wget -qO- $URL | sudo tar xz -C $DIR
   # export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin > ~/.config/zsh/.zshrc
   # TODO: idea
   # a directory of files to source each with its own export statements
   # can easily add to this directory when you install something that needs to modify PATH
-}
-
-function install_python3() {
-  ain "python3" "python3-pip" "python3-venv" && pin "pip"
-  ppa "ppa:deadsnakes/ppa" && ain "python3.11" "python3.11-distutils" # TODO: make sure all (or selected) python versions' programs are on PATH
 }
 
 function install_guix() {
@@ -383,29 +375,6 @@ function install_node20() {
   sudo n v20.11.0 # sudo n stable
 }
 
-function install_ff_extension() {
-  local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
-  local DIR=$(mktemp -d)
-  local XPI=$DIR/tmp.xpi
-  wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
-  mkdir -p $EXTDIR
-  cp $XPI $EXTDIR/$NAME
-  # NOTE: need to install in system to use unsigned non-mozilla extensions
-  # TODO: figure out if behavior is similar with thunderbird
-  # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
-}
-
-function install_tb_extension() {
-  local URL="https://addons.thunderbird.net/thunderbird/downloads/latest/$1"
-  local DIR=$(mktemp -d)
-  local XPI=$DIR/tmp.xpi
-  wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  cp $XPI $(find ~/.thunderbird -wholename '*.default-release')/extensions/$NAME
-}
-
 function install_bluez() {
   # TODO: not sure if i want experimental features
   # https://www.makeuseof.com/install-bluez-latest-version-on-ubuntu/
@@ -428,7 +397,7 @@ function install_bluez() {
   sudo systemctl restart bluetooth
 }
 
-function install_itl() {
+function install_itd() {
   local DIR=$(mktemp -d)
   wget -qO $DIR/d.deb https://gitea.elara.ws/Elara6331/itd/releases/download/v1.1.0/itd-1.1.0-linux-x86_64.deb
   sudo apt install -y $DIR/d.deb
@@ -443,23 +412,25 @@ function install_waspos() {
   # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
   # See https://stackoverflow.com/questions/27254312/download-github-build-artifact-release-using-wget-curl
   local DIR=$(mktemp -d)
-  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xvz -C $DIR --strip-components=1
+  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xz -C $DIR --strip-components=1
 }
 
 function install_siglo() {
   sudo apt install -y libgtk-3-dev python3-pip meson python3-dbus gtk-update-icon-cache desktop-file-utils gettext appstream-util libglib2.0-dev
   # TODO: I don't really like having to change meson just for this
   # Check out pipx
-  python3 -m pip install --user --upgrade gatt requests black meson=0.55.0
+  pix gatt black meson==0.55.0 # requests
 
-  git -C ~/.local/src clone https://github.com/theironrobin/siglo.git
-  # mkdir ~/.local/src/siglo/build
-  meson ~/.local/src/siglo/build
-  sudo ninja -C ~/.local/src/siglo/build install
+  local DIR=$(mktemp -d)
+  wget -qO- https://github.com/theironrobin/siglo/archive/refs/tags/v0.9.9.tar.gz | tar xz -C $DIR --strip-components=1
+  mkdir $DIR/build
+  meson $DIR/build $DIR
+  sudo ninja -C $DIR/build install
 }
 
 function install_spotify() {
-  curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+  curl -sS https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg \
+    | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
   ppa 'deb http://repository.spotify.com stable non-free'
   ain spotify-client
 }
@@ -585,142 +556,92 @@ function install_zathura_pywal() {
   local SHA="f5b6d4a452079d9b2cde070ac3b8c742b6952703"
   local URL="https://github.com/matthewlscarlson/zathura-pywal/archive/$SHA.tar.gz"
   local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
   sudo make -C $DIR install
+}
+
+
+function install_fzf() {
+  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.54.3.tar.gz
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
+  $DIR/install --all --xdg --completion
 }
 
 function packages()
 {
   # basics
-  sudo apt update && sudo apt upgrade
+  sudo apt update -y && sudo apt upgrade -y
   yes | unminimize
-  ain wget curl
-
-  ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
-  # ln -fs /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
-  ain tzdata
-
-  # ain software-properties-common # essentials (ie apt-add-repository)
-  ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
-    sudo chsh -s /bin/zsh $(whoami) # ghb zsh-users/zsh-autosuggestions # TODO: consider getting both of these straight from github
-    ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
-  }
   ppa ppa:git-core/ppa && ain git
-  fcn python3 && pin pipx
+  ain wget curl unzip tar
+  ppa "ppa:deadsnakes/ppa" && ain "python3" "python3-pip" "python3-venv" "pipx" # TODO: make sure all (or selected) python versions' programs are on PATH
+  fcn guix
+  ain software-properties-common # essentials (ie apt-add-repository)
+
+  ain zsh zsh-syntax-highlighting zsh-autosuggestions && {
+    sudo chsh -s /bin/zsh $(whoami)
+  }
   ain less
   ain systemd
-  fcn guix
-  ain xorg
-  ain gcc
-  ain make
-  ain cmake
-  ain network-manager # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
+  ain gcc make cmake
+  # TODO: need to address that you won't be able to use this nmtui without installing over wifi
+  ain network-manager # includes nmtui
   ain cifs-utils # tool for mounding temp drives
   ain jq
   ain xsel xclip
-  ain bluez bluez-tools blueman rfkill && {
-    sudo service bluetooth start
+  fcn fzf && ain ripgrep
+  fcn nvim && { pix pynvim; fcn node20; ain xsel xclip calc; }
+  ain calc bc
+  ain tmux
+  ain autojump
+  ain htop
+  ain openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
+  ain brightnessctl               # brightness control
+  ain redshift
+  ain pulseaudio alsa-utils pavucontrol; fcn pipewire # for audio controls
+  ain bluez-tools blueman rfkill bluez && {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    fcn bluez
-    fcn itd
-    fcn waspos
-    fcn siglo
-    bluetoothctl power on
+    sudo service bluetooth start # TODO: add this to some startup rc script
+    bluetoothctl power on # TODO: add this to some startup rc script
   }
 
-  ain slock physlock xsecurelock i3lock i3lock-fancy vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
-  # xss-lock --transfer-sleep-lock -- i3lock --nofork
-  #
-  # https://github.com/google/xsecurelock?tab=readme-ov-file#automatic-locking
-  # xset s 300 5
-  # xss-lock -n /usr/lib/xsecurelock/dimmer -l -- xsecurelock
-  #
-  # Dim the screen after three minutes of inactivity, lock the screen two minutes later using i3lock:
-  # xset s 180 120
-  # xss-lock -n dim-screen.sh -- i3lock -n
-  #
-  # SECURITY CONSIDERATIONS
-  #    To make sure a locked screen can not be bypassed by switching VTs or killing the X server with Ctrl+Alt+Backspace, it is recommended to disable
-  #    both in xorg.conf(5) for maximum security:
-  #
-  #    Section "ServerFlags"
-  #            Option "DontVTSwitch" "True"
-  #            Option "DontZap"      "True"
-  #    EndSection
-
   # Desktop Environment
-  ain brightnessctl # brightness control
-  ain xdotool # for grabbing window names (I use it to handle firefox keys)
-  ain xserver-xorg-core # libinput dependency
+  ain xorg
+  ain slock physlock xsecurelock i3lock i3lock-fancy vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
+  ain xdotool                     # for grabbing window names
+  ain xserver-xorg-core           # libinput dependency
   ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
-  ain pulseaudio alsa-utils pavucontrol && fcn pipewire # for audio controls
   ain arandr # for saving and loading monitor layouts
   ain autorandr # gui for managing monitor layouts
-  ain rofi; ghb newmanls/rofi-themes-collection
-  ppa ppa:drdeimosnn/survive-on-wm && ain bspwm sxhkd
-  fcn polybar
-  ain redshift
-  fcn picom
+  ain rofi; ghb newmanls/rofi-themes-collection # FIX: ghb
+  ain bspwm sxhkd polybar picom
   ain fontcofig; fcn fonts
 
   # silly terminal scripts to show off
-  ain figlet; ghb xero/figlet-fonts # For writing asciiart text
+  ain figlet; ghb xero/figlet-fonts # For writing asciiart text # TODO: replace ghb
   ain tty-clock # terminal digial clock
-  ppa ppa:dawidd0811/neofetch && ain neofetch
+  ain neofetch
   ppa ppa:ytvwld/asciiquarium && ain asciiquarium
-  deb 'https://github.com/fastfetch-cli/fastfetch/releases/download/2.7.1/fastfetch-2.7.1-Linux.deb' # TODO: consider grabbing latest instead of version
+  ppa ppa:zhangsongcui3371/fastfetch && ain fastfetch
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
   cargo install macchina # fetch
 
   # essential gui/advanced tui programs
-  ain main # screenshot utility
-  ain ffmpeg # screen record utility
-  ain firefox
-  ain feh sxiv # image viewer
-  ain mpv # video player
-  fcn alacritty
-  fcn nvim && pin pynvim && fcn node20 && ain calc # TODO: not sure if i need xsel and/or xclip here
-  fcn tmux
-  ghb junegunn/fzf && ~/.local/src/fzf/install --all --xdg --completion && ain ripgrep # fuzzy finder
-  ain autojump
-  ain htop
-  ain openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
-  fcn texlive && {
-    ain enscript    # converts textfile to postscript (use with ps2pdf)
-    ain entr        # run arbitrary commands when files change, for live edit
-    ain ghostscript # installs ps2pdf
-    ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
-  }
-
+  ppa ppa:aslatter/ppa && ain alacritty
   gin nyxt
+  ain firefox && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
+  ain thunderbird && tbe darkreader tbsync eas-4-tbsync
+  ain maim     # screenshot utility
+  ain ffmpeg   # screen record utility # TODO: consider fbcat
+  ain feh sxiv # image viewer
+  ain mpv      # video player
   ain zathura zathura-pdf-poppler && fcn zathura_pywal
-  deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
   fcn joshuto
-
-  ghb eylles/pywal16 && {
-    pin ~/.local/src/pywal16
-    ain imagemagick
-    pin colorthief
-    pin haishoku
-    pin colorz
-    fcn go
-    go install github.com/thefryscorer/schemer2@latest
+  pix pywal16 && {
+    ain imagemagick; pix colorthief haishoku colorz
+    fcn go; go install github.com/thefryscorer/schemer2@latest
   }
-
-
-
-  ain firefox && {
-    install_ff_extension darkreader
-    install_ff_extension ublock-origin
-    install_ff_extension vimium-ff
-    install_ff_extension youtube-recommended-videos
-  }
-  ain thunderbird && {
-    install_tb_extension darkreader
-    install_tb_extension tbsync
-    install_tb_extension eas-4-tbsync
-  }
-  ain thunderbird
 
   # gaming/school/work
   fcn steam
@@ -728,10 +649,19 @@ function packages()
   deb https://zoom.us/client/latest/zoom_amd64.deb
   fcn ros
   fcn spotify
-
-  # fcn "quartus"
+  fcn itd waspos # siglo # pinetime dev tools
+  fcn quartus
+  # TODO: add arm toolchains
   # TODO: add discord
   # TODO: add slack
+
+  # this one just takes longer than everything else combined
+  # fcn texlive && {
+  #   ain enscript    # converts textfile to postscript (use with ps2pdf)
+  #   ain entr        # run arbitrary commands when files change, for live edit
+  #   ain ghostscript # installs ps2pdf
+  #   ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
+  # }
 }
 
 bootstrap() {
@@ -739,6 +669,6 @@ bootstrap() {
   bigprint "Prepping For Bootstrap"  ; prep
   bigprint "Copying dotfiles to home"; syncDots
   bigprint "Installing Packages"     ; packages
-  bigprint "Configure OS"            ; config
-  bigprint "OS Config Complete. Restart Required"
+  # bigprint "Configure OS"            ; config
+  # bigprint "OS Config Complete. Restart Required"
 }
