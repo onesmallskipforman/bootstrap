@@ -51,22 +51,23 @@ function copyDots() {
 }
 
 function syncDots() {
+  local HOME=${1:-$HOME}
   # id all desired top-level targets
-  DOTS="$(realpath dotfiles)"
-  TARGETS=$(cat \
+  local DOTS="$(realpath dotfiles)"
+  local TARGETS=$(cat \
     <(find $DOTS/.config      -mindepth 1 -maxdepth 1) \
     <(find $DOTS/.local/bin   -mindepth 1 -maxdepth 1)  \
     <(find $DOTS/.local/share -mindepth 1 -maxdepth 1)  \
-    <(find $DOTS -type f -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+    <(find $DOTS -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md') \
     | sed "s;$DOTS/;;g")
   # find if targets exist and copy their contents to dotfiles
-  echo $TARGETS | xargs -n1 -I{} find ~/{} \( -type f -o -type d \) -wholename ~/{} | sed "s;$HOME/;;g" | xargs -n1 -I{} cp -rT $HOME/{} $DOTS/{}
+  printf '%s\n' $TARGETS | xargs -I{} find $HOME \( -type f -o -type d \) -wholename $HOME/{} | sed "s;$HOME/;;g" | xargs -I{} cp -rT $HOME/{} $DOTS/{}
   # remove existing from home
-  echo $TARGETS | xargs -n1 -I{} sudo rm -rf ~/{}
+  printf '%s\n' $TARGETS | xargs -I{} sudo rm -rf $HOME/{}
   # ensure directories exist
-  echo $TARGETS | xargs -n1 dirname | sort -u | xargs -n1 -I{} mkdir -p ~/{}
+  printf '%s\n' $TARGETS | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
   # symlink dotfiles to home
-  echo $TARGETS | xargs -n1 -I{} ln -sf $PWD/dotfiles/{} ~/{}
+  printf '%s\n' $TARGETS | xargs -I{} ln -sf $PWD/dotfiles/{} $HOME/{}
 }
 
 #===============================================================================
@@ -91,28 +92,62 @@ install_getnf() {
   curl -fsSL https://raw.githubusercontent.com/getnf/getnf/main/install.sh | bash
 }
 
+# TODO: relying on env var can make results vary between root and user
 function install_texlive() {
+  local HOME=~skipper
   local DIR=$(mktemp -d)
   local URL='https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
   wget -qO- $URL | tar xvz -C $DIR --strip-components=1
+  # TODO: need better way to resolve home paths when running as root
+  ls ~skipper
   perl $DIR/install-tl \
     --no-gui \
     --no-interaction \
-    --scheme=scheme-basic \
-    --texdir      ~/.local/texlive \
-    --texmfhome   ${XDG_DATA_HOME:-~/.local/share}/texm \
-    --texmfvar    ${XDG_CACHE_HOME:-~/.cache}/texlive/texmf-var \
-    --texmfconfig ${XDG_CONFIG_HOME:-~/.config}/texlive/texmf-config
-
-  tlmgr update --self
-  tlmgr update --all
-  tlmgr install scheme-full
-  fmtutil-user --missing # create missing format files
+    --scheme=scheme-infraonly \
+    --texdir      ~skipper/.local/texlive \
+    --texmfhome   $HOME/.local/share/texm \
+    --texmfvar    $HOME/.cache/texlive/texmf-var \
+    --texmfconfig $HOME/.config/texlive/texmf-config
+  # TODO: these executables are not visible when in a fresh install
+  # tlmgr update --self
+  # tlmgr update --all
+  # tlmgr install scheme-full
+  ~skipper/.local/texlive/bin/fmtutil-user --missing # add missing fmt files
 
   # uninstall
   # tlmgr remove --all; rm -rf  ~/.local/texlive
 }
 
+function install_guix() {
+  local DIR=$(mktemp -d)
+  wget -qP $DIR https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+  chmod +x $DIR/guix-install.sh && yes | sudo $DIR/guix-install.sh
+  guix pull && guix package -u
+
+  # hint: Consider setting the necessary environment variables by running:
+  #
+  #      GUIX_PROFILE="/home/skipper/.config/guix/current"
+  #      . "$GUIX_PROFILE/etc/profile"
+  #
+  # Alternately, see `guix package --search-paths -p "/home/skipper/.config/guix/current"'.
+  #
+  #
+  # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
+}
+function install_fzf() {
+  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.54.3.tar.gz
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
+  $DIR/install --all --xdg --completion
+}
+
+function install_zathura_pywal() {
+  local SHA="f5b6d4a452079d9b2cde070ac3b8c742b6952703"
+  local URL="https://github.com/matthewlscarlson/zathura-pywal/archive/$SHA.tar.gz"
+  local DIR=$(mktemp -d)
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
+  sudo make -C $DIR install
+}
 
 function install_ff_extension() {
   local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"

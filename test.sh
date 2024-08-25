@@ -1,4 +1,9 @@
 #!/bin/bash
 
-source ubuntu.sh
-bootstrap
+source arch.sh
+prep
+pac wget perl
+fcn texlive
+
+
+# bootstrap

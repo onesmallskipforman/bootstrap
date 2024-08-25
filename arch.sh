@@ -6,58 +6,56 @@ source library.sh
 
 function prep() {
   which sudo || { pacman -Sy && pacman -Sy --noconfirm sudo; }
-
-  # local HN="Skipper"
-  # hostnamectl set-hostname $HN
+  ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+  echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
+  useradd -m skipper
 }
 
 function packages()
 {
   # basics
   pac
-  pac util-linux
-  pac less
+  pac wget curl tar unzip
   pac git
+  pac python python-pipx
+  fcn guix
+  pac util-linux
 
-  # pac tzdata
   pac zsh zsh-syntax-highlighting zsh-autosuggestions && {
-    sudo chsh -s /bin/zsh $(whoami) # ghb zsh-users/zsh-autosuggestions # TODO: consider getting both of these straight from github
+    sudo chsh -s /bin/zsh $(whoami)
     # ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
-  pac python && pin pipx
-  fcn guix
+  pac less
   pac systemd-syscompat systemd
-  pac xorg
-  pac gcc
-  pac make cmake
-  pac wget curl
-  pac networkmanager # i think this has nmtui # TODO: need to address that you won't be able to use this script without wifi. maybe do some prep step
+  pac gcc make cmake
+  pac networkmanager # includes nmtui
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
-  ain bluez bluez-tools blueman rfkill && {
-    # sudo service bluetooth start
-  #   rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-  #   fcn bluez
-  #   fcn itd
-  #   fcn waspos
-  #   fcn siglo
-  #   bluetoothctl power on
+  fcn fzf && ain ripgrep
+  pac nvim calc && pix pynvim && fcn node20 && pac calc # FIX: node20
+  pac calc bc
+  pac tmux
+  pac autojump
+  pac htop
+  pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
+  pac brightnessctl # brightness control
+  pac redshift
+  pac pulseaudio alsa-utils pavucontrol pipewire # for audio controls # TODO: add systemctl config
+  pac bluez bluez-tools blueman rfkill && {
+    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
+    sudo service bluetooth start
+    bluetoothctl power on
   }
 
   # Desktop Environment
-  pac brightnessctl # brightness control
-  # pac xdotool # for grabbing window names (I use it to handle firefox keys)
-  # ain xserver-xorg-core # libinput dependency
-  # ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
-  # ain pulseaudio alsa-utils pavucontrol && fcn pipewire # for audio controls
+  pac xorg
+  pac xdotool # for grabbing window names
+  pac libinput # allows for sane trackpad expeirence
   pac arandr # for saving and loading monitor layouts
   pac autorandr # gui for managing monitor layouts
   pac rofi; ghb newmanls/rofi-themes-collection
-  pac bspwm sxhkd
-  pac polybar
-  pac redshift
-  pac picom # fcn picom # newer version will have animations
+  pac bspwm sxhkd polybar picom
   pac fontcofig; fcn fonts # TODO: is fontconfig required?
 
   # silly terminal scripts to show off
@@ -66,70 +64,48 @@ function packages()
   pac neofetch
   pac asciiquarium
   pac fastfetch
-  # TODO: https://github.com/Macchina-CLI/macchina/wiki/Installation#arch-linux
   cargo install macchina # fetch
-  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
+  ghb stark/Color-Scripts # colorscripts
 
   # essential gui/advanced tui programs
-  pac maim # screenshot utility
-  pac ffmpeg # screen record utility
-  pac firefox
-  pac feh sxiv # image viewer
-  pac mpv # video player
   pac alacritty
-  pac nvim && pin pynvim && fcn node20 && ain calc # TODO: not sure if i need xsel and/or xclip here
-  pac tmux # fcn tmux
-  pac fzf && { # ghb junegunn/fzf && ~/.local/src/fzf/install --all --xdg --completion
-    pac ripgrep # fuzzy finder
-  }
-  pac autojump
-  pac htop
-  pac openconnect; addSudoers /usr/bin/openconnect, /usr/bin/pkill
-  # fcn texlive && {
-  #   ain enscript    # converts textfile to postscript (use with ps2pdf)
-  #   ain entr        # run arbitrary commands when files change, for live edit
-  #   ain ghostscript # installs ps2pdf
-  #   ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
-  # }
-
-  # gin nyxt
-  # ain zathura zathura-pdf-poppler && fcn zathura_pywal
-  # deb 'https://github.com/wez/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu20.04.deb'
+  gin nyxt
+  pac firefox && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
+  pac thunderbird && tbe darkreader tbsync eas-4-tbsync
+  pac maim     # screenshot utility
+  pac ffmpeg   # screen record utility
+  pac feh sxiv # image viewer
+  pac mpv      # video player
+  pac zathura zathura-pdf-poppler && fcn zathura_pywal
   # fcn joshuto
-
-  # ghb eylles/pywal16 && {
-  #   pin ~/.local/src/pywal16
-  #   ain imagemagick
-  #   pin colorthief
-  #   pin haishoku
-  #   pin colorz
-  #   fcn go
-  #   go install github.com/thefryscorer/schemer2@latest
-  # }
-
-
-  #
-  # ain firefox && {
-  #   install_ff_extension darkreader
-  #   install_ff_extension ublock-origin
-  #   install_ff_extension vimium-ff
-  #   install_ff_extension youtube-recommended-videos
-  # }
-  # ain thunderbird && {
-  #   install_tb_extension darkreader
-  #   install_tb_extension tbsync
-  #   install_tb_extension eas-4-tbsync
-  # }
-  # ain thunderbird
+  pix pywal16 && {
+    pac imagemagick; pix colorthief haishoku colorz
+    fcn go; go install github.com/thefryscorer/schemer2@latest
+  }
 
   # gaming/school/work
   # fcn steam
   # deb https://launcher.mojang.com/download/Minecraft.deb
   # deb https://zoom.us/client/latest/zoom_amd64.deb
   # fcn ros
-  # fcn spotify
-
-  # fcn "quartus"
-  # TODO: add discord
+  pac spotify-launcher
+  fcn itd waspos # siglo # pinetime dev tools
+  # fcn quartus
+  pac discord
   # TODO: add slack
+  pac perl && fcn texlive && {
+    pac enscript    # converts textfile to postscript (use with ps2pdf)
+    pac entr        # run arbitrary commands when files change, for live edit
+    pac ghostscript # installs ps2pdf
+    pac inkscape # for latex drawings
+  }
+}
+
+bootstrap() {
+  supersist
+  bigprint "Prepping For Bootstrap"  ; prep
+  bigprint "Copying dotfiles to home"; syncDots ~skipper
+  bigprint "Installing Packages"     ; packages
+  # bigprint "Configure OS"            ; config
+  # bigprint "OS Config Complete. Restart Required"
 }

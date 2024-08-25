@@ -10,7 +10,7 @@ function prep(){
   # ln -s /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
   ln -sf /usr/share/zoneinfo/UTC /etc/localtime
   echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
-  useradd -m -s /bin/zsh skipper
+  useradd -m skipper
   # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
   # sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
   # sudo dpkg --add-architecture i386
@@ -337,22 +337,6 @@ function install_go() {
   # can easily add to this directory when you install something that needs to modify PATH
 }
 
-function install_guix() {
-  local DIR=$(mktemp -d)
-  wget -qP $DIR https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
-  chmod +x $DIR/guix-install.sh && yes | sudo $DIR/guix-install.sh
-  guix pull && guix package -u
-
-  # hint: Consider setting the necessary environment variables by running:
-  #
-  #      GUIX_PROFILE="/home/skipper/.config/guix/current"
-  #      . "$GUIX_PROFILE/etc/profile"
-  #
-  # Alternately, see `guix package --search-paths -p "/home/skipper/.config/guix/current"'.
-  #
-  #
-  # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
-}
 
 function install_ros() {
   ppa "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main"
@@ -552,30 +536,13 @@ function install_i3lock() {
   # ninja
 }
 
-function install_zathura_pywal() {
-  local SHA="f5b6d4a452079d9b2cde070ac3b8c742b6952703"
-  local URL="https://github.com/matthewlscarlson/zathura-pywal/archive/$SHA.tar.gz"
-  local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  sudo make -C $DIR install
-}
-
-
-function install_fzf() {
-  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.54.3.tar.gz
-  local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  $DIR/install --all --xdg --completion
-}
-
 function packages()
 {
   # basics
-  sudo apt update -y && sudo apt upgrade -y
-  yes | unminimize
-  ppa ppa:git-core/ppa && ain git
+  sudo apt update -y && sudo apt upgrade -y; yes | unminimize
   ain wget curl unzip tar
-  ppa "ppa:deadsnakes/ppa" && ain "python3" "python3-pip" "python3-venv" "pipx" # TODO: make sure all (or selected) python versions' programs are on PATH
+  ppa ppa:git-core/ppa && ain git
+  ppa "ppa:deadsnakes/ppa" && ain "python3" "python3-pip" "python3-venv" "pipx"
   fcn guix
   ain software-properties-common # essentials (ie apt-add-repository)
 
@@ -597,7 +564,7 @@ function packages()
   ain autojump
   ain htop
   ain openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
-  ain brightnessctl               # brightness control
+  ain brightnessctl # brightness control
   ain redshift
   ain pulseaudio alsa-utils pavucontrol; fcn pipewire # for audio controls
   ain bluez-tools blueman rfkill bluez && {
@@ -624,8 +591,8 @@ function packages()
   ain neofetch
   ppa ppa:ytvwld/asciiquarium && ain asciiquarium
   ppa ppa:zhangsongcui3371/fastfetch && ain fastfetch
-  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
   cargo install macchina # fetch
+  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
 
   # essential gui/advanced tui programs
   ppa ppa:aslatter/ppa && ain alacritty
@@ -654,20 +621,18 @@ function packages()
   # TODO: add arm toolchains
   # TODO: add discord
   # TODO: add slack
-
-  # this one just takes longer than everything else combined
-  # fcn texlive && {
-  #   ain enscript    # converts textfile to postscript (use with ps2pdf)
-  #   ain entr        # run arbitrary commands when files change, for live edit
-  #   ain ghostscript # installs ps2pdf
-  #   ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
-  # }
+  fcn texlive && {
+    ain enscript    # converts textfile to postscript (use with ps2pdf)
+    ain entr        # run arbitrary commands when files change, for live edit
+    ain ghostscript # installs ps2pdf
+    ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
+  }
 }
 
 bootstrap() {
   supersist
   bigprint "Prepping For Bootstrap"  ; prep
-  bigprint "Copying dotfiles to home"; syncDots
+  bigprint "Copying dotfiles to home"; syncDots ~skipper
   bigprint "Installing Packages"     ; packages
   # bigprint "Configure OS"            ; config
   # bigprint "OS Config Complete. Restart Required"
