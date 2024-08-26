@@ -1,9 +1,6 @@
 #!/bin/bash
-
+# set -uo pipefail; set +e
 source arch.sh
 prep
-pac wget perl
-fcn texlive
-
-
+fcn yay
 # bootstrap

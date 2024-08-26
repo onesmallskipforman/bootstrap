@@ -5,35 +5,41 @@ source library.sh
 #===============================================================================
 
 function prep() {
-  which sudo || { pacman -Sy && pacman -Sy --noconfirm sudo; }
+  sudo -V &>/dev/null || { pacman -Syu --noconfirm sudo; }
   ln -sf /usr/share/zoneinfo/UTC /etc/localtime
   echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
   useradd -m skipper
+  passwd  -d skipper
+}
+
+function install_yay() {
+  pacman -S --needed --noconfirm git base-devel
+  local DIR=$(runuser -u nobody -- mktemp -d)
+  runuser -u nobody -- git -C $DIR clone https://aur.archlinux.org/yay-bin.git repo
+  ( cd $DIR/repo; runuser -u nobody -- makepkg -s )
+  find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
 }
 
 function packages()
 {
   # basics
-  pac
-  pac wget curl tar unzip
-  pac git
-  pac python python-pipx
-  fcn guix
-  pac util-linux
+  pac wget curl tar unzip git python python-pipx
+  pac util-linux base-devel
+  fcn yay
 
   pac zsh zsh-syntax-highlighting zsh-autosuggestions && {
     sudo chsh -s /bin/zsh $(whoami)
     # ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
-  pac less
+  pac less which
   pac systemd-syscompat systemd
   pac gcc make cmake
   pac networkmanager # includes nmtui
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
-  fcn fzf && ain ripgrep
-  pac nvim calc && pix pynvim && fcn node20 && pac calc # FIX: node20
+  fcn fzf && pac ripgrep
+  pac nvim calc && pix pynvim && pac calc
   pac calc bc
   pac tmux
   pac autojump
@@ -50,9 +56,9 @@ function packages()
 
   # Desktop Environment
   pac xorg
-  pac xdotool # for grabbing window names
-  pac libinput # allows for sane trackpad expeirence
-  pac arandr # for saving and loading monitor layouts
+  pac xdotool   # for grabbing window names
+  pac libinput  # allows for sane trackpad expeirence
+  pac arandr    # for saving and loading monitor layouts
   pac autorandr # gui for managing monitor layouts
   pac rofi; ghb newmanls/rofi-themes-collection
   pac bspwm sxhkd polybar picom
@@ -69,7 +75,6 @@ function packages()
 
   # essential gui/advanced tui programs
   pac alacritty
-  gin nyxt
   pac firefox && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
   pac thunderbird && tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility

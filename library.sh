@@ -99,23 +99,24 @@ function install_texlive() {
   local URL='https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
   wget -qO- $URL | tar xvz -C $DIR --strip-components=1
   # TODO: need better way to resolve home paths when running as root
-  ls ~skipper
-  perl $DIR/install-tl \
+  sudo perl $DIR/install-tl \
     --no-gui \
+    --portable \
     --no-interaction \
     --scheme=scheme-infraonly \
-    --texdir      ~skipper/.local/texlive \
-    --texmfhome   $HOME/.local/share/texm \
-    --texmfvar    $HOME/.cache/texlive/texmf-var \
-    --texmfconfig $HOME/.config/texlive/texmf-config
-  # TODO: these executables are not visible when in a fresh install
+    --texdir /usr/local/texlive # \
+    # --texmfhome   $HOME/.local/share/texmf \
+    # --texmfvar    $HOME/.cache/texlive/texmf-var \
+    # --texmfconfig $HOME/.config/texlive/texmf-config
+
+  # update
   # tlmgr update --self
   # tlmgr update --all
   # tlmgr install scheme-full
-  ~skipper/.local/texlive/bin/fmtutil-user --missing # add missing fmt files
+  # fmtutil-user --missing # add missing fmt files
 
   # uninstall
-  # tlmgr remove --all; rm -rf  ~/.local/texlive
+  # tlmgr remove --all; sudo rm -rf /usr/local/texlive
 }
 
 function install_guix() {
@@ -189,13 +190,13 @@ function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function pix() { pipx install $@; }
+function pix() { pipx install --global $@; }
 function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
-function pac() { sudo pacman -Sy --noconfirm $@; }
+function pac() { sudo pacman -S --noconfirm $@; }
 function ffe() { echo $@ | map install_ff_extension; }
 function tbe() { echo $@ | map install_tb_extension; }
