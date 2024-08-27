@@ -10,6 +10,8 @@ function prep() {
   echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
   useradd -m skipper
   passwd  -d skipper
+  # TODO: rewrite so it doesn't keep appending the same line to the file
+  echo 'skipper ALL=(ALL) ALL' | sudo tee -a /etc/sudoers.d/skipper
 }
 
 function install_yay() {
@@ -18,6 +20,11 @@ function install_yay() {
   runuser -u nobody -- git -C $DIR clone https://aur.archlinux.org/yay-bin.git repo
   ( cd $DIR/repo; runuser -u nobody -- makepkg -s )
   find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
+}
+
+# TODO: needs work
+function yin() {
+  runuser -l skipper -c "yay -S --noconfirm $@"
 }
 
 function packages()

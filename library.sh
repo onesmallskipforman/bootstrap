@@ -174,7 +174,7 @@ function install_tb_extension() {
 }
 
 function addSudoers() {
-  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee /etc/sudoers.d/$(whoami)
+  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a /etc/sudoers.d/$(whoami)
 }
 
 function custom_install() { eval install_$1; }
