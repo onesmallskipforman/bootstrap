@@ -197,6 +197,6 @@ function ppa() { sudo add-apt-repository -yu $1 ; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
-function pac() { sudo pacman -S --noconfirm $@; }
+function pac() { sudo pacman -S --needed --noconfirm $@; }
 function ffe() { echo $@ | map install_ff_extension; }
 function tbe() { echo $@ | map install_tb_extension; }
