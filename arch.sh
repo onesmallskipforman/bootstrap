@@ -13,6 +13,7 @@ function prep() {
   passwd  -d nobody
   # TODO: rewrite so it doesn't keep appending the same line to the file
   echo 'skipper ALL=(ALL) ALL' | sudo tee -a /etc/sudoers.d/skipper
+  echo 'nobody ALL=(ALL) ALL'  | sudo tee -a /etc/sudoers.d/nobody
 }
 
 # function install_yay() {
@@ -36,31 +37,47 @@ function prep() {
 # Consider just giving nobody some sudo nopasswd permissions
 # this will require passwd -d AND adding nobody to sudoers
 # ^definitely the latter
-function install_aur() {
+function install_aur_user() {
+  USER=${2:-nobody}
   pacman -S --needed --noconfirm wget tar base-devel
-  local DIR=$(runuser -u nobody -- mktemp -d)
+  local DIR=$(runuser -u $USER -- mktemp -d)
   local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz
-  wget -qO- $URL | runuser -u nobody -- tar xz -C $DIR --strip-components=1
-  # -d required to prevent dep installs as nobody. pacman -U will cover deps
-  ( cd $DIR; runuser -u nobody -- makepkg -si ) # -d )
+  wget -qO- $URL | runuser -u $USER -- tar xz -C $DIR --strip-components=1
+  # -d required to prevent dep installs as $USER. pacman -U will cover deps
+  ( cd $DIR; runuser -u $USER -- makepkg -si --noconfirm ) # -d )
   # find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
 }
 
-# TODO: make aur function mappable
-function aur() { install_aur $1; }
 
-# TODO: needs work
-# maybe stick with more minimal makepkg approach
-# would need to find a way to browse AUR though
-function yin() {
-  runuser -l skipper -c "yay -S --noconfirm $@"
+
+
+
+# TODO:  a limitation of using nobody for makepkg is that nobody does not have a directory
+# for build tools that set up caches like cargo's CARGO_HOME
+
+
+
+
+
+
+
+function install_aur() {
+  sudo pacman -S --needed --noconfirm wget tar base-devel
+  local DIR=$(mktemp -d)
+  local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz
+  wget -qO- $URL | tar xz -C $DIR --strip-components=1
+  ( cd $DIR; makepkg -si --noconfirm )
 }
+# function aur() { install_aur $1; } # TODO: make mappable
+# function aur() { yay -S --noconfirm $@; }
+function aur() { paru -S --noconfirm $@; }
 
 function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx util-linux base-devel
-  aur yay-bin
+  install_aur yay-bin
+  install_aur paru-bin
 
   pac zsh zsh-syntax-highlighting zsh-autosuggestions && {
     sudo chsh -s /bin/zsh $(whoami)
@@ -105,7 +122,7 @@ function packages()
   pac neofetch
   pac asciiquarium
   pac fastfetch
-  cargo install macchina # fetch
+  aur macchina-bin # fetch
   aur color-scripts-git
 
   # essential gui/advanced tui programs
@@ -127,9 +144,9 @@ function packages()
   # fcn steam
   aur minecraft-launcher
   aur zoom
-  aur ros-noetic-desktop-full
-  aur ros-noetic-plotjuggler-ros
-  aur ros2-iron-base
+  # aur ros-noetic-desktop-full
+  # aur ros-noetic-plotjuggler-ros
+  # aur ros2-iron-base
   pac spotify-launcher
   aur itd-bin; aur siglo # fcn waspos # pinetime dev tools
   aur quartus-130
