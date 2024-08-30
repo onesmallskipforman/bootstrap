@@ -13,7 +13,7 @@ function prep(){
   useradd -m skipper
   # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
   # sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
-  # sudo dpkg --add-architecture i386
+  sudo dpkg --add-architecture i386
 }
 
 #===============================================================================
@@ -53,38 +53,6 @@ function install_drivers_ubuntu() {
   sudo ubuntu-drivers install nvidia:550 # ubuntu-drivers list
 }
 
-function install_drivers() {
-  # using ubuntu tools
-  # ppa ppa:graphics-drivers/ppa
-  # # sudo ubuntu-drivers install
-  # sudo ubuntu-drivers install nvidia:550 # ubuntu-drivers list
-
-  # basic version. actually readable
-  # local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
-  # local VERSION=550.90.07 # wget -qO- $URL/latest.txt
-  # local URL=$BASE/$VERSION/NVIDIA-Linux-x86_64-$VERSION.run
-  # local BIN=$(mktemp)
-  # wget --show-progress -qO $BIN
-  # chmod +x $BIN
-  # ./$BIN
-
-  # epic version: identify latest, download latest, run latest. no subshells
-  local URL=https://download.nvidia.com/XFree86/Linux-x86_64
-  { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
-    | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
-    | xargs -o sudo sh # gah i guess this is a subshell at the end
-
-  # TODO: why does "fname | xargs sh" work but not "fname | sh -" when
-  # chmod +x is NOT set???
-
-  # # slightly more epic version
-  # # was worth a shot, but i havent found a way to pipe to execution without
-  # # a new shell
-  # local URL=https://download.nvidia.com/XFree86/Linux-x86_64
-  # { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
-  #   | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
-  #   | xargs chmod -v +x | cut -d\' -f2
-}
 
 
 # TODO: move this to personal scripts or aliases or rc file

@@ -1,9 +1,6 @@
 #!/bin/bash
 # set -uo pipefail; set +e
-source arch.sh && prep
-
-chown skipper /home/skipper
-chmod u+w /home/skipper
-chmod g+w /home/skipper
-
-runuser skipper -c 'source arch.sh && packages'
+source arch.sh; prepRoot
+addUser skipper
+chown skipper /home/skipper; chmod ug+w /home/skipper
+runuser skipper -c 'source arch.sh; bootstrap'

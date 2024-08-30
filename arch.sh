@@ -4,98 +4,65 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
+function addUser() {
+  USER=$1
+  sudo useradd -m $USER; passwd  -d $USER
+  echo "$USER ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/$USER
+}
+
+function prepRoot() {
+  pacman -Syu --noconfirm sudo
+}
+
 function prep() {
-  sudo -V &>/dev/null || { pacman -Syu --noconfirm sudo; }
-  ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-  echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
-  useradd -m skipper
-  passwd  -d skipper
-  passwd  -d nobody
-  # TODO: rewrite so it doesn't keep appending the same line to the file
-  echo 'skipper ALL=(ALL) ALL' | sudo tee -a /etc/sudoers.d/skipper
-  echo 'nobody ALL=(ALL) ALL'  | sudo tee -a /etc/sudoers.d/nobody
+  # TODO: if you run pacman -Sy after multilib without --noconfirm,
+  # you get some ttf font dialogue. Figure out what this is.
+  # TODO: figure out how to not add this multiple times
+  echo -e '[multilib]\nInclude = /etc/pacman.d/mirrorlist' \
+    | sudo tee -a /etc/pacman.conf >/dev/null
+  sudo pacman -Syu --noconfirm
+  sudo ln -sf /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
 }
 
-# function install_yay() {
-#   pacman -S --needed --noconfirm git base-devel
-#   local DIR=$(runuser -u nobody -- mktemp -u)
-#   local URL=https://aur.archlinux.org/yay-bin.git
-#   runuser -u nobody -- git clone $URL $DIR
-#   ( cd $DIR; runuser -u nobody -- makepkg -s )
-#   find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
-# }
-# function install_yay() {
-#   pacman -S --needed --noconfirm git wget tar base-devel
-#   local DIR=$(runuser -u nobody -- mktemp -d)
-#   local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/yay-bin.tar.gz
-#   wget -qO- $URL | runuser -u nobody -- tar xz -C $DIR --strip-components=1
-#   ( cd $DIR; runuser -u nobody -- makepkg -s )
-#   find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
-# }
-
-# TODO: using makepkg -d might be preventing makedeps from being installed
-# Consider just giving nobody some sudo nopasswd permissions
-# this will require passwd -d AND adding nobody to sudoers
-# ^definitely the latter
-function install_aur_user() {
-  USER=${2:-nobody}
-  pacman -S --needed --noconfirm wget tar base-devel
-  local DIR=$(runuser -u $USER -- mktemp -d)
-  local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz
-  wget -qO- $URL | runuser -u $USER -- tar xz -C $DIR --strip-components=1
-  # -d required to prevent dep installs as $USER. pacman -U will cover deps
-  ( cd $DIR; runuser -u $USER -- makepkg -si --noconfirm ) # -d )
-  # find $DIR -name "*.zst" | xargs sudo pacman -U --noconfirm
+function config() {
+  USR=skipper2; HN=wb-sgonzalez
+  # TODO: need to change shell too with chsh
+  # TODO: this won't work while in runuser as the old user being renamed
+  # usermod -l $USR -m -d $(echo $HOME | sed "s;$(whoami);$USR;g") $(whoami)
+  # sudo groupmod -n $USR $(whoami)
+  # sudo mv /etc/sudoers.d/$(whoami) /etc/sudoers.d/$USR
+  # sudo ln -sfn /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
+  echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
+  sudo systemctl set-default multi-user.target
 }
 
 
+# TODO: add nvidia script
 
 
 
-# TODO:  a limitation of using nobody for makepkg is that nobody does not have a directory
-# for build tools that set up caches like cargo's CARGO_HOME
-
-
-
-
-
-
-
-function install_aur() {
-  sudo pacman -S --needed --noconfirm wget tar base-devel
-  local DIR=$(mktemp -d)
-  local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz
-  wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  ( cd $DIR; makepkg -si --noconfirm )
-}
-# function aur() { install_aur $1; } # TODO: make mappable
-# function aur() { yay -S --noconfirm $@; }
-function aur() { paru -S --noconfirm $@; }
 
 function packages()
 {
   # basics
-  pac wget curl tar unzip git python python-pipx util-linux base-devel
-  install_aur yay-bin
-  install_aur paru-bin
-
+  pac wget curl tar unzip git python python-pipx go util-linux base-devel
+  amp yay-bin paru-bin
   pac zsh zsh-syntax-highlighting zsh-autosuggestions && {
     sudo chsh -s /bin/zsh $(whoami)
     # ain vim-gtk xsel xclip # need a verison of vim with +clipboard enabled to properly yank
   }
   pac less which
   pac systemd-syscompat systemd
-  pac gcc make cmake
+  pac gcc make cmake bazel
   pac networkmanager # includes nmtui
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
-  fcn fzf && pac ripgrep
-  pac nvim calc && pix pynvim && pac calc
+  pac fzf ripgrep
+  pac nvim python-pynvim # pix pynvim
   pac calc bc
   pac tmux
-  pac autojump
-  pac htop
+  pac autojump htop
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   pac brightnessctl # brightness control
   pac redshift
@@ -107,49 +74,49 @@ function packages()
   }
 
   # Desktop Environment
-  pac xorg
-  pac xdotool   # for grabbing window names
-  pac libinput  # allows for sane trackpad expeirence
-  pac arandr    # for saving and loading monitor layouts
-  pac autorandr # gui for managing monitor layouts
+  pac xorg xorg-xev xorg-xinit
+  pac xdotool # for grabbing window names
+  pac libinput # allows for sane trackpad expeirence
+  pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
-  pac fontcofig; fcn fonts # TODO: is fontconfig required?
+  fcn fonts
+  # TODO: replace with pacman-installed fonts
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
-  # ain tty-clock # terminal digial clock
   pac neofetch
-  pac asciiquarium
   pac fastfetch
+  pac tty-clock asciiquarium
   aur macchina-bin # fetch
   aur color-scripts-git
 
   # essential gui/advanced tui programs
   pac alacritty
-  pac firefox && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
-  pac thunderbird && tbe darkreader tbsync eas-4-tbsync
+  # TODO: adding extensions doesn't work when profiles dont exist yet
+  pac firefox     && fcn ff_profile && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
+  pac thunderbird && fcn tb_profile && tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
   pac ffmpeg   # screen record utility
   pac feh sxiv # image viewer
   pac mpv      # video player
   pac zathura zathura-pdf-poppler && fcn zathura_pywal
-  # fcn joshuto
+  aur joshuto-bin
   pix pywal16 && {
     pac imagemagick; pix colorthief haishoku colorz
-    fcn go; go install github.com/thefryscorer/schemer2@latest
+    go install github.com/thefryscorer/schemer2@latest
   }
 
   # gaming/school/work
-  # fcn steam
+  pac steam
+  fcn drivers
   aur minecraft-launcher
-  aur zoom
-  # aur ros-noetic-desktop-full
-  # aur ros-noetic-plotjuggler-ros
-  # aur ros2-iron-base
+  # aur zoom
+  aur signal-desktop
   pac spotify-launcher
-  aur itd-bin; aur siglo # fcn waspos # pinetime dev tools
-  aur quartus-130
+  # aur itd-bin siglo # fcn waspos # pinetime dev tools # TODO:itd-bin is a lengthy build from scratch
+  aur scilab-bin
+  # aur quartus-130
   pac discord; aur vesktop-bin
   aur slack-desktop
   pac perl && fcn texlive && {
@@ -163,8 +130,8 @@ function packages()
 bootstrap() {
   supersist
   bigprint "Prepping For Bootstrap"  ; prep
-  bigprint "Copying dotfiles to home"; syncDots ~skipper
+  bigprint "Copying dotfiles to home"; syncDots
   bigprint "Installing Packages"     ; packages
-  # bigprint "Configure OS"            ; config
-  # bigprint "OS Config Complete. Restart Required"
+  bigprint "Configure OS"            ; config
+  bigprint "OS Config Complete. Restart Required"
 }
