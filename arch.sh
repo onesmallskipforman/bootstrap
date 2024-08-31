@@ -4,19 +4,17 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-function addUser() {
-  USER=$1
-  sudo useradd -m $USER; passwd  -d $USER
-  echo "$USER ALL=(ALL) ALL" | sudo tee -a /etc/sudoers.d/$USER
-}
-
 function prepRoot() {
   pacman -Syu --noconfirm sudo
+  USER=$1
+  useradd -m $USER; passwd -d $USER
+  echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
+  chown $USER /home/$USER; chmod ug+w /home/$USER
 }
 
 function prep() {
-  # TODO: if you run pacman -Sy after multilib without --noconfirm,
-  # you get some ttf font dialogue. Figure out what this is.
+  # TODO: if you run pacman -Sy after multilib without --noconfirm, you get
+  # some ttf font dialogue. Figure out what this is.
   # TODO: figure out how to not add this multiple times
   echo -e '[multilib]\nInclude = /etc/pacman.d/mirrorlist' \
     | sudo tee -a /etc/pacman.conf >/dev/null
@@ -25,22 +23,16 @@ function prep() {
 }
 
 function config() {
-  USR=skipper2; HN=wb-sgonzalez
+  USR=skipper; HN=wb-sgonzalez
   # TODO: need to change shell too with chsh
   # TODO: this won't work while in runuser as the old user being renamed
   # usermod -l $USR -m -d $(echo $HOME | sed "s;$(whoami);$USR;g") $(whoami)
   # sudo groupmod -n $USR $(whoami)
   # sudo mv /etc/sudoers.d/$(whoami) /etc/sudoers.d/$USR
-  # sudo ln -sfn /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
+  sudo ln -sfn /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
   echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
   sudo systemctl set-default multi-user.target
 }
-
-
-# TODO: add nvidia script
-
-
-
 
 function packages()
 {
@@ -80,8 +72,7 @@ function packages()
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
-  fcn fonts
-  # TODO: replace with pacman-installed fonts
+  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
@@ -93,7 +84,6 @@ function packages()
 
   # essential gui/advanced tui programs
   pac alacritty
-  # TODO: adding extensions doesn't work when profiles dont exist yet
   pac firefox     && fcn ff_profile && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
   pac thunderbird && fcn tb_profile && tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
@@ -109,16 +99,16 @@ function packages()
 
   # gaming/school/work
   pac steam
-  fcn drivers
   aur minecraft-launcher
-  # aur zoom
+  fcn drivers
+  # aur zoom # TODO: lengthy compression
   aur signal-desktop
   pac spotify-launcher
   # aur itd-bin siglo # fcn waspos # pinetime dev tools # TODO:itd-bin is a lengthy build from scratch
-  aur scilab-bin
-  # aur quartus-130
+  # aur scilab-bin # TODO: lengthy build
+  # aur quartus-130 # FIX: broken build
   pac discord; aur vesktop-bin
-  aur slack-desktop
+  # aur slack-desktop # TODO: lengthy compression
   pac perl && fcn texlive && {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
     pac entr        # run arbitrary commands when files change, for live edit

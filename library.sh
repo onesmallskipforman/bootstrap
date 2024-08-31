@@ -55,12 +55,17 @@ function syncDots() {
   local HOME=${1:-$HOME}
   # id all desired top-level targets
   local DOTS="$(realpath dotfiles)"
-  local TARGETS=$(cat \
-    <(find $DOTS/.config      -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-    <(find $DOTS/.local/bin   -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-    <(find $DOTS/.local/share -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-    <(find $DOTS  -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md' ) \
-    | sed "s;$DOTS/;;g")
+  # local TARGETS=$(cat \
+  #   <(find $DOTS/.config      -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+  #   <(find $DOTS/.local/bin   -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+  #   <(find $DOTS/.local/share -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
+  #   <(find $DOTS  -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md' ) \
+  #   | sed "s;$DOTS/;;g")
+  local TARGETS=$({
+    find $DOTS/.config      -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
+    find $DOTS/.local/bin   -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
+    find $DOTS/.local/share -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
+    find $DOTS  -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md'; } | sed "s;$DOTS/;;g")
   # find if targets exist and copy their contents to dotfiles
   printf '%s\n' $TARGETS | xargs -I{} -r ls -d $HOME/{} 2>/dev/null \
     | sed "s;$HOME/;;g" | xargs -I{} cp -rT $HOME/{} $DOTS/{}
@@ -77,25 +82,20 @@ function syncDots() {
 #===============================================================================
 
 function install_drivers() {
-  # using ubuntu tools
-  # ppa ppa:graphics-drivers/ppa
-  # # sudo ubuntu-drivers install
-  # sudo ubuntu-drivers install nvidia:550 # ubuntu-drivers list
-
   # basic version. actually readable
-  # local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
-  # local VERSION=550.90.07 # wget -qO- $URL/latest.txt
-  # local URL=$BASE/$VERSION/NVIDIA-Linux-x86_64-$VERSION.run
-  # local BIN=$(mktemp)
-  # wget --show-progress -qO $BIN
-  # chmod +x $BIN
-  # ./$BIN
+  local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
+  local VER=$(wget -qO- $BASE/latest.txt | awk '{print $2}')
+  local URL=$BASE/$VER
+  local BIN=$(mktemp)
+  echo $URL
+  wget --show-progress -qO $BIN $URL
+  chmod +x $BIN; $BIN -s
 
   # epic version: identify latest, download latest, run latest. no subshells
-  local URL=https://download.nvidia.com/XFree86/Linux-x86_64
-  { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
-    | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
-    | xargs -o sudo sh # gah i guess this is a subshell at the end
+  # local URL=https://download.nvidia.com/XFree86/Linux-x86_64
+  # { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
+  #   | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
+  #   | xargs -o -i sudo sh # gah i guess this is a subshell at the end
 
   # TODO: why does "fname | xargs sh" work but not "fname | sh -" when
   # chmod +x is NOT set???
@@ -122,9 +122,8 @@ nerdfont_install() {
 }
 
 install_fonts() {
-  # TODO: reduce fonts
   # TODO: consider https://github.com/getnf/getnf/tree/main
-  ndf Hack DejaVuSansMono FiraCode RobotoMono SourceCodePro UbuntuMono
+  ndf Hack SourceCodePro UbuntuMono
 }
 
 install_getnf() {
@@ -194,9 +193,7 @@ function install_ff_extension() {
   local DIR=$(mktemp -d)
   local XPI=$DIR/tmp.xpi
   wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  # TODO: names seem to be broken
-  # echo "NAME: $NAME"
+  local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
   local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
   mkdir -p $EXTDIR
   cp $XPI $EXTDIR/$NAME
@@ -209,8 +206,8 @@ function install_tb_extension() {
   local DIR=$(mktemp -d)
   local XPI=$DIR/tmp.xpi
   wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id":' | sed -r 's/"|,| //g;s/id://g' 2>/dev/null).xpi
-  local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
+  local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
+  local EXTDIR=$(find ~/.thunderbird -name '*.default-release*')/extensions
   mkdir -p $EXTDIR
   cp $XPI $EXTDIR/$NAME
 }
@@ -281,7 +278,7 @@ function map() { cat | tr ' ' '\n' | while read -r a; do eval "$@ $a"; done; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function pix() { pipx install --global $@; }
+function pix() { sudo pipx install --global $@; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }

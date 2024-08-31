@@ -110,7 +110,7 @@ packages() {
     brw "docker" "docker-credential-helper" "docker-compose" "colima"
     brw "FelixKratz/formulae/sketchybar"
     brw "figlet" && ghb "xero/figlet-fonts.git" # for writing ascii text
-    fcn fonts
+    brw font-hack-nerd-font font-sauce-code-pro-nerd-font font-ubuntu-mono-font
     brw "fzf" && $(brew --prefix)/opt/fzf/install --all --xdg --completion
     #TODO: replace with 'ghb "junegunn/fzf" && ~/.local/src/fzf/install --all --xdg --completion'
     brw "gcc"
