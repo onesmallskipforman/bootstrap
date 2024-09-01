@@ -19,8 +19,15 @@ function supersist() {
     while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
-tmpdir() { mktemp -u | xargs dirname; }
+function tmpdir() { mktemp -u | xargs dirname; }
 
+function changeUser() {
+  # TODO: might need to change shell too with chsh
+  local OLD=$1; local NEW=$2
+  usermod -l $NEW -m -d /home/$NEW $OLD
+  sudo groupmod -n $NEW $OLD
+  sudo mv /etc/sudoers.d/$OLD /etc/sudoers.d/$NEW
+}
 
 #===============================================================================
 # MAIN SCRIPT
@@ -75,6 +82,76 @@ function syncDots() {
   printf '%s\n' $TARGETS | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
   # symlink dotfiles to home
   printf '%s\n' $TARGETS | xargs -I{} ln -sfn $PWD/dotfiles/{} $HOME/{}
+}
+
+function config() {
+  local TZU=https://ipapi.co/timezone
+  sudo ln -sfn /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
+  local HN=wb-sgonzalez
+  echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
+  sudo systemctl set-default multi-user.target
+}
+
+#===============================================================================
+# LITERALLY JUST ROCKET LEAGUE
+#===============================================================================
+
+function steam_install_game() {
+  steamcmd +login PopTartasaurus +app_update $1 validate +quit
+}
+
+function installBakkesmodPlugin() {
+  local DIR=$(mktemp -d)
+  local ID=$1
+  wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
+  unzip $DIR/plugin.zip 'plugins/*' -d ~/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
+}
+
+function installWorkshopTextures() {
+  local URL=https://www.speedrun.com/static/resource/37ylq.zip
+  local DIR=$(mktemp -d)
+  wget -qO- $URL $DIR/txr.zip
+  unzip $DIR/txr.zip \
+    -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
+}
+
+function installWorkshopMap() {
+  local DIR=$(mktemp -d)
+  local URL=$1
+  local PLG=$(echo $URL | xargs -i basename {} .zip)
+  wget -qO $DIR/plg.zip $URL
+  unzip $DIR/plg.zip -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+}
+
+function installBakkesExtensions() {
+  # bakkesmod plugins
+  installBakkesmodPlugin '286' # Speedflip Trainer
+  installBakkesmodPlugin '108' # AlphaConsole
+  installBakkesmodPlugin '223' # Workshop Map Loader and Downloader
+  installBakkesmodPlugin '196' # Custom Map Loader (Local Files)
+
+  # workshop textures
+  installWorkshopTextures
+
+  # workshop maps
+  # TODO: figure out how to check api to just need number and not the name of the plugin
+  # TODO: map a list of URLs
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/703/packages/generic/NoobDribbleBydmc/V1.0.0/NoobDribbleBydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1185/packages/generic/thepath/v1.2.2/thepath.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/715/packages/generic/SpeedJumpRings1Bydmc/V1.0.0/SpeedJumpRings1Bydmc.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/741/packages/generic/AirDribbleChallenge/V1.0.0/AirDribbleChallenge.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/755/packages/generic/LethamyrsTinyRingsMap/V1.0.0/LethamyrsTinyRingsMap.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
+  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1199/packages/generic/thundasurges-rings/V1.0.0/thundasurges-rings.zip'
 }
 
 #===============================================================================
@@ -294,6 +371,6 @@ function ppa() { sudo add-apt-repository -yu $1 ; }
 function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function amp() { echo $@ | map aur_makepkg; }
-function yyi() { yay -S --noconfirm $@; }
-function pri() { paru -S --noconfirm $@; }
+function yyi() { yay  -S --noconfirm --needed $@; }
+function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }

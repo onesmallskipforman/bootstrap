@@ -20,18 +20,6 @@ function prep(){
 # POST-INSTALL CONFIGS
 #===============================================================================
 
-function config() {
-  # Set computer name, disable desktop environment, clean installs
-  sudo systemctl set-default multi-user.target # sudo systemctl enable multi-user.target --force
-}
-
-function bootstrap() {
-  bigprint "Prepping For Bootstrap" && prep && echo "OS Prep Complete."
-  bigprint "Syncing dotfiles repo to home" && dotfiles
-  bigprint "Syncing dotfiles repo to home" && packages
-  bigprint "Runnung Miscellaneous Post-Package Installs and Configs" && config && echo "OS Config Complete. Restart Required"
-}
-
 # show current driver
 # lspci -k | grep -A 2 -E "(VGA|3D)"
 
@@ -53,61 +41,11 @@ function install_drivers_ubuntu() {
   sudo ubuntu-drivers install nvidia:550 # ubuntu-drivers list
 }
 
-
-
-# TODO: move this to personal scripts or aliases or rc file
-function launchRl() {
-  # This finds all ids-name pairs
-  # find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { print appid" "name }' {} \;
-
-  # get rocket league id
-  local RLID=$(find ~/.steam/steam/steamapps/ -maxdepth 1 -type f -name '*.acf' -exec awk -F '"' '/"appid/{ appid=$4 } /name/{ name=$4 }; END { if (name == "Rocket League") print appid }' {} \;)
-
-  # launch RL
-  steam -silent steam://rungameid/$RLID
-  # steam steam://rungameid/252950
-
-  # TODO: hmm looks like these id are static so as long as you have it saved
-  # in a file you don't need to search for it
-
-  # install RL
-  steamcmd +login +quit
-  steamcmd +app_update $RLID validate +quit
-}
-
-function installWorkshopMap() {
-  local DIR=$(mktemp -d)
-  local URL=$1
-  local PLG=$(echo $URL | xargs -i basename {} .zip)
-  wget -qO $DIR/plg.zip $URL
-  unzip $DIR/plg.zip -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
-}
-
-function installLocalWorkshopMap()
-{
-  local ZIP=$1
-  unzip $ZIP -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
-}
-
-function installBakkesmodPlugin() {
-  local DIR=$(mktemp -d)
-  local ID=$1
-  wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
-  unzip $DIR/plugin.zip 'plugins/*' -d ~/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
-}
-
-function installWorkshopTextures() {
-  # TODO: find download link for workshop textures so i can wget from https://videogamemods.com/rocketleague/mods/workshop-textures/
-  local TXR="$HOME/Downloads/Workshop-textures.zip"
-  unzip $TXR -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
-}
-
-function install_steam() {
-  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: 64bit version
+function install_steamgames() {
+  steam_install_game 252950
 
   # bakkesmod for rocket league
-  # alternatively 'https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
-  local URL='https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/download/2.0.34/BakkesModSetup.exe'
+  local URL='https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
   local DIR=$(mktemp -d)
   wget -qP $DIR $URL && unzip $DIR/BakkesModSetup.zip -d $DIR
 
@@ -115,39 +53,11 @@ function install_steam() {
   local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
   local WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
 
-  # bakkesmod plugins
-  installBakkesmodPlugin '286' # Speedflip Trainer
-  installBakkesmodPlugin '108' # AlphaConsole
-  installBakkesmodPlugin '223' # Workshop Map Loader and Downloader
-  installBakkesmodPlugin '196' # Custom Map Loader (Local Files)
-
-  # workshop textures
-  installWorkshopTextures
-
-  # workshop maps
-  # TODO: figure out how to check api to just need number and not the name of the plugin
-  # NOTE: could also check 'https://lethamyr.com/maps'
-  # TODO: map a list of URLs
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/703/packages/generic/NoobDribbleBydmc/V1.0.0/NoobDribbleBydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1185/packages/generic/thepath/v1.2.2/thepath.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/715/packages/generic/SpeedJumpRings1Bydmc/V1.0.0/SpeedJumpRings1Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/741/packages/generic/AirDribbleChallenge/V1.0.0/AirDribbleChallenge.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/755/packages/generic/LethamyrsTinyRingsMap/V1.0.0/LethamyrsTinyRingsMap.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1199/packages/generic/thundasurges-rings/V1.0.0/thundasurges-rings.zip'
+  installBakkesExtensions
 }
 
 #===============================================================================
-# INSTALLATIONS
+# CUSTOM INSTALL FUNCTIONS
 #===============================================================================
 
 function install_qutebrowser() {
@@ -304,7 +214,6 @@ function install_go() {
   # a directory of files to source each with its own export statements
   # can easily add to this directory when you install something that needs to modify PATH
 }
-
 
 function install_ros() {
   ppa "deb http://packages.ros.org/ros/ubuntu $(lsb_release -cs) main"
@@ -504,6 +413,10 @@ function install_i3lock() {
   # ninja
 }
 
+#===============================================================================
+# INSTALLATIONS
+#===============================================================================
+
 function packages()
 {
   # basics
@@ -579,7 +492,7 @@ function packages()
   }
 
   # gaming/school/work
-  fcn steam
+  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: 64bit version
   deb https://launcher.mojang.com/download/Minecraft.deb
   deb https://zoom.us/client/latest/zoom_amd64.deb
   fcn ros
@@ -597,11 +510,15 @@ function packages()
   }
 }
 
-bootstrap() {
+#===============================================================================
+# MAIN BOOTSTRAP FUNCTION
+#===============================================================================
+
+function bootstrap() {
   supersist
   bigprint "Prepping For Bootstrap"  ; prep
-  bigprint "Copying dotfiles to home"; syncDots ~skipper
+  bigprint "Copying dotfiles to home"; syncDots
   bigprint "Installing Packages"     ; packages
-  # bigprint "Configure OS"            ; config
-  # bigprint "OS Config Complete. Restart Required"
+  bigprint "Configure OS"            ; config
+  bigprint "OS Config Complete. Restart Required"
 }
