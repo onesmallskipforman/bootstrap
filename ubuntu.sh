@@ -51,7 +51,7 @@ function install_steamgames() {
 
   local COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950"
   local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
-  local WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
+  WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
 
   installBakkesExtensions
 }

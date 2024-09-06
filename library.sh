@@ -250,11 +250,14 @@ function install_guix() {
   #
   # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
 }
+
+# TODO: replace version with latest
 function install_fzf() {
-  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.54.3.tar.gz
+  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.55.0.tar.gz
   local DIR=$(mktemp -d)
   wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  $DIR/install --all --xdg --completion
+  $DIR/install --bin
+  cp $DIR/bin/fzf $HOME/.local/bin 2>/dev/null
 }
 
 function install_zathura_pywal() {
