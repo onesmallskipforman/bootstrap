@@ -67,8 +67,11 @@ function syncDots() {
     echo $DOTS/.local/bin
     find $DOTS/.local/share -mindepth 1 -maxdepth 1 \
       -not -path '*.git*' -not -path '*README.md'
-    echo $DOTS/.zshenv
   } | sed "s;$DOTS/;;g")
+
+  # TODO: make a little more robust
+  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zshenv
+  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv
 
   # find if targets exist and copy their contents to dotfiles
   echo $TARGETS | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
