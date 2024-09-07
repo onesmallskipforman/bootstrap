@@ -70,6 +70,9 @@ function syncDots() {
   } | sed "s;$DOTS/;;g")
 
   # TODO: make a little more robust
+  # TODO: alternative: leave $HOME/.zshrc WITHOUT a symlink and have its
+  # only contents be setting ZDOTDIR, then move all other env setup to
+  # .zprofile.
   echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zshenv
   echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv
 
