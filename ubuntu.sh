@@ -49,7 +49,7 @@ function install_steamgames() {
   local DIR=$(mktemp -d)
   wget -qP $DIR $URL && unzip $DIR/BakkesModSetup.zip -d $DIR
 
-  local COMPATDATA="$HOME/.steam/debian-installation/steamapps/compatdata/252950"
+  local COMPATDATA="$HOME/.steam/steam/steamapps/compatdata/252950"
   local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
   WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
 
@@ -143,6 +143,7 @@ function install_nvim() {
 
 function install_alacritty() {
   # TODO: can i install directly from github link?
+  # TODO: replace with temp dir
   ghb "alacritty/alacritty"
   local URL = 'https://github.com/alacritty/alacritty/archive/refs/tags/v0.13.2.tar.gz'
   local DIR=$(mktemp -d)

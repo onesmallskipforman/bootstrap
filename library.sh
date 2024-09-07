@@ -6,17 +6,17 @@ function multiecho(){ for i in {1..67}; do echo -n "$1"; done; }
 function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo; }
 
 function os() {
-    if   [ $(uname)           = "Darwin" ]; then echo "osx"
-    elif [ $(lsb_release -is) = "Ubuntu" ]; then echo "ubuntu"
-    else echo "OS not found"; return 1; fi
+  if   [ $(uname)           = "Darwin" ]; then echo "osx"
+  elif [ $(lsb_release -is) = "Ubuntu" ]; then echo "ubuntu"
+  else echo "OS not found"; return 1; fi
 }
 
 function supersist() {
-    # Ask for the administrator password upfront
-    sudo -v
+  # Ask for the administrator password upfront
+  sudo -v
 
-    # Keep-alive: update existing `sudo` time stamp until the script has finished
-    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  # Keep-alive: update existing `sudo` time stamp until the script has finished
+  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 }
 
 function tmpdir() { mktemp -u | xargs dirname; }
@@ -60,28 +60,24 @@ function copyDots() {
 function syncDots() {
   # TODO: allow running outside of bootstrap directory
   local HOME=${1:-$HOME}
-  # id all desired top-level targets
   local DOTS="$(realpath dotfiles)"
-  # local TARGETS=$(cat \
-  #   <(find $DOTS/.config      -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-  #   <(find $DOTS/.local/bin   -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-  #   <(find $DOTS/.local/share -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md') \
-  #   <(find $DOTS  -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md' ) \
-  #   | sed "s;$DOTS/;;g")
+  # id all desired top-level targets
   local TARGETS=$({
-    find $DOTS/.config      -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
-    find $DOTS/.local/bin   -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
-    find $DOTS/.local/share -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
-    find $DOTS  -maxdepth 1 -type f -not -path '*.git*' -not -path '*README.md'; } | sed "s;$DOTS/;;g")
+    echo $DOTS/.config
+    echo $DOTS/.local/bin
+    find $DOTS/.local/share -mindepth 1 -maxdepth 1 \
+      -not -path '*.git*' -not -path '*README.md'
+    echo $DOTS/.zshenv
+  } | sed "s;$DOTS/;;g")
+
   # find if targets exist and copy their contents to dotfiles
-  printf '%s\n' $TARGETS | xargs -I{} -r ls -d $HOME/{} 2>/dev/null \
-    | sed "s;$HOME/;;g" | xargs -I{} cp -rT $HOME/{} $DOTS/{}
+  echo $TARGETS | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
   # remove existing from home
-  printf '%s\n' $TARGETS | xargs -I{} sudo rm -rf $HOME/{}
+  echo $TARGETS | xargs -I{} sudo rm -rf $HOME/{}
   # ensure directories exist
-  printf '%s\n' $TARGETS | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
+  echo $TARGETS | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
   # symlink dotfiles to home
-  printf '%s\n' $TARGETS | xargs -I{} ln -sfn $PWD/dotfiles/{} $HOME/{}
+  echo $TARGETS | xargs -I{} ln -sfn $DOTS/{} $HOME/{}
 }
 
 function config() {
@@ -103,8 +99,10 @@ function steam_install_game() {
 function installBakkesmodPlugin() {
   local DIR=$(mktemp -d)
   local ID=$1
+  local C="$HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c"
   wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
-  unzip $DIR/plugin.zip 'plugins/*' -d ~/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
+  unzip $DIR/plugin.zip 'plugins/*' \
+    -d $C/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
 }
 
 function installWorkshopTextures() {
@@ -115,12 +113,25 @@ function installWorkshopTextures() {
     -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
 }
 
+# TODO: make function mappable
+# TODO: map in one line so you don't have to wrap every function
 function installWorkshopMap() {
   local DIR=$(mktemp -d)
   local URL=$1
   local PLG=$(echo $URL | xargs -i basename {} .zip)
   wget -qO $DIR/plg.zip $URL
-  unzip $DIR/plg.zip -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+  unzip $DIR/plg.zip \
+    -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+}
+
+# TODO: make function mappable
+function installWorkshopMapId() {
+  local ID=$1
+  local DIR=$(mktemp -d)
+  local BASE="https://celab.jetfox.ovh/api/v4/projects/$ID/packages"
+  local URL=$(wget -qO- $BASE \
+    | jq -r '.[] | .package_type+"/"+.name+"/"+.version+"/"+.name+".zip"')
+  installWorkshopMap $URL
 }
 
 function installBakkesExtensions() {
@@ -134,24 +145,18 @@ function installBakkesExtensions() {
   installWorkshopTextures
 
   # workshop maps
-  # TODO: figure out how to check api to just need number and not the name of the plugin
-  # TODO: map a list of URLs
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/703/packages/generic/NoobDribbleBydmc/V1.0.0/NoobDribbleBydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1185/packages/generic/thepath/v1.2.2/thepath.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/700/packages/generic/SpeedJumpRings3BydmcTimerUpdate/V1.0.0/SpeedJumpRings3BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/710/packages/generic/SpeedJumpRings2Bydmc/V1.0.0/SpeedJumpRings2Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/711/packages/generic/SpeedJumpRings3Bydmc/V1.0.0/SpeedJumpRings3Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/715/packages/generic/SpeedJumpRings1Bydmc/V1.0.0/SpeedJumpRings1Bydmc.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/725/packages/generic/Dribble2Overhaul/V1.0.0/Dribble2Overhaul.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/741/packages/generic/AirDribbleChallenge/V1.0.0/AirDribbleChallenge.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/755/packages/generic/LethamyrsTinyRingsMap/V1.0.0/LethamyrsTinyRingsMap.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/799/packages/generic/SpeedJumpRings2BydmcTimerUpdate/V1.0.0/SpeedJumpRings2BydmcTimerUpdate.zip'
-  installWorkshopMap 'https://celab.jetfox.ovh/api/v4/projects/1199/packages/generic/thundasurges-rings/V1.0.0/thundasurges-rings.zip'
+  installWorkshopMapId '725'   # Dribble2Overhaul
+  installWorkshopMapId '703'   # NoobDribbleBydmc
+  installWorkshopMapId '715'   # SpeedJumpRings1Bydmc
+  installWorkshopMapId '710'   # SpeedJumpRings2Bydmc
+  installWorkshopMapId '799'   # SpeedJumpRings2BydmcTimerUpdate
+  installWorkshopMapId '711'   # SpeedJumpRings3Bydmc
+  installWorkshopMapId '700'   # SpeedJumpRings3BydmcTimerUpdate
+  installWorkshopMapId '1185'  # thepath
+  installWorkshopMapId '725'   # Dribble2Overhaul
+  installWorkshopMapId '741'   # AirDribbleChallenge
+  installWorkshopMapId '755'   # LethamyrsTinyRingsMap
+  installWorkshopMapId '1199'  # thundasurges-rings
 }
 
 #===============================================================================
@@ -192,7 +197,9 @@ function install_drivers() {
 
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
-  local DIR=$( [ $(uname) = "Darwin" ] && echo ~/Library/Fonts || echo ~/.local/share/fonts)/$(echo $1 | echo $1 | sed 's/.*/\l&/')
+  local DIR=$( [ $(uname) = "Darwin" ] \
+    && echo ~/Library/Fonts \
+    || echo ~/.local/share/fonts)/$(echo $1 | echo $1 | sed 's/.*/\l&/')
   mkdir -p $DIR
   wget -qO- --show-progress $URL | xz -d | tar xvf - -C $DIR --wildcards "*.[ot]tf"
   # wget -qO- --show-progress $URL | tar Jxvf - # NOTE: this version requires gnu tar
