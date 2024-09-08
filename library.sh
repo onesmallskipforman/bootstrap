@@ -63,18 +63,22 @@ function syncDots() {
   local DOTS="$(realpath dotfiles)"
   # id all desired top-level targets
   local TARGETS=$({
-    echo $DOTS/.config
     echo $DOTS/.local/bin
-    find $DOTS/.local/share -mindepth 1 -maxdepth 1 \
-      -not -path '*.git*' -not -path '*README.md'
+    find \
+      $DOTS/.local/share \
+      $DOTS/.config \
+        -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
   } | sed "s;$DOTS/;;g")
 
   # TODO: make a little more robust
   # TODO: alternative: leave $HOME/.zshrc WITHOUT a symlink and have its
   # only contents be setting ZDOTDIR, then move all other env setup to
   # .zprofile.
-  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zshenv
-  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv
+  echo 'export ZDOTDIR=$HOME/.config/zsh' | {
+    [ $(uname) = "Darwin" ] \
+      && sudo tee -a /etc/zshenv >/dev/null \
+      || sudo tee -a /etc/zsh/zshenv >/dev/null
+  }
 
   # find if targets exist and copy their contents to dotfiles
   echo $TARGETS | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
