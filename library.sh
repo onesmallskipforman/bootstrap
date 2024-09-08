@@ -12,11 +12,8 @@ function os() {
 }
 
 function supersist() {
-  # Ask for the administrator password upfront
-  sudo -v
-
-  # Keep-alive: update existing `sudo` time stamp until the script has finished
-  while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  # Keep-alive: update existing sudo timestamp until the script has finished
+  sudo -v; while kill -0 "$$"; do sudo -n true; sleep 60; done 2>/dev/null &
 }
 
 function tmpdir() { mktemp -u | xargs dirname; }
@@ -388,7 +385,7 @@ function tap() { brew tap --quiet; }
 function brw() { yes | brew install --force --no-quarantine --overwrite $@; }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
-function deb() { local D=$(mktemp); wget -qO $D $1; ain $D; }
+function deb() { local D=$(mktemp -d)/t.deb; wget -qO $D $1; ain $D; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
 function amp() { echo $@ | map aur_makepkg; }
 function yyi() { yay  -S --noconfirm --needed $@; }
