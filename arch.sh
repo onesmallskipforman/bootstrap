@@ -46,6 +46,7 @@ function packages()
   pac less which
   pac systemd
   pac gcc make cmake bazel
+  pac pass
   pac networkmanager # includes nmtui
   pac cifs-utils # tool for mounding temp drives
   pac jq
@@ -68,9 +69,11 @@ function packages()
     systemctl --user --now mask    pulseaudio
     systemctl --user --now enable  pipewire pipewire-pulse wireplumber
   }
-  pac bluez bluez-tools blueman rfkill && {
+  pac bluez bluez-utils blueman rfkill && {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    sudo service bluetooth start
+    sudo systemctl daemon-reload
+    sudo systemctl start bluetooth.service
+    sudo systemctl --now enable bluetooth.service
     bluetoothctl power on
   }
 

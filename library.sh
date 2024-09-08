@@ -99,7 +99,7 @@ function config() {
 #===============================================================================
 
 function steam_install_game() {
-  steamcmd +login PopTartasaurus +app_update $1 validate +quit
+  steamcmd +login $(pass show steam | sed '1q;d') $(pass show steam | sed '2q;d') +app_update $1 validate +quit
 }
 
 function installBakkesmodPlugin() {
