@@ -52,7 +52,7 @@ function packages()
   pac jq
   pac xsel xclip
   pac fzf ripgrep
-  pac neovim python-pynvim # pix pynvim
+  pac neovim python-pynvim npm luarocks python-pip
   pac calc bc
   pac tmux
   aur autojump
@@ -69,7 +69,7 @@ function packages()
     systemctl --user --now mask    pulseaudio
     systemctl --user --now enable  pipewire pipewire-pulse wireplumber
   }
-  pac bluez bluez-utils blueman rfkill && {
+  pac bluez bluez-utils blueman rfkill playerctl && {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl daemon-reload
     sudo systemctl start bluetooth.service
@@ -96,6 +96,7 @@ function packages()
 
   # essential gui/advanced tui programs
   pac alacritty
+  pac qutebrowser
   pac firefox && fcn ff_profile && {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search
