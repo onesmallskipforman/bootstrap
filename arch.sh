@@ -27,7 +27,9 @@ function prep() {
 #===============================================================================
 
 function install_steamgames() {
-  steam_install_game 252950
+  steam_install_game 1493710 # proton experiemental
+  steam_install_game 2805730 # proton 9.0
+  steam_install_game 252950  # rocket league
   aur bakkesmod-steam
   installBakkesExtensions
 }
