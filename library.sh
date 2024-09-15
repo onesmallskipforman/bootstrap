@@ -78,13 +78,13 @@ function syncDots() {
   }
 
   # find if targets exist and copy their contents to dotfiles
-  echo $TARGETS | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
+  echo "$TARGETS" | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
   # remove existing from home
-  echo $TARGETS | xargs -I{} sudo rm -rf $HOME/{}
+  echo "$TARGETS" | xargs -I{} sudo rm -rf $HOME/{}
   # ensure directories exist
-  echo $TARGETS | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
+  echo "$TARGETS" | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
   # symlink dotfiles to home
-  echo $TARGETS | xargs -I{} ln -sfn $DOTS/{} $HOME/{}
+  echo "$TARGETS" | xargs -I{} ln -sfn $DOTS/{} $HOME/{}
 }
 
 function config() {
@@ -108,27 +108,28 @@ function installBakkesmodPlugin() {
   local ID=$1
   local C="$HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c"
   wget -qO $DIR/plugin.zip "https://bakkesplugins.com/plugins/download/$ID"
-  unzip $DIR/plugin.zip 'plugins/*' \
+  unzip -o $DIR/plugin.zip 'plugins/*' \
     -d $C/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod
 }
 
 function installWorkshopTextures() {
   local URL=https://www.speedrun.com/static/resource/37ylq.zip
   local DIR=$(mktemp -d)
-  wget -qO- $URL $DIR/txr.zip
-  unzip $DIR/txr.zip \
+  wget -qO $DIR/txr.zip $URL
+  unzip -o $DIR/txr.zip \
     -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/
 }
 
 # TODO: make function mappable
 # TODO: map in one line so you don't have to wrap every function
 function installWorkshopMap() {
+  local MODS=$HOME/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods
+  mkdir -p $MODS
   local DIR=$(mktemp -d)
   local URL=$1
   local PLG=$(echo $URL | xargs -i basename {} .zip)
   wget -qO $DIR/plg.zip $URL
-  unzip $DIR/plg.zip \
-    -d ~/.steam/steam/steamapps/common/rocketleague/TAGame/CookedPCConsole/mods/$PLG
+  unzip -o $DIR/plg.zip -d $MODS/$PLG
 }
 
 # TODO: make function mappable
@@ -138,7 +139,7 @@ function installWorkshopMapId() {
   local BASE="https://celab.jetfox.ovh/api/v4/projects/$ID/packages"
   local URL=$(wget -qO- $BASE \
     | jq -r '.[] | .package_type+"/"+.name+"/"+.version+"/"+.name+".zip"')
-  installWorkshopMap $URL
+  installWorkshopMap $BASE/$URL
 }
 
 function installBakkesExtensions() {
@@ -178,7 +179,7 @@ function install_drivers() {
   local BIN=$(mktemp)
   echo $URL
   wget --show-progress -qO $BIN $URL
-  chmod +x $BIN; $BIN -s
+  chmod +x $BIN; sudo $BIN -s
 
   # epic version: identify latest, download latest, run latest. no subshells
   # local URL=https://download.nvidia.com/XFree86/Linux-x86_64

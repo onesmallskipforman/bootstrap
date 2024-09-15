@@ -45,9 +45,15 @@ function packages()
     && sudo chsh -s /bin/zsh $(whoami)
   pac less which
   pac systemd
+  pac man-db man-pages texinfo
+  pac inetutils
   pac gcc make cmake bazel
   pac pass
-  pac networkmanager # includes nmtui
+  pac dhcpcd iwd networkmanager && { # networkmanager includes nmtui
+    systemctl enable --now dhcpcd.service
+    systemctl enable --now iwd.service
+    systemctl enable --now NetworkManager.service
+  }
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
@@ -84,8 +90,8 @@ function packages()
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
-  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd ttf-ubraille \
-    && sudo pacman -Rdd gnu-free-fonts
+  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille \
+    && sudo pacman -Rdd --noconfirm gnu-free-fonts
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
@@ -118,7 +124,7 @@ function packages()
   # gaming/school/work
   pac steam; aur steamcmd
   aur minecraft-launcher
-  fcn drivers
+  pac nvidia-open lib32-nvidia-utils && sudo mkinitcpio -P
   aur signal-desktop
   pac spotify-launcher
   pac discord; aur vesktop-bin
