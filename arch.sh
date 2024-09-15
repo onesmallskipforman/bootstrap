@@ -84,10 +84,12 @@ function packages()
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
-  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd
+  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd ttf-ubraille \
+    && sudo pacman -Rdd gnu-free-fonts
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
+  aur ascii-image-converter; cargo install ascii-gen
   pac neofetch
   pac fastfetch
   pac asciiquarium; aur tty-clock
