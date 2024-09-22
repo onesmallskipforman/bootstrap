@@ -5,7 +5,7 @@ source library.sh
 #===============================================================================
 
 function prepRoot() {
-  pacman -Syu --noconfirm sudo
+  pacman -Syu --noconfirm sudo; pacman -Fy --noconfirm
   USER=$1
   useradd -m $USER; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
@@ -42,6 +42,7 @@ function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
+  pac nix && systemctl enable nix-daemon.service
   amp yay-bin paru-bin
   pac zsh zsh-syntax-highlighting zsh-autosuggestions \
     && sudo chsh -s /bin/zsh $(whoami)
@@ -67,9 +68,9 @@ function packages()
       [Network]
       NameResolvingService=systemd
     ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
-    systemctl enable --now dhcpcd.service
-    systemctl enable --now iwd.service
-    systemctl enable --now NetworkManager.service
+    systemctl enable dhcpcd.service
+    systemctl enable iwd.service
+    systemctl enable NetworkManager.service
   }
   pac cifs-utils # tool for mounding temp drives
   pac jq
@@ -78,6 +79,11 @@ function packages()
   pac neovim python-pynvim npm luarocks python-pip
   pac calc bc
   pac tmux
+  pac docker && {
+    systemctl enable docker.service
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+  }
   aur autojump
   pac htop
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
@@ -87,16 +93,17 @@ function packages()
   pac pipewire pipewire-audio pipewire-pulse wireplumber ; {
     pac pavucontrol pulsemixer # audio controllers
     pac pipewire-libcamera # not needed but the wireplumber binary complains
+    pac sof-firware # not sure if needed
     systemctl --user daemon-reload
-    systemctl --user --now disable pulseaudio # covers both .service + .socket
-    systemctl --user --now mask    pulseaudio
-    systemctl --user --now enable  pipewire pipewire-pulse wireplumber
+    systemctl --user disable pulseaudio # covers both .service + .socket
+    systemctl --user mask    pulseaudio
+    systemctl --user enable  pipewire pipewire-pulse wireplumber
   }
   pac bluez bluez-utils blueman rfkill playerctl && {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl daemon-reload
     sudo systemctl start bluetooth.service
-    sudo systemctl --now enable bluetooth.service
+    sudo systemctl enable bluetooth.service
     bluetoothctl power on
   }
 
