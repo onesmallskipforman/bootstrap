@@ -52,6 +52,21 @@ function packages()
   pac gcc make cmake bazel
   pac pass
   pac dhcpcd iwd networkmanager && { # networkmanager includes nmtui
+    echo '
+      [General]
+      EnableNetworkConfiguration=true
+    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
+    echo '
+      # Configuration file for NetworkManager.
+      # See "man 5 NetworkManager.conf" for details.
+
+      [device]
+      wifi.scan-rand-mac-address=no
+      wifi.backend=iwd
+
+      [Network]
+      NameResolvingService=systemd
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
     systemctl enable --now dhcpcd.service
     systemctl enable --now iwd.service
     systemctl enable --now NetworkManager.service
@@ -120,13 +135,17 @@ function packages()
   aur joshuto-bin
   pix pywal16 && {
     pac imagemagick; pix colorthief haishoku colorz
-    go install github.com/thefryscorer/schemer2@latest
+    GOPATH=$HOME/.local/share/go go install github.com/thefryscorer/schemer2@latest
+    wal --cols16 lighten --backend wal
   }
 
   # gaming/school/work
   pac steam; aur steamcmd
   aur minecraft-launcher
-  pac nvidia-open lib32-nvidia-utils && sudo mkinitcpio -P
+  pac nvidia-open lib32-nvidia-utils && {
+    sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
+    sudo mkinitcpio -P
+  }
   aur signal-desktop
   pac spotify-launcher
   pac discord; aur vesktop-bin

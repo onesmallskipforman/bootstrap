@@ -176,7 +176,7 @@ function install_drivers() {
   local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
   local VER=$(wget -qO- $BASE/latest.txt | awk '{print $2}')
   local URL=$BASE/$VER
-  local BIN=$(mktemp)
+  local BIN=$(mktemp -d)/install.sh
   echo $URL
   wget --show-progress -qO $BIN $URL
   chmod +x $BIN; sudo $BIN -s
@@ -369,7 +369,7 @@ function cln() {
   local DIR=$HOME/.local/src/$(basename $1 .git)
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
 }
-function map() { cat | tr ' ' '\n' | while read -r a; do eval "$@ $a"; done; }
+function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
@@ -377,7 +377,8 @@ function pix() { sudo pipx install --global $@; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
-function pac() { sudo pacman -S --needed --noconfirm $@; }
+# function pac() { sudo pacman -S --needed --noconfirm $@; }
+function pac() { echo $@ | map sudo pacman -S --needed --noconfirm $@; }
 function ffe() { echo $@ | map install_ff_extension; }
 function tbe() { echo $@ | map install_tb_extension; }
 
