@@ -164,6 +164,7 @@ function packages()
   }
   aur zoom slack-desktop
   aur scilab-bin
+  aur arm-none-eabi-gcc stm32cubeprog; pac libopenecm3 stlink openocd
   # aur quartus-130 # FIX: broken build
   # aur itd-bin siglo # pinetime dev tools # TODO:lengthy builds
 }
