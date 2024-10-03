@@ -84,12 +84,12 @@ function syncDots() {
   # ensure directories exist
   echo "$TARGETS" | xargs -n1 dirname | sort -u | xargs -I{} mkdir -p $HOME/{}
   # symlink dotfiles to home
-  echo "$TARGETS" | xargs -I{} ln -sfn $DOTS/{} $HOME/{}
+  echo "$TARGETS" | xargs -I{} ln -sfT $DOTS/{} $HOME/{}
 }
 
 function config() {
   local TZU=https://ipapi.co/timezone
-  sudo ln -sfn /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
+  sudo ln -sfT /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
   local HN=wb-sgonzalez
   echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
   sudo systemctl set-default multi-user.target
@@ -322,7 +322,7 @@ function ensure_moz_profile() {
     until find $DIR -name '*.default-release*' >/dev/null 2>&1; do sleep 1; done
   )
   local PRF=$(find $DIR -name '*.default-release*')
-  find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfn $CFG/{} $PRF/{}
+  find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
 }
 function install_ff_profile() {
   ensure_moz_profile firefox $HOME/.mozilla/firefox $HOME/.config/firefox

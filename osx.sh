@@ -76,7 +76,7 @@ yabai_sudoers() {
 
 zathura_configure() {
     mkdir -p $(brew --prefix zathura)/lib/zathura \
-    ln -sf $(brew --prefix zathura-pdf-poppler)/libpdf-poppler.dylib \
+    ln -sfT $(brew --prefix zathura-pdf-poppler)/libpdf-poppler.dylib \
            $(brew --prefix zathura)/lib/zathura/libpdf-poppler.dylib
 }
 
@@ -163,8 +163,8 @@ packages() {
     brw "fliqlo" # screensaver
     brw "ftdi-vcp-driver" # arduino driver
     brw "librepcb" # electrical schematic drawing tool
-    brw "minecraft" && ln -sf "$HOME/.config/minecraft/options.txt" "$HOME/Library/ApplicationSupport/Minecraft/options.txt"
-    brw "spotify" && ln -sf "$HOME/.local/share/spotify/prefs" "$HOME/Library/ApplicationSupport/Spotify/prefs"
+    brw "minecraft" && ln -sfT "$HOME/.config/minecraft/options.txt" "$HOME/Library/ApplicationSupport/Minecraft/options.txt"
+    brw "spotify" && ln -sfT "$HOME/.local/share/spotify/prefs" "$HOME/Library/ApplicationSupport/Spotify/prefs"
     brw "xctu"
     brw "xquartz" # for x11 forwading
     brw "thunderbird"

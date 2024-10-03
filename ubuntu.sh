@@ -7,8 +7,8 @@ source library.sh
 function prep(){
   which sudo >/dev/null || { apt update -y && apt install -y sudo; }
   # sudo apt install wget curl
-  # ln -s /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
-  ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+  # ln -sfT /usr/share/zoneinfo/$(curl https://ipapi.co/timezone) /etc/localtime
+  ln -sfT /usr/share/zoneinfo/UTC /etc/localtime
   echo 'wb-sgonzalez' > /etc/hostname # hostnamectl set-hostname <hostname>
   useradd -m skipper
   # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
@@ -158,7 +158,7 @@ function install_alacritty() {
   # local URL='https://github.com/aarowill/base16-alacritty/archive/refs/heads/master.tar.gz'
   # wget -qO- $URL | tar xz -C $DIR --strip-components=1
 
-  # ln -sf ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
+  # ln -sfT ~/.local/src/alacritty-theme/themes ~/.config/alacritty/themes
 }
 
 function install_joshuto() {
