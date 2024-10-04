@@ -55,7 +55,7 @@ function packages()
   pac systemd
   pac man-db man-pages texinfo
   pac inetutils
-  pac gcc make cmake bazel
+  pac gcc make cmake bazel bear
   pac pass
   pac dhcpcd iwd networkmanager && { # networkmanager includes nmtui
     echo '
