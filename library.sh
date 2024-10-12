@@ -373,7 +373,7 @@ function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function pix() { sudo pipx install --global $@; }
+function pix() { sudo pipx install --global --force $@; }
 function ghb() { cln "https://github.com/$1.git" $2; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }

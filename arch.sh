@@ -145,9 +145,11 @@ function packages()
   pac mpv      # video player
   pac zathura zathura-pdf-poppler && fcn zathura_pywal
   aur joshuto-bin
-  pix pywal16 && {
-    pac imagemagick; pix colorthief haishoku colorz
-    GOPATH=$HOME/.local/share/go go install github.com/thefryscorer/schemer2@latest
+  pix pywal16 --pip-args \
+    'haishoku fast_colorthief modern_colorthief colorthief colorz' && {
+    pac imagemagick
+    cargo install okthief
+    GOPATH=$XDG_DATA_HOME/go go install github.com/thefryscorer/schemer2@latest
     wal --cols16 lighten --backend wal
   }
 
