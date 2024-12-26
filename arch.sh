@@ -47,8 +47,7 @@ function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
-  pac nix && systemctl enable nix-daemon.service
-  amp yay-bin paru-bin
+  amp yay-bin paru-bin; pac nix; aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions \
     && sudo chsh -s /bin/zsh $(whoami)
   pac less which
@@ -94,11 +93,11 @@ function packages()
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   pac brightnessctl # brightness control
   pac redshift
-  pac pavucontrol pulsemixer; fcn pipewire # for audio controls
-  pac pipewire pipewire-audio pipewire-pulse wireplumber ; {
+  pac pipewire pipewire-audio pipewire-pulse wireplumber; {
     pac pavucontrol pulsemixer # audio controllers
     pac pipewire-libcamera # not needed but the wireplumber binary complains
     pac sof-firware # not sure if needed
+    pac alsa-utils
     systemctl --user daemon-reload
     systemctl --user disable pulseaudio # covers both .service + .socket
     systemctl --user mask    pulseaudio

@@ -93,6 +93,7 @@ function config() {
   local HN=wb-sgonzalez
   echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
   sudo systemctl set-default multi-user.target
+  # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
 }
 
 #===============================================================================
@@ -172,6 +173,15 @@ function installBakkesExtensions() {
 #===============================================================================
 
 function install_drivers() {
+  # show current graphics card
+  # lspci -k | grep -A 2 -E "(VGA|3D)"
+
+  # there's also https://us.download.nvidia.com but it's slower
+  # check https://download.nvidia.com/XFree86/Linux-x86_64/
+  # https://www.nvidia.com/en-us/drivers/unix/
+  # https://www.nvidia.com/Download/index.aspx
+  # https://github.com/aaronp24/nvidia-versions
+
   # basic version. actually readable
   local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
   local VER=$(wget -qO- $BASE/latest.txt | awk '{print $2}')
