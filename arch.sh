@@ -90,7 +90,7 @@ function packages()
   pac tmux
   pac docker && {
     sudo systemctl enable docker.service
-    sudo groupadd docker
+    sudo groupadd -f docker
     sudo usermod -aG docker $USER
   }
   aur autojump
@@ -103,15 +103,15 @@ function packages()
     pac pipewire-libcamera # not needed but the wireplumber binary complains
     pac sof-firware # not sure if needed
     pac alsa-utils
-    systemctl --user daemon-reload
+    # systemctl --user daemon-reload
     systemctl --user disable pulseaudio # covers both .service + .socket
     systemctl --user mask    pulseaudio
     systemctl --user enable  pipewire pipewire-pulse wireplumber
   }
   pac bluez bluez-utils blueman rfkill playerctl && {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    sudo systemctl daemon-reload
-    sudo systemctl start bluetooth.service
+    # sudo systemctl daemon-reload
+    # sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
     bluetoothctl power on
   }

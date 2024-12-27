@@ -143,7 +143,7 @@ function packages()
   ain tmux
   ain docker.io && {
     sudo systemctl enable docker.service
-    sudo groupadd docker
+    sudo groupadd -f docker
     sudo usermod -aG docker $USER
   }
   ain autojump
@@ -156,15 +156,15 @@ function packages()
     ain pipewire-libcamera # not needed but the wireplumber binary complains
     ain firmware-sof-signed # not sure if needed
     ain alsa-utils
-    systemctl --user daemon-reload
+    # systemctl --user daemon-reload
     systemctl --user disable pulseaudio # covers both .service + .socket
     systemctl --user mask    pulseaudio
     systemctl --user enable  pipewire pipewire-pulse wireplumber
   }
   ain bluez bluez-tools blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    sudo systemctl daemon-reload
-    sudo systemctl start bluetooth.service
+    # sudo systemctl daemon-reload
+    # sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
     bluetoothctl power on
   }
