@@ -234,7 +234,7 @@ install_getnf() {
 
 # TODO: relying on env var can make results vary between root and user
 function install_texlive() {
-  local HOME=~skipper
+  local HOME=~/skipper
   local DIR=$(mktemp -d)
   local URL='https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
   wget -qO- $URL | tar xvz -C $DIR --strip-components=1

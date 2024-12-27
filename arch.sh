@@ -23,7 +23,7 @@ function prep() {
 }
 
 #===============================================================================
-# CUSTOM INSTALL FUNCTIONS
+# POST-INSTALL CONFIGS
 #===============================================================================
 
 function install_steamgames() {
@@ -35,14 +35,19 @@ function install_steamgames() {
   # each time you change RL's proton version
   aur --rebuild bakkesmod-steam && ln -sfT \
     $HOME/.config/bakkesmod \
+
     $HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod/cfg
   installBakkesExtensions
 }
+
+
+
 
 #===============================================================================
 # INSTALLATIONS
 #===============================================================================
 
+# NOTE: avoid using logical AND for commands that are truly errors if the first part fails
 function packages()
 {
   # basics
@@ -72,9 +77,9 @@ function packages()
       [Network]
       NameResolvingService=systemd
     ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
-    systemctl enable dhcpcd.service
-    systemctl enable iwd.service
-    systemctl enable NetworkManager.service
+    sudo systemctl enable dhcpcd.service
+    sudo systemctl enable iwd.service
+    sudo systemctl enable NetworkManager.service
   }
   pac cifs-utils # tool for mounding temp drives
   pac jq
@@ -84,7 +89,7 @@ function packages()
   pac calc bc
   pac tmux
   pac docker && {
-    systemctl enable docker.service
+    sudo systemctl enable docker.service
     sudo groupadd docker
     sudo usermod -aG docker $USER
   }
@@ -114,7 +119,8 @@ function packages()
   # Desktop Environment
   pac xorg xorg-xev xorg-xinit
   pac xdotool # for grabbing window names
-  pac libinput # allows for sane trackpad expeirence
+  # TODO: not sure if i need libinput driver or just the binary
+  pac xf86-input-libinput # allows for sane trackpad expeirence
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
@@ -170,7 +176,7 @@ function packages()
   }
   aur zoom slack-desktop
   aur scilab-bin
-  aur arm-none-eabi-gcc stm32cubeprog; pac libopenecm3 stlink openocd;
+  aur arm-none-eabi-gcc stm32cubeprog; pac libopenecm3 stlink openocd
   # sudo usermod -aG uucp skipper # for access to /dev/ttyUSB0
   # aur quartus-130 # FIX: broken build
   # aur itd-bin siglo # pinetime dev tools # TODO:lengthy builds

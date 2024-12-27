@@ -5,7 +5,7 @@ source library.sh
 #===============================================================================
 
 function prepRoot() {
-  apt update -y && apt install -y sudo
+  apt update -y; apt install -y sudo
   USER=$1
   useradd -m $USER; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
@@ -13,22 +13,18 @@ function prepRoot() {
 }
 
 function prep(){
-  sudo apt update -y && sudo apt upgrade -y; yes | unminimize
-  sudo apt -y update --fix-missing && sudo apt -y dist-upgrade
+  sudo apt update -y; sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
+  sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
+  sudo apt install -y unminimize; yes | sudo unminimize
 }
+
+
+
 
 #===============================================================================
 # POST-INSTALL CONFIGS
 #===============================================================================
-
-function install_drivers_ubuntu() {
-  # list drivers: ubuntu-drivers list
-  # check current driver: cat /proc/driver/nvidia/version
-  ppa ppa:graphics-drivers/ppa
-  # sudo ubuntu-drivers install
-  sudo ubuntu-drivers install nvidia:550 # ubuntu-drivers list
-}
 
 function install_steamgames() {
   steam_install_game 1493710 # proton experiemental
@@ -38,7 +34,7 @@ function install_steamgames() {
   # bakkesmod for rocket league
   local URL='https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
   local DIR=$(mktemp -d)
-  wget -qP $DIR $URL && unzip $DIR/BakkesModSetup.zip -d $DIR
+  wget -qP $DIR $URL; unzip $DIR/BakkesModSetup.zip -d $DIR
 
   local COMPATDATA="$HOME/.steam/steam/steamapps/compatdata/252950"
   local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
@@ -102,21 +98,23 @@ function install_waspos() {
 # INSTALLATIONS
 #===============================================================================
 
+# NOTE: avoid using logical AND for commands that are truly errors if the first part fails
 function packages()
 {
   # basics
-  ain wget curl tar unzip software-properties-common; ppa ppa:git-core/ppa && ain git
+  ain wget curl tar unzip software-properties-common; ppa ppa:git-core/ppa; ain git
   ain nix-bin guix # guix-setup-systemd
-  ain zsh zsh-syntax-highlighting zsh-autosuggestions \
-    && sudo chsh -s /bin/zsh $(whoami)
-  ppa "ppa:deadsnakes/ppa" && ain "python3" "python3-pip" "python3-venv" "pipx"
+  ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
+    sudo chsh -s /bin/zsh $(whoami)
+  }
+  ppa "ppa:deadsnakes/ppa"; ain "python3" "python3-pip" "python3-venv" "pipx"
   ain less which
   ain systemd
   ain man-db manpages texinfo
   # TODO: inetutils
   ain gcc make cmake bear # TODO: bazel
   # TODO: need to address that you won't be able to use this nmtui without installing over wifi
-  pac dhcpcd iwd network-manager && { # networkmanager includes nmtui
+  ain dhcpcd iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
       EnableNetworkConfiguration=true
@@ -132,21 +130,22 @@ function packages()
       [Network]
       NameResolvingService=systemd
     ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
-    systemctl enable dhcpcd.service
-    systemctl enable iwd.service
-    systemctl enable NetworkManager.service
+    sudo systemctl enable dhcpcd.service
+    sudo systemctl enable iwd.service
+    sudo systemctl enable NetworkManager.service
   }
   ain cifs-utils # tool for mounding temp drives
   ain jq
   ain xsel xclip
   ain fzf ripgrep
-  nix profile install nixpkgs#neovim && { pix pynvim; fcn node20; ain xsel xclip calc; }
+  ain neovim python3-pynvim npm xsel xclip calc
   ain calc bc
-  nix profile install nixpkgs#tmux
-  # TODO: docker
-  #
-  #
-  #
+  ain tmux
+  ain docker.io && {
+    sudo systemctl enable docker.service
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+  }
   ain autojump
   ain htop
   ain openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
@@ -162,7 +161,7 @@ function packages()
     systemctl --user mask    pulseaudio
     systemctl --user enable  pipewire pipewire-pulse wireplumber
   }
-  ain bluez bluez-tools blueman rfkill playerctl && {
+  ain bluez bluez-tools blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl daemon-reload
     sudo systemctl start bluetooth.service
@@ -171,7 +170,41 @@ function packages()
   }
 
   # Desktop Environment
-  ain xorg
+  ain xorg xev xinit
+  ain xdotool # for grabbing window names
+  # TODO: not sure if i need libinput driver or just the binary
+  ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
+  ain arandr autorandr # xrandr caching and gui
+  ain rofi; ghb newmanls/rofi-themes-collection # FIX: ghb (maybe use wget to overwrite dir or just add submodules to dotfiles)
+  ain bspwm sxhkd polybar picom
+  ain fontcofig; fcn fonts
+
+  # silly terminal scripts to show off
+  ain figlet; ghb xero/figlet-fonts # For writing asciiart text # TODO: replace ghb
+  ain tty-clock # terminal digial clock
+  ain neofetch
+  ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
+  ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
+  nix profile install nixpkgs#macchina # fetch
+  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
+  nix profile install nixpkgs#ueberzug nixpkgs#ueberzugpp
+
+  # essential gui/advanced tui programs
+  ain alacritty
+  gin nyxt
+  ain firefox; ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
+  nix profile install nixpkgs#qutebrowser
+  ain thunderbird; tbe darkreader tbsync eas-4-tbsync
+  ain maim     # screenshot utility
+  ain ffmpeg   # screen record utility # TODO: consider fbcat
+  ain feh sxiv # image viewer
+  ain mpv      # video player
+  ain zathura zathura-pdf-poppler; fcn zathura_pywal
+  nix profile install nixpkgs#joshuto
+  pix pywal16; {
+    ain imagemagick; pix colorthief haishoku colorz
+    nix profile install nixpkgs#go; go install github.com/thefryscorer/schemer2@latest
+  }
 
   ain slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
   nix profile install \
@@ -180,61 +213,27 @@ function packages()
     nixpkgs#i3lock-color \
     nixpkgs#xsecurelock \
     nixpkgs#xscreensaver
-  ain xdotool                     # for grabbing window names
-  ain xserver-xorg-core           # libinput dependency
-  ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
-  ain arandr # for saving and loading monitor layouts
-  ain autorandr # gui for managing monitor layouts
-  ain rofi; ghb newmanls/rofi-themes-collection # FIX: ghb
-  ain bspwm sxhkd
-  nix profile install nixpkgs#picom
-  nix profile install nixpkgs#polybar
-  ain fontcofig; fcn fonts
-
-  # silly terminal scripts to show off
-  ain figlet; ghb xero/figlet-fonts # For writing asciiart text # TODO: replace ghb
-  ain tty-clock # terminal digial clock
-  ain neofetch
-  ppa ppa:ytvwld/asciiquarium && ain asciiquarium
-  ppa ppa:zhangsongcui3371/fastfetch && ain fastfetch
-  cargo install macchina # fetch
-  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
-  nix profile install nixpkgs#ueberzug nixpkgs#ueberzugpp
-
-  # essential gui/advanced tui programs
-  nix profile install nixpkgs#alacritty
-  gin nyxt
-  ain firefox && ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
-  nix profile install nixpkgs#qutebrowser
-  ain thunderbird && tbe darkreader tbsync eas-4-tbsync
-  ain maim     # screenshot utility
-  ain ffmpeg   # screen record utility # TODO: consider fbcat
-  ain feh sxiv # image viewer
-  ain mpv      # video player
-  ain zathura zathura-pdf-poppler && fcn zathura_pywal
-  nix profile install nixpkgs#joshuto
-  pix pywal16 && {
-    ain imagemagick; pix colorthief haishoku colorz
-    nix profile install nixpkgs#go; go install github.com/thefryscorer/schemer2@latest
-  }
 
   # gaming/school/work
-  ppa "multiverse" && ain "steam-installer" "steamcmd" # NOTE: 64bit version
+  ppa "multiverse"; ain "steam-installer" "steamcmd" # NOTE: 64bit version
   deb https://launcher.mojang.com/download/Minecraft.deb
+  ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
+
   deb https://zoom.us/client/latest/zoom_amd64.deb
   fcn ros
   nix profile install nixpkgs#spotify nixpkgs#spotify-qt
-  nix profile install nixpkgs#itd nixpkgs#siglo && fcn waspos # pinetime dev tools
+  nix profile install nixpkgs#itd nixpkgs#siglo; fcn waspos # pinetime dev tools
 
   fcn quartus
-  # TODO: add arm toolchains
+  # TODO: add arm programmer
+  ain gcc-arm-none-eabi
   # TODO: add discord
   # TODO: add slack
-  fcn texlive && {
+  fcn texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit
     ain ghostscript # installs ps2pdf
-    ppa ppa:inkscape.dev/stable && ain inkscape # for latex drawings
+    ppa ppa:inkscape.dev/stable; ain inkscape # for latex drawings
   }
 }
 
@@ -245,8 +244,8 @@ function packages()
 function bootstrap() {
   supersist
   bigprint "Prepping For Bootstrap"  ; prep
-  bigprint "Copying dotfiles to home"; syncDots
+  # bigprint "Copying dotfiles to home"; syncDots
   bigprint "Installing Packages"     ; packages
-  bigprint "Configure OS"            ; config
+  # bigprint "Configure OS"            ; config
   bigprint "OS Config Complete. Restart Required"
 }
