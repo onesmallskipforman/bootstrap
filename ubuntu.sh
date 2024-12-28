@@ -7,7 +7,7 @@ source library.sh
 function prepRoot() {
   apt update -y; apt install -y sudo
   USER=$1
-  useradd -m $USER; passwd -d $USER
+  useradd -m $USER || echo "User $USER exists"; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
 }
@@ -79,13 +79,6 @@ function install_ros() {
   ain build-essential
 }
 
-# TODO: use this for osx install as well
-function install_node20() {
-  ain npm
-  sudo npm install -g n
-  sudo n v20.11.0 # sudo n stable
-}
-
 function install_waspos() {
   # TODO: need some authentication to get the latest CI builds
   # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
@@ -107,7 +100,7 @@ function packages()
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }
-  ppa "ppa:deadsnakes/ppa"; ain "python3" "python3-pip" "python3-venv" "pipx"
+  ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   ain less which
   ain systemd
   ain man-db manpages texinfo
@@ -141,7 +134,7 @@ function packages()
   ain neovim python3-pynvim npm xsel xclip calc
   ain calc bc
   ain tmux
-  ain docker.io && {
+  ain docker.io; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker
     sudo usermod -aG docker $USER
@@ -156,28 +149,22 @@ function packages()
     ain pipewire-libcamera # not needed but the wireplumber binary complains
     ain firmware-sof-signed # not sure if needed
     ain alsa-utils
-    # systemctl --user daemon-reload
-    systemctl --user disable pulseaudio # covers both .service + .socket
-    systemctl --user mask    pulseaudio
-    systemctl --user enable  pipewire pipewire-pulse wireplumber
+    systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
   ain bluez bluez-tools blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    # sudo systemctl daemon-reload
-    # sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
-    bluetoothctl power on
   }
 
   # Desktop Environment
-  ain xorg xev xinit
+  ain xorg xinit x11-utils # x11-utils contains xev
   ain xdotool # for grabbing window names
   # TODO: not sure if i need libinput driver or just the binary
   ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
   ain arandr autorandr # xrandr caching and gui
-  ain rofi; ghb newmanls/rofi-themes-collection # FIX: ghb (maybe use wget to overwrite dir or just add submodules to dotfiles)
+  ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom
-  ain fontcofig; fcn fonts
+  ain fontconfig; fcn fonts
 
   # silly terminal scripts to show off
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text # TODO: replace ghb
@@ -185,50 +172,49 @@ function packages()
   ain neofetch
   ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
   ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
-  nix profile install nixpkgs#macchina # fetch
+  nxi macchina # fetch
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
-  nix profile install nixpkgs#ueberzug nixpkgs#ueberzugpp
+  nxi ueberzugpp
 
   # essential gui/advanced tui programs
   ain alacritty
-  gin nyxt
-  ain firefox; ffe darkreader ublock-origin vimium-ff youtube-recommended-videos
-  nix profile install nixpkgs#qutebrowser
-  ain thunderbird; tbe darkreader tbsync eas-4-tbsync
+  # gin nyxt
+  ain firefox; # {
+  #   fcn ff_profile
+  #   ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
+  #     facebook-container news-feed-eradicator archlinux-wiki-search
+  # }
+  ain thunderbird; # {
+  #   # fcn tb_profile
+  #   # tbe darkreader tbsync eas-4-tbsync
+  # }
+  ain qutebrowser
   ain maim     # screenshot utility
   ain ffmpeg   # screen record utility # TODO: consider fbcat
   ain feh sxiv # image viewer
   ain mpv      # video player
   ain zathura zathura-pdf-poppler; fcn zathura_pywal
-  nix profile install nixpkgs#joshuto
-  pix pywal16; {
-    ain imagemagick; pix colorthief haishoku colorz
-    nix profile install nixpkgs#go; go install github.com/thefryscorer/schemer2@latest
-  }
-
-  ain slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
-  nix profile install \
-    nixpkgs#i3lock \
-    nixpkgs#i3lock-fancy \
-    nixpkgs#i3lock-color \
-    nixpkgs#xsecurelock \
-    nixpkgs#xscreensaver
+  nxi joshuto
+  # pix pywal16; {
+  #   ain imagemagick; pix colorthief haishoku colorz
+  #   nxi go; go install github.com/thefryscorer/schemer2@latest
+  # }
+  ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
 
   # gaming/school/work
-  ppa "multiverse"; ain "steam-installer" "steamcmd" # NOTE: 64bit version
-  deb https://launcher.mojang.com/download/Minecraft.deb
-  ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
+  # ppa multiverse; ain steam-installer # NOTE: 64bit version
+  # ain steamcmd # TODO: requires license agreement
+  # deb https://launcher.mojang.com/download/Minecraft.deb
+  # ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
 
   deb https://zoom.us/client/latest/zoom_amd64.deb
+  deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
   fcn ros
-  nix profile install nixpkgs#spotify nixpkgs#spotify-qt
-  nix profile install nixpkgs#itd nixpkgs#siglo; fcn waspos # pinetime dev tools
+  nxi spotify spotify-qt
 
-  fcn quartus
+  # fcn quartus
   # TODO: add arm programmer
   ain gcc-arm-none-eabi
-  # TODO: add discord
-  # TODO: add slack
   fcn texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit

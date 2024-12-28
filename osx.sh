@@ -66,6 +66,13 @@ config() {
     unset -f dw; unset -f sdw
 }
 
+# TODO: see if this is needed anymore. used to be required for ubuntu
+function install_node20() {
+  ain npm
+  sudo npm install -g n
+  sudo n v20.11.0 # sudo n stable
+}
+
 yabai_sudoers() {
     sudo echo "$(whoami) ALL=(root) NOPASSWD:
         sha256:$(shasum -a 256 $(which yabai) | awk '{print $1}')

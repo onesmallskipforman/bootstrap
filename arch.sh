@@ -33,7 +33,7 @@ function install_steamgames() {
   # installation is dependent on RL's proton version. Game needs to be
   # configured and run once before installing bakkesmod and after
   # each time you change RL's proton version
-  aur --rebuild bakkesmod-steam && ln -sfT \
+  aur --rebuild bakkesmod-steam; ln -sfT \
     $HOME/.config/bakkesmod \
 
     $HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod/cfg
@@ -53,15 +53,16 @@ function packages()
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
   amp yay-bin paru-bin; pac nix; aur guix
-  pac zsh zsh-syntax-highlighting zsh-autosuggestions \
-    && sudo chsh -s /bin/zsh $(whoami)
+  pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
+    sudo chsh -s /bin/zsh $(whoami)
+  }
   pac less which
   pac systemd
   pac man-db man-pages texinfo
   pac inetutils
   pac gcc make cmake bazel bear
   pac pass
-  pac dhcpcd iwd networkmanager && { # networkmanager includes nmtui
+  pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
     echo '
       [General]
       EnableNetworkConfiguration=true
@@ -88,7 +89,7 @@ function packages()
   pac neovim python-pynvim npm luarocks python-pip
   pac calc bc
   pac tmux
-  pac docker && {
+  pac docker; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker
     sudo usermod -aG docker $USER
@@ -103,17 +104,12 @@ function packages()
     pac pipewire-libcamera # not needed but the wireplumber binary complains
     pac sof-firware # not sure if needed
     pac alsa-utils
-    # systemctl --user daemon-reload
-    systemctl --user disable pulseaudio # covers both .service + .socket
-    systemctl --user mask    pulseaudio
-    systemctl --user enable  pipewire pipewire-pulse wireplumber
+    systemctl --user daemon-reload
+    systemctl --user enable  pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
-  pac bluez bluez-utils blueman rfkill playerctl && {
+  pac bluez bluez-utils blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-    # sudo systemctl daemon-reload
-    # sudo systemctl start bluetooth.service
     sudo systemctl enable bluetooth.service
-    bluetoothctl power on
   }
 
   # Desktop Environment
@@ -124,8 +120,9 @@ function packages()
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
-  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille \
-    && sudo pacman -Rdd --noconfirm gnu-free-fonts
+  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille; {
+    sudo pacman -Rdd --noconfirm gnu-free-fonts
+  }
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
@@ -139,19 +136,19 @@ function packages()
   # essential gui/advanced tui programs
   pac alacritty
   pac qutebrowser
-  pac firefox && fcn ff_profile && {
+  pac firefox; fcn ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search
   }
-  pac thunderbird && fcn tb_profile && tbe darkreader tbsync eas-4-tbsync
+  pac thunderbird; fcn tb_profile; tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
   pac ffmpeg   # screen record utility
   pac feh sxiv # image viewer
   pac mpv      # video player
-  pac zathura zathura-pdf-poppler && fcn zathura_pywal
+  pac zathura zathura-pdf-poppler; fcn zathura_pywal
   aur joshuto-bin
   pix pywal16 --pip-args \
-    'haishoku fast_colorthief modern_colorthief colorthief colorz' && {
+    'haishoku fast_colorthief modern_colorthief colorthief colorz'; {
     pac imagemagick
     cargo install okthief
     GOPATH=$XDG_DATA_HOME/go go install github.com/thefryscorer/schemer2@latest
@@ -161,14 +158,14 @@ function packages()
   # gaming/school/work
   pac steam; aur steamcmd
   aur minecraft-launcher
-  pac nvidia-open lib32-nvidia-utils && {
+  pac nvidia-open lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
   }
   aur signal-desktop
   pac spotify-launcher
   pac discord; aur vesktop-bin
-  pac perl && fcn texlive && {
+  pac perl; fcn texlive; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
     pac entr        # run arbitrary commands when files change, for live edit
     pac ghostscript # installs ps2pdf

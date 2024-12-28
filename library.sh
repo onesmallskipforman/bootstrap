@@ -2,7 +2,7 @@
 # UTILITIES
 #===============================================================================
 
-function multiecho(){ for i in {1..67}; do echo -n "$1"; done; }
+function multiecho(){ printf "${1}%.0s" {1..67}; }
 function bigprint() { multiecho '~'; echo -e "\n$1"; multiecho '~'; echo; }
 
 function os() {
@@ -384,7 +384,8 @@ function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
 function pix() { sudo pipx install --global --force $@; }
-function ghb() { cln "https://github.com/$1.git" $2; }
+# TODO: (maybe instead of ghb use wget to overwrite dir or just add submodules to dotfiles)
+function ghb() { cln "https://github.com/$1.git"; }
 function gin() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
 # function pac() { sudo pacman -S --needed --noconfirm $@; }
@@ -403,3 +404,10 @@ function amp() { echo $@ | map aur_makepkg; }
 function yyi() { yay  -S --noconfirm --needed $@; }
 function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }
+function nxi() {
+  echo $@ \
+    | sed 's/[^ ]* */nixpkgs#&/g' \
+    | xargs sudo nix \
+      --extra-experimental-features nix-command \
+      --extra-experimental-features flakes profile install
+}
