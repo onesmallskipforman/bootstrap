@@ -281,8 +281,8 @@ function packages2()
 function bootstrap() {
   supersist
   bigprint "Prepping For Bootstrap"  ; prep
-  # bigprint "Copying dotfiles to home"; syncDots
+  bigprint "Copying dotfiles to home"; syncDots
   bigprint "Installing Packages"     ; packages
-  # bigprint "Configure OS"            ; config
+  bigprint "Configure OS"            ; config
   bigprint "OS Config Complete. Restart Required"
 }

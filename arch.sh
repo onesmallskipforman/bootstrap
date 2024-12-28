@@ -51,7 +51,8 @@ function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
-  amp yay-bin paru-bin; pac nix; aur guix; sudo usermod -aG nix-users $USER
+  amp yay-bin paru-bin; pac nix; sudo usermod -aG nix-users $USER
+  # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }

@@ -1,7 +1,14 @@
-#!/bin/bash
-set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
-# source arch.sh; prepRoot skipper
-# runuser skipper -c 'source arch.sh; bootstrap'
+#!/bin/sh
 
-source ubuntu.sh; prepRoot skipper
-runuser skipper -s /bin/bash -c 'set -eux; source ubuntu.sh; bootstrap'
+case "$1" in
+  arch)   IMG=archlinux;;
+  ubuntu) IMG=ubuntu:24.04;;
+  artix)  IMG=artixlinux/artixlinux;; # IMG=artixlinux/artixlinux:base
+  *)      echo "Not a valid OS"; exit 1;;
+esac
+
+docker run \
+  --rm -it \
+  -v ~/Projects/bootstrap:/root/bootstrap \
+  -w /root/bootstrap  \
+  $IMG ./run.sh
