@@ -16,7 +16,6 @@ function prep(){
   sudo apt update -y; sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
-  sudo apt install -y unminimize; yes | sudo unminimize
 }
 
 
@@ -91,12 +90,13 @@ function install_waspos() {
 # INSTALLATIONS
 #===============================================================================
 
-# NOTE: avoid using logical AND for commands that are truly errors if the first part fails
 function packages()
 {
   # basics
-  ain wget curl tar unzip software-properties-common; ppa ppa:git-core/ppa; ain git
-  ain nix-bin guix # guix-setup-systemd
+  ain wget curl tar unzip software-properties-common
+  ain unminimize; yes | sudo unminimize
+  ppa ppa:git-core/ppa; ain git
+  ain nix-bin guix # guix-setup-systemd # TODO: unfree software
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }
@@ -104,7 +104,6 @@ function packages()
   ain less which
   ain systemd
   ain man-db manpages texinfo
-  # TODO: inetutils
   ain gcc make cmake bear # TODO: bazel
   # TODO: need to address that you won't be able to use this nmtui without installing over wifi
   ain dhcpcd iwd network-manager; { # network-manager includes nmtui
@@ -172,9 +171,9 @@ function packages()
   ain neofetch
   ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
   ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
-  nxi macchina # fetch
+  # nxi macchina # fetch
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
-  nxi ueberzugpp
+  # nxi ueberzugpp
 
   # essential gui/advanced tui programs
   ain alacritty
@@ -194,7 +193,7 @@ function packages()
   ain feh sxiv # image viewer
   ain mpv      # video player
   ain zathura zathura-pdf-poppler; fcn zathura_pywal
-  nxi joshuto
+  # nxi joshuto
   # pix pywal16; {
   #   ain imagemagick; pix colorthief haishoku colorz
   #   nxi go; go install github.com/thefryscorer/schemer2@latest
@@ -202,15 +201,20 @@ function packages()
   ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
 
   # gaming/school/work
-  # ppa multiverse; ain steam-installer # NOTE: 64bit version
-  # ain steamcmd # TODO: requires license agreement
-  # deb https://launcher.mojang.com/download/Minecraft.deb
+  ppa multiverse; {
+    # https://askubuntu.com/a/1017487
+    echo steam steam/question select "I AGREE" | sudo debconf-set-selections
+    echo steam steam/license note '' | sudo debconf-set-selections
+    ain steam # NOTE: https://askubuntu.com/a/1225192
+    ain steamcmd
+  }
+  deb https://launcher.mojang.com/download/Minecraft.deb
   # ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
 
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
-  fcn ros
-  nxi spotify spotify-qt
+  # fcn ros
+  # nxi spotify spotify-qt
 
   # fcn quartus
   # TODO: add arm programmer
@@ -221,6 +225,53 @@ function packages()
     ain ghostscript # installs ps2pdf
     ppa ppa:inkscape.dev/stable; ain inkscape # for latex drawings
   }
+}
+
+function packages2()
+{
+  # basics
+  ain wget curl tar unzip software-properties-common git
+  # curl -L https://nixos.org/nix/install | sh -s -- --no-daemon; . ~/.nix-profile/etc/profile.d/nix.sh
+  # ain nix-bin guix; { # guix-setup-systemd # TODO: unfree software
+  #   sudo usermod -aG nix-users $USER
+  # }
+
+  # TODO: 'sudo nix' installs under /root. Figure out how to install
+  # under user without daemon running
+  # export PATH=$PATH:/root/.nix-profile/bin
+  # gin nyxt
+  # ppa ppa:mozillateam/ppa; {
+  #   # https://askubuntu.com/a/1404401
+  #   echo '
+  #   Package: *
+  #   Pin: release o=LP-PPA-mozillateam
+  #   Pin-Priority: 1001
+  #
+  #   Package: firefox
+  #   Pin: version 1:1snap*
+  #   Pin-Priority: -1
+  #   ' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+  # }
+  # nxi firefox
+  # ain firefox; {
+  #   fcn ff_profile
+  #   ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
+  #     facebook-container news-feed-eradicator archlinux-wiki-search
+  # }
+  # ain thunderbird; # {
+  #   # fcn tb_profile
+  #   # tbe darkreader tbsync eas-4-tbsync
+  # }
+  # pix pywal16; {
+  #   ain imagemagick; pix colorthief haishoku colorz
+  #   nxi go; go install github.com/thefryscorer/schemer2@latest
+  # }
+  # ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
+
+  # fcn ros
+  # nxi spotify spotify-qt
+  # fcn quartus
+  # TODO: add arm programmer
 }
 
 #===============================================================================

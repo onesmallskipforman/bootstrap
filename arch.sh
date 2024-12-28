@@ -47,19 +47,18 @@ function install_steamgames() {
 # INSTALLATIONS
 #===============================================================================
 
-# NOTE: avoid using logical AND for commands that are truly errors if the first part fails
 function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
-  amp yay-bin paru-bin; pac nix; aur guix
+  amp yay-bin paru-bin; pac nix; aur guix; sudo usermod -aG nix-users $USER
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }
   pac less which
   pac systemd
   pac man-db man-pages texinfo
-  pac inetutils
+  pac inetutils # has hostname commmand in arch
   pac gcc make cmake bazel bear
   pac pass
   pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui

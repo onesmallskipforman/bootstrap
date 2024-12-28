@@ -1,3 +1,5 @@
+# NOTE: avoid using logical AND for commands that are truly errors if the first part fails
+
 #===============================================================================
 # UTILITIES
 #===============================================================================
@@ -327,10 +329,10 @@ function ensure_moz_profile() {
   local CMD=$1
   local DIR=$2
   local CFG=$3
-  (
+  # (
     $CMD --headless >/dev/null 2>&1 & #; local PID=$!
     until find $DIR -name '*.default-release*' >/dev/null 2>&1; do sleep 1; done
-  )
+  # )
   local PRF=$(find $DIR -name '*.default-release*')
   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
 }
@@ -407,7 +409,7 @@ function aur() { pri $@; }
 function nxi() {
   echo $@ \
     | sed 's/[^ ]* */nixpkgs#&/g' \
-    | xargs sudo nix \
+    | xargs nix \
       --extra-experimental-features nix-command \
       --extra-experimental-features flakes profile install
 }
