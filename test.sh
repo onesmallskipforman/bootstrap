@@ -11,4 +11,5 @@ docker run \
   --rm -it \
   -v ~/Projects/bootstrap:/root/bootstrap \
   -w /root/bootstrap  \
-  $IMG ./run.sh
+  $IMG /bin/bash
+  # $IMG ./run.sh

@@ -13,7 +13,8 @@ function prepRoot() {
 }
 
 function prep(){
-  sudo apt update -y; sudo apt full-upgrade -y
+  sudo apt update -y
+  # sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
 }
@@ -96,7 +97,13 @@ function packages()
   ain wget curl tar unzip software-properties-common
   ain unminimize; yes | sudo unminimize
   ppa ppa:git-core/ppa; ain git
-  ain nix-bin guix # guix-setup-systemd # TODO: unfree software
+  # curl -L https://nixos.org/nix/install | sh -s -- --no-daemon; . ~/.nix-profile/etc/profile.d/nix.sh
+  ain nix-bin; {
+    sudo usermod -aG nix-users $USER
+    sudo nix-daemon >/dev/null 2>&1 & # TODO: never works on the first run
+    # export PATH=$PATH:~/.local/state/nix/profile/bin
+  }
+  ain guix # guix-setup-systemd # TODO: guix unfree software
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }
@@ -171,29 +178,39 @@ function packages()
   ain neofetch
   ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
   ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
-  # nxi macchina # fetch
+  nxi macchina # fetch
   ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
-  # nxi ueberzugpp
+  nxi ueberzugpp
 
   # essential gui/advanced tui programs
   ain alacritty
   # gin nyxt
-  ain firefox; # {
-  #   fcn ff_profile
-  #   ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-  #     facebook-container news-feed-eradicator archlinux-wiki-search
-  # }
-  ain thunderbird; # {
-  #   # fcn tb_profile
-  #   # tbe darkreader tbsync eas-4-tbsync
-  # }
+  ppa ppa:mozillateam/ppa; {
+    # https://askubuntu.com/a/1404401
+    echo '
+      Package: *
+      Pin: release o=LP-PPA-mozillateam
+      Pin-Priority: 1001
+
+      Package: firefox
+      Pin: version 1:1snap*
+      Pin-Priority: -1
+    ' | awk '{$1=$1;print}' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+    ain firefox
+    fcn ff_profile
+    ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
+      facebook-container news-feed-eradicator archlinux-wiki-search
+    ain thunderbird
+    fcn tb_profile
+    tbe darkreader tbsync eas-4-tbsync
+  }
   ain qutebrowser
   ain maim     # screenshot utility
   ain ffmpeg   # screen record utility # TODO: consider fbcat
   ain feh sxiv # image viewer
   ain mpv      # video player
   ain zathura zathura-pdf-poppler; fcn zathura_pywal
-  # nxi joshuto
+  nxi joshuto
   # pix pywal16; {
   #   ain imagemagick; pix colorthief haishoku colorz
   #   nxi go; go install github.com/thefryscorer/schemer2@latest
@@ -214,7 +231,7 @@ function packages()
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
   # fcn ros
-  # nxi spotify spotify-qt
+  nxi spotify spotify-qt
 
   # fcn quartus
   # TODO: add arm programmer
@@ -229,39 +246,21 @@ function packages()
 
 function packages2()
 {
-  # basics
-  ain wget curl tar unzip software-properties-common git
-  # curl -L https://nixos.org/nix/install | sh -s -- --no-daemon; . ~/.nix-profile/etc/profile.d/nix.sh
-  # ain nix-bin guix; { # guix-setup-systemd # TODO: unfree software
-  #   sudo usermod -aG nix-users $USER
-  # }
+  # TODO: sync dotfiles under user home directory
 
-  # TODO: 'sudo nix' installs under /root. Figure out how to install
-  # under user without daemon running
-  # export PATH=$PATH:/root/.nix-profile/bin
+  # basics
+  ain software-properties-common wget
+  # curl -L https://nixos.org/nix/install | sh -s -- --no-daemon; . ~/.nix-profile/etc/profile.d/nix.sh
+  ain nix-bin; {
+    sudo usermod -aG nix-users $USER
+    sudo nix-daemon >/dev/null 2>&1 & # TODO: never works on the first run
+    # export PATH=$PATH:~/.local/state/nix/profile/bin
+  }
+
+  # TODO: run guix daemon
+  # https://guix.gnu.org/manual/en/html_node/Invoking-guix_002ddaemon.html
+  # https://hiphish.github.io/blog/2020/11/20/guix-daemon-for-runit/
   # gin nyxt
-  # ppa ppa:mozillateam/ppa; {
-  #   # https://askubuntu.com/a/1404401
-  #   echo '
-  #   Package: *
-  #   Pin: release o=LP-PPA-mozillateam
-  #   Pin-Priority: 1001
-  #
-  #   Package: firefox
-  #   Pin: version 1:1snap*
-  #   Pin-Priority: -1
-  #   ' | sudo tee /etc/apt/preferences.d/mozilla-firefox
-  # }
-  # nxi firefox
-  # ain firefox; {
-  #   fcn ff_profile
-  #   ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-  #     facebook-container news-feed-eradicator archlinux-wiki-search
-  # }
-  # ain thunderbird; # {
-  #   # fcn tb_profile
-  #   # tbe darkreader tbsync eas-4-tbsync
-  # }
   # pix pywal16; {
   #   ain imagemagick; pix colorthief haishoku colorz
   #   nxi go; go install github.com/thefryscorer/schemer2@latest
@@ -269,7 +268,6 @@ function packages2()
   # ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
 
   # fcn ros
-  # nxi spotify spotify-qt
   # fcn quartus
   # TODO: add arm programmer
 }

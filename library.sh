@@ -329,9 +329,11 @@ function ensure_moz_profile() {
   local CMD=$1
   local DIR=$2
   local CFG=$3
+  # use subshell to kill background browser once loop is complete
   # (
-    $CMD --headless >/dev/null 2>&1 & #; local PID=$!
-    until find $DIR -name '*.default-release*' >/dev/null 2>&1; do sleep 1; done
+    $CMD --headless >/dev/null 2>&1 & local PID=$!
+    until [ "$(find $DIR -name '*.default-release*')" != "" ] >/dev/null 2>&1; do sleep 1; done
+    kill $PID
   # )
   local PRF=$(find $DIR -name '*.default-release*')
   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
@@ -407,9 +409,12 @@ function yyi() { yay  -S --noconfirm --needed $@; }
 function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }
 function nxi() {
+  # TODO: some of these flags should hopefully not be necessary once dotfiles are synced
+  # export NIXPKGS_ALLOW_UNFREE=1
   echo $@ \
     | sed 's/[^ ]* */nixpkgs#&/g' \
-    | xargs nix \
+    | NIXPKGS_ALLOW_UNFREE=1 xargs nix \
+      --use-xdg-base-directories \
       --extra-experimental-features nix-command \
-      --extra-experimental-features flakes profile install
+      --extra-experimental-features flakes profile install --impure
 }
