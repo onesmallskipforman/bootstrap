@@ -170,6 +170,14 @@ function installBakkesExtensions() {
   installWorkshopMapId '1199'  # thundasurges-rings
 }
 
+function install_waspos() {
+  # TODO: need some authentication to get the latest CI builds
+  # See https://wasp-os.readthedocs.io/en/latest/install.html#binary-downloads
+  # See https://stackoverflow.com/questions/27254312/download-github-build-artifact-release-using-wget-curl
+  local DIR=$(mktemp -d)
+  wget -qO- https://github.com/wasp-os/wasp-os/releases/download/v0.4/wasp-os-0.4.1.tar.gz | tar xz -C $DIR --strip-components=1
+}
+
 #===============================================================================
 # CUSTOM INSTALLATION
 #===============================================================================
@@ -384,16 +392,19 @@ function cln() {
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
 }
 function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
+function coi() { cargo install $@; }
 function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
-function pix() { sudo pipx install --global --force $@; }
+# function pxi() { sudo pipx install --global --force $@; }
+function pxi() { pipx install --force $@; }
 # TODO: (maybe instead of ghb use wget to overwrite dir or just add submodules to dotfiles)
 function ghb() { cln "https://github.com/$1.git"; }
-function gin() { guix install $@; }
+function goi() { GOPATH=${XDG_DATA_HOME:-~/.local/share}/go go install $@; }
+function gxi() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
 # function pac() { sudo pacman -S --needed --noconfirm $@; }
-function pac() { echo $@ | map sudo pacman -S --needed --noconfirm $@; }
+function pac() { sudo pacman -S --needed --noconfirm $@; }
 function ffe() { echo $@ | map install_ff_extension; }
 function tbe() { echo $@ | map install_tb_extension; }
 

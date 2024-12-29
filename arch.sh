@@ -51,132 +51,129 @@ function packages()
 {
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
+  pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin; pac nix; sudo usermod -aG nix-users $USER
   # aur guix
-  # pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
-  #   sudo chsh -s /bin/zsh $(whoami)
-  # }
-  # pac less which
-  # pac systemd
-  # pac man-db man-pages texinfo
-  # pac inetutils # has hostname commmand in arch
-  # pac gcc make cmake bazel bear
-  # pac pass
-  # pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
-  #   echo '
-  #     [General]
-  #     EnableNetworkConfiguration=true
-  #   ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
-  #   echo '
-  #     # Configuration file for NetworkManager.
-  #     # See "man 5 NetworkManager.conf" for details.
-  #
-  #     [device]
-  #     wifi.scan-rand-mac-address=no
-  #     wifi.backend=iwd
-  #
-  #     [Network]
-  #     NameResolvingService=systemd
-  #   ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
-  #   sudo systemctl enable dhcpcd.service
-  #   sudo systemctl enable iwd.service
-  #   sudo systemctl enable NetworkManager.service
-  # }
-  # pac cifs-utils # tool for mounding temp drives
-  # pac jq
-  # pac xsel xclip
-  # pac fzf ripgrep
-  # pac neovim python-pynvim npm luarocks python-pip
-  # pac calc bc
-  # pac tmux
-  # pac docker; {
-  #   sudo systemctl enable docker.service
-  #   sudo groupadd -f docker
-  #   sudo usermod -aG docker $USER
-  # }
-  # aur autojump
-  # pac htop
-  # pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
-  # pac brightnessctl # brightness control
-  # pac redshift
-  # pac pipewire pipewire-audio pipewire-pulse wireplumber; {
-  #   pac pavucontrol pulsemixer # audio controllers
-  #   pac pipewire-libcamera # not needed but the wireplumber binary complains
-  #   pac sof-firware # not sure if needed
-  #   pac alsa-utils
-  #   systemctl --user daemon-reload
-  #   systemctl --user enable  pipewire pipewire-pulse wireplumber # covers both .service + .socket
-  # }
-  # pac bluez bluez-utils blueman rfkill playerctl; {
-  #   rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
-  #   sudo systemctl enable bluetooth.service
-  # }
-  #
-  # # Desktop Environment
-  # pac xorg xorg-xev xorg-xinit
-  # pac xdotool # for grabbing window names
-  # # TODO: not sure if i need libinput driver or just the binary
-  # pac xf86-input-libinput # allows for sane trackpad expeirence
-  # pac arandr autorandr # xrandr caching and gui
-  # pac rofi; aur rofi-themes-collection-git
-  # pac bspwm sxhkd polybar picom
-  # pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille; {
-  #   sudo pacman -Rdd --noconfirm gnu-free-fonts
-  # }
-  #
-  # # silly terminal scripts to show off
-  # pac figlet; aur figlet-fonts # For writing asciiart text
-  # aur ascii-image-converter; cargo install ascii-gen
-  # pac neofetch
-  # pac fastfetch
-  # pac asciiquarium; aur tty-clock
-  # aur macchina-bin # fetch
-  # aur color-scripts-git
-  #
-  # # essential gui/advanced tui programs
-  # pac alacritty
-  # pac qutebrowser
+  pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
+    sudo chsh -s /bin/zsh $(whoami)
+  }
+  pac less which
+  pac systemd
+  pac man-db man-pages texinfo
+  pac inetutils # has hostname commmand in arch
+  pac gcc make cmake bazel bear
+  pac pass
+  pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
+    echo '
+      [General]
+      EnableNetworkConfiguration=true
+    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
+    echo '
+      # Configuration file for NetworkManager.
+      # See "man 5 NetworkManager.conf" for details.
+
+      [device]
+      wifi.scan-rand-mac-address=no
+      wifi.backend=iwd
+
+      [Network]
+      NameResolvingService=systemd
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
+    sudo systemctl enable dhcpcd.service
+    sudo systemctl enable iwd.service
+    sudo systemctl enable NetworkManager.service
+  }
+  pac cifs-utils # tool for mounding temp drives
+  pac jq
+  pac xsel xclip
+  pac fzf ripgrep
+  pac neovim python-pynvim npm luarocks python-pip
+  pac calc bc
+  pac tmux
+  pac docker; {
+    sudo systemctl enable docker.service
+    sudo groupadd -f docker
+    sudo usermod -aG docker $USER
+  }
+  aur autojump
+  pac htop
+  pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
+  pac brightnessctl # brightness control
+  pac redshift
+  pac pipewire pipewire-audio pipewire-pulse wireplumber; {
+    pac pavucontrol pulsemixer # audio controllers
+    pac pipewire-libcamera # not needed but the wireplumber binary complains
+    pac sof-firware # not sure if needed
+    pac alsa-utils
+    systemctl --user daemon-reload
+    systemctl --user enable  pipewire pipewire-pulse wireplumber # covers both .service + .socket
+  }
+  pac bluez bluez-utils blueman rfkill playerctl; {
+    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
+    sudo systemctl enable bluetooth.service
+  }
+
+  # Desktop Environment
+  pac xorg xorg-xev xorg-xinit
+  pac xdotool # for grabbing window names
+  # TODO: not sure if i need libinput driver or just the binary
+  pac xf86-input-libinput # allows for sane trackpad expeirence
+  pac arandr autorandr # xrandr caching and gui
+  pac rofi; aur rofi-themes-collection-git
+  pac bspwm sxhkd polybar picom
+  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille; {
+    sudo pacman -Rdd --noconfirm gnu-free-fonts
+  }
+
+  # silly terminal scripts to show off
+  pac figlet; aur figlet-fonts # For writing asciiart text
+  aur ascii-image-converter; cargo install ascii-gen
+  pac neofetch
+  pac fastfetch
+  pac asciiquarium; aur tty-clock
+  aur macchina-bin # fetch
+  aur color-scripts-git
+
+  # essential gui/advanced tui programs
+  pac alacritty
+  pac qutebrowser
   pac firefox; fcn ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search
   }
   pac thunderbird; fcn tb_profile; tbe darkreader tbsync eas-4-tbsync
-  # pac maim     # screenshot utility
-  # pac ffmpeg   # screen record utility
-  # pac feh sxiv # image viewer
-  # pac mpv      # video player
-  # pac zathura zathura-pdf-poppler; fcn zathura_pywal
-  # aur joshuto-bin
-  # pix pywal16 --pip-args \
-  #   'haishoku fast_colorthief modern_colorthief colorthief colorz'; {
-  #   pac imagemagick
-  #   cargo install okthief
-  #   GOPATH=$XDG_DATA_HOME/go go install github.com/thefryscorer/schemer2@latest
-  #   wal --cols16 lighten --backend wal
-  # }
-  #
-  # # gaming/school/work
-  # pac steam; aur steamcmd
-  # aur minecraft-launcher
-  # pac nvidia-open lib32-nvidia-utils; {
-  #   sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
-  #   sudo mkinitcpio -P
-  # }
-  # aur signal-desktop
-  # pac spotify-launcher
-  # pac discord; aur vesktop-bin
-  # pac perl; fcn texlive; {
-  #   pac enscript    # converts textfile to postscript (use with ps2pdf)
-  #   pac entr        # run arbitrary commands when files change, for live edit
-  #   pac ghostscript # installs ps2pdf
-  #   pac inkscape    # for latex drawings
-  # }
-  # aur zoom slack-desktop
-  # aur scilab-bin
-  # aur arm-none-eabi-gcc stm32cubeprog; pac libopenecm3 stlink openocd
-  # # sudo usermod -aG uucp skipper # for access to /dev/ttyUSB0
-  # # aur quartus-130 # FIX: broken build
-  # # aur itd-bin siglo # pinetime dev tools # TODO:lengthy builds
+  pac maim     # screenshot utility
+  pac ffmpeg   # screen record utility
+  pac feh sxiv # image viewer
+  pac mpv      # video player
+  pac zathura zathura-pdf-poppler; fcn zathura_pywal
+  aur joshuto-bin
+  pxi 'pywal16[all]'; {
+    ain imagemagick; coi okthief; goi github.com/thefryscorer/schemer2@latest
+  }
+
+  # gaming/school/work
+  pac steam; aur steamcmd
+  aur minecraft-launcher
+  pac nvidia-open lib32-nvidia-utils; {
+    sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
+    sudo mkinitcpio -P
+  }
+  aur signal-desktop
+  pac spotify-launcher
+  pac discord; aur vesktop-bin
+  pac perl; fcn texlive; {
+    pac enscript    # converts textfile to postscript (use with ps2pdf)
+    pac entr        # run arbitrary commands when files change, for live edit
+    pac ghostscript # installs ps2pdf
+    pac inkscape    # for latex drawings
+  }
+  aur zoom slack-desktop
+  aur scilab-bin
+  aur arm-none-eabi-gcc stm32cubeprog; pac libopenecm3 stlink openocd
+  # sudo usermod -aG uucp skipper # for access to /dev/ttyUSB0
+  # aur quartus-130 # FIX: broken build
+  # aur itd-bin siglo # pinetime dev tools # TODO:lengthy builds
 }
 
 #===============================================================================
