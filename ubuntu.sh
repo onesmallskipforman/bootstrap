@@ -7,11 +7,15 @@ source library.sh
 # TODO: split up prepRoot and getSudo functions
 function prepRoot() {
   # everything needed to run as user
-  apt update -y; apt install -y sudo
+  apt update -y; apt install -y sudo locales
   USER=$1
   useradd -m $USER || echo "User $USER exists"; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
+
+  locale-gen en_US en_US.UTF-8
+  update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+  export LANG=en_US.UTF-8
 
   # NOTE: required for nix multi-user setup. installing nix runs createes this
   # group automatically, id prefer to keep this close to installing nix, but an
@@ -23,14 +27,10 @@ function prepRoot() {
 
 function prep(){
   sudo apt update -y
-  # sudo apt full-upgrade -y
+  sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
-
 }
-
-
-
 
 #===============================================================================
 # POST-INSTALL CONFIGS
@@ -76,6 +76,7 @@ function install_quartus() {
 }
 
 function get_ros2() {
+  ppa universe
   local KEYRING=/usr/share/keyrings/ros-archive-keyring.gpg
   sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o $KEYRING
   echo "
@@ -120,6 +121,11 @@ function packages()
   ppa ppa:git-core/ppa; ain git
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
+    # TODO: make a little more robust
+    # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
+    # only contents be setting ZDOTDIR, then move all other env setup to
+    # .zprofile (which can just point to or source a generic shell profile).
+    echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
   }
   ain less which
   ain systemd
@@ -227,6 +233,7 @@ function packages()
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
+  goi github.com/ankitpokhrel/jira-cli/cmd/jira@latest
   nxi spotify spotify-qt
   fcn texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)

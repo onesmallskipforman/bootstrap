@@ -164,7 +164,14 @@ packages() {
     brw "wget"
     brw "xorriso" # for making custom ubuntu preseed
     brw "youtube-dl"
-    brw "zsh-autosuggestions" "zsh-syntax-highlighting"
+    brw "zsh" "zsh-autosuggestions" "zsh-syntax-highlighting"; {
+      sudo chsh -s /bin/zsh $(whoami)
+      # TODO: make a little more robust
+      # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
+      # only contents be setting ZDOTDIR, then move all other env setup to
+      # .zprofile (which can just point to or source a generic shell profile).
+      echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zshenv >/dev/null
+    }
     brw "dmenu-mac"
     brw "firefox" && firefox -setDefaultBrowser -silent
     brw "fliqlo" # screensaver

@@ -69,14 +69,6 @@ function syncDots() {
         -mindepth 1 -maxdepth 1 -not -path '*.git*' -not -path '*README.md'
   } | sed "s;$DOTS/;;g")
 
-  # TODO: make a little more robust
-  # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
-  # only contents be setting ZDOTDIR, then move all other env setup to
-  # .zprofile (which can just point to or source a generic shell profile).
-  local ZENV=$([ $(uname) = "Darwin" ] && echo /etc/zshenv || echo /etc/zsh/zshenv)
-  sudo mkdir -p $(dirname $ZENV)
-  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a $ZENV >/dev/null
-
   # find if targets exist and copy their contents to dotfiles
   echo "$TARGETS" | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null || true
   # remove existing from home
