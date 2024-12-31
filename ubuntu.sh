@@ -4,12 +4,21 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
+# TODO: split up prepRoot and getSudo functions
 function prepRoot() {
+  # everything needed to run as user
   apt update -y; apt install -y sudo
   USER=$1
   useradd -m $USER || echo "User $USER exists"; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
+
+  # NOTE: required for nix multi-user setup. installing nix runs createes this
+  # group automatically, id prefer to keep this close to installing nix, but an
+  # intermediate login is required between the creation of the group and
+  # installing packages with multi-user nix
+  ain nix-bin nix-setup-systemd; nix-daemon >/dev/null 2>&1 &
+  groupadd -f nix-users; usermod -aG nix-users $USER
 }
 
 function prep(){
@@ -17,6 +26,7 @@ function prep(){
   # sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
+
 }
 
 
@@ -101,24 +111,20 @@ function packages()
   # basics
   ain wget curl tar unzip software-properties-common
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
+  # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
+
   ain unminimize; yes | sudo unminimize
+  ain man-db manpages texinfo
   ppa ppa:longsleep/golang-backports; ain golang-go
-  ain rustc cargo
+  ain rustc
   ppa ppa:git-core/ppa; ain git
-  # curl -L https://nixos.org/nix/install | sh -s -- --no-daemon; . ~/.nix-profile/etc/profile.d/nix.sh
-  ain nix-bin; {
-    sudo usermod -aG nix-users $USER
-    sudo nix-daemon >/dev/null 2>&1 & # TODO: never works on the first run
-    # export PATH=$PATH:~/.local/state/nix/profile/bin
-  }
-  ain guix # guix-setup-systemd # TODO: guix unfree software
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
   }
   ain less which
   ain systemd
-  ain man-db manpages texinfo
-  ain gcc make cmake bear # TODO: bazel
+  ain gcc make cmake bear
+  deb https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-amd64.deb
   ain dhcpcd iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
@@ -148,8 +154,7 @@ function packages()
   ain tmux
   ain docker.io; {
     sudo systemctl enable docker.service
-    sudo groupadd -f docker
-    sudo usermod -aG docker $USER
+    sudo groupadd -f docker; sudo usermod -aG docker $USER
   }
   ain autojump
   ain htop
@@ -190,7 +195,6 @@ function packages()
 
   # essential gui/advanced tui programs
   ain alacritty
-  # gxn nyxt
   ppa ppa:mozillateam/ppa; {
     # https://askubuntu.com/a/1404401
     echo '
@@ -217,42 +221,22 @@ function packages()
   ain mpv      # video player
   ain zathura zathura-pdf-poppler; fcn zathura_pywal
   nxi joshuto
-  pxi 'pywal16[all]'; {
-    ain imagemagick
-    # coi okthief # FIX: error
-    # goi github.com/thefryscorer/schemer2@latest # FIX: can't run from root-owned directory
-  }
-
+  pxi 'pywal16[all]'; ain imagemagick
   ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
 
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
-  get_ros2
   nxi spotify spotify-qt
-
-  # TODO: add arm programmer
-  ain gcc-arm-none-eabi
   fcn texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit
     ain ghostscript # installs ps2pdf
     ppa ppa:inkscape.dev/stable; ain inkscape # for latex drawings
   }
-}
 
-function packages()
-{
-  # TODO: sync dotfiles under user home directory
-
-  # basics
-  ain software-properties-common wget curl
-
-  # TODO: run guix daemon
-  # https://guix.gnu.org/manual/en/html_node/Invoking-guix_002ddaemon.html
-  # https://hiphish.github.io/blog/2020/11/20/guix-daemon-for-runit/
-  # gxi nyxt
-  # ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install # ubuntu-drivers list
+  get_ros2
+  ain gcc-arm-none-eabi
 }
 
 #===============================================================================

@@ -70,17 +70,15 @@ function syncDots() {
   } | sed "s;$DOTS/;;g")
 
   # TODO: make a little more robust
-  # TODO: alternative: leave $HOME/.zshrc WITHOUT a symlink and have its
+  # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
   # only contents be setting ZDOTDIR, then move all other env setup to
-  # .zprofile.
-  echo 'export ZDOTDIR=$HOME/.config/zsh' | {
-    [ $(uname) = "Darwin" ] \
-      && sudo tee -a /etc/zshenv >/dev/null \
-      || sudo tee -a /etc/zsh/zshenv >/dev/null
-  }
+  # .zprofile (which can just point to or source a generic shell profile).
+  local ZENV=$([ $(uname) = "Darwin" ] && echo /etc/zshenv || echo /etc/zsh/zshenv)
+  sudo mkdir -p $(dirname $ZENV)
+  echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a $ZENV >/dev/null
 
   # find if targets exist and copy their contents to dotfiles
-  echo "$TARGETS" | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null
+  echo "$TARGETS" | xargs -r -I{} cp -rT $HOME/{} $DOTS/{} 2>/dev/null || true
   # remove existing from home
   echo "$TARGETS" | xargs -I{} sudo rm -rf $HOME/{}
   # ensure directories exist
@@ -222,6 +220,12 @@ function install_drivers() {
 #===============================================================================
 # PACKAGE INSTALLATION
 #===============================================================================
+
+getNixSingleUser() {
+  curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
+  . ~/.nix-profile/etc/profile.d/nix.sh
+  export PATH=$PATH:~/.local/state/nix/profile/bin
+}
 
 nerdfont_install() {
   local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
@@ -401,6 +405,7 @@ function pxi() { pipx install --force $@; }
 # TODO: (maybe instead of ghb use wget to overwrite dir or just add submodules to dotfiles)
 function ghb() { cln "https://github.com/$1.git"; }
 function goi() { GOPATH=${XDG_DATA_HOME:-~/.local/share}/go go install $@; }
+# TODO: guix unfree software: https://gitlab.com/nonguix/nonguix
 function gxi() { guix install $@; }
 function fcn() { echo $@ | map custom_install; }
 # function pac() { sudo pacman -S --needed --noconfirm $@; }
@@ -421,7 +426,6 @@ function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }
 function nxi() {
   # TODO: some of these flags should hopefully not be necessary once dotfiles are synced
-  # export NIXPKGS_ALLOW_UNFREE=1
   echo $@ \
     | sed 's/[^ ]* */nixpkgs#&/g' \
     | NIXPKGS_ALLOW_UNFREE=1 xargs nix \
