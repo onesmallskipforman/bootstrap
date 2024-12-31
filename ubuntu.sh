@@ -4,7 +4,6 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-# TODO: split up prepRoot and getSudo functions
 function prepRoot() {
   # everything needed to run as user
   apt update -y; apt install -y sudo locales
@@ -122,7 +121,7 @@ function packages()
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
     # TODO: make a little more robust
-    # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
+    # alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
     # only contents be setting ZDOTDIR, then move all other env setup to
     # .zprofile (which can just point to or source a generic shell profile).
     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
@@ -190,13 +189,13 @@ function packages()
   ain fontconfig; fcn fonts
 
   # silly terminal scripts to show off
-  ain figlet; ghb xero/figlet-fonts # For writing asciiart text # TODO: replace ghb
+  ain figlet; ghb xero/figlet-fonts # For writing asciiart text
   ain tty-clock # terminal digial clock
   ain neofetch
   ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
   ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
   nxi macchina # fetch
-  ghb stark/Color-Scripts # colorscripts  # TODO: may need to check this shows up in path
+  ghb stark/Color-Scripts # TODO: not in PATH
   nxi ueberzugpp
 
   # essential gui/advanced tui programs
@@ -235,7 +234,7 @@ function packages()
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
   goi github.com/ankitpokhrel/jira-cli/cmd/jira@latest
   nxi spotify spotify-qt
-  fcn texlive; {
+  get_texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit
     ain ghostscript # installs ps2pdf

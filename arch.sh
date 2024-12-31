@@ -167,7 +167,7 @@ function packages()
   aur signal-desktop
   pac spotify-launcher
   pac discord; aur vesktop-bin
-  pac perl; fcn texlive; {
+  pac perl; get_texlive; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
     pac entr        # run arbitrary commands when files change, for live edit
     pac ghostscript # installs ps2pdf
