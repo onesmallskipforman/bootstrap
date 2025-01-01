@@ -10,6 +10,10 @@ function prepRoot() {
   useradd -m $USER; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
+
+  sed -i '/en_US.UTF-8 UTF-8/s/#//g' /etc/locale.gen
+  locale-gen
+  echo "LANG=en_US.UTF-8" > /etc/locale.conf
 }
 
 function prep() {
@@ -69,10 +73,12 @@ function packages()
   pac gcc make cmake bazel bear
   pac pass
   pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
+    mkdir -p /etc/iwd
     echo '
       [General]
       EnableNetworkConfiguration=true
     ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
+    mkdir -p /etc/NetworkManager
     echo '
       # Configuration file for NetworkManager.
       # See "man 5 NetworkManager.conf" for details.
@@ -121,8 +127,7 @@ function packages()
   # Desktop Environment
   pac xorg xorg-xev xorg-xinit
   pac xdotool # for grabbing window names
-  # TODO: not sure if i need libinput driver or just the binary
-  pac xf86-input-libinput # allows for sane trackpad expeirence
+  pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom

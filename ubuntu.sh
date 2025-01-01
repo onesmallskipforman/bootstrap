@@ -13,7 +13,7 @@ function prepRoot() {
   chown $USER /home/$USER; chmod ug+w /home/$USER
 
   locale-gen en_US en_US.UTF-8
-  update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+  update-locale LANG=en_US.UTF-8
   export LANG=en_US.UTF-8
 
   # NOTE: required for nix multi-user setup. installing nix runs createes this
@@ -181,8 +181,7 @@ function packages()
   # Desktop Environment
   ain xorg xinit x11-utils # x11-utils contains xev
   ain xdotool # for grabbing window names
-  # TODO: not sure if i need libinput driver or just the binary
-  ain xserver-xorg-input-libinput # allows for sane trackpad expeirence
+  ain xserver-xorg-input-libinput xinput # allows for sane trackpad expeirence
   ain arandr autorandr # xrandr caching and gui
   ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom
