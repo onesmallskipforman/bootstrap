@@ -169,6 +169,7 @@ function packages()
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
   }
+  pac gimp
   aur signal-desktop
   pac spotify-launcher
   pac discord; aur vesktop-bin
