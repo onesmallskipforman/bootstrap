@@ -101,7 +101,7 @@ function packages()
   pac neovim python-pynvim npm luarocks python-pip
   pac calc bc
   pac tmux
-  pac docker; {
+  pac docker docker-buildx docker-compose; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker
     sudo usermod -aG docker $USER
