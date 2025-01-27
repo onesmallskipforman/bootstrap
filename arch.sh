@@ -164,7 +164,7 @@ function packages()
 
   # gaming/school/work
   pac steam; aur steamcmd
-  aur minecraft-launcher
+  pac prismlauncher
   pac nvidia-open lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
