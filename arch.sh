@@ -149,7 +149,7 @@ function packages()
   pac qutebrowser
   pac firefox; fcn ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-      facebook-container news-feed-eradicator archlinux-wiki-search
+      facebook-container news-feed-eradicator archlinux-wiki-search ublacklist
   }
   pac thunderbird; fcn tb_profile; tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
