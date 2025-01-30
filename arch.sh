@@ -171,7 +171,10 @@ function packages()
   }
   pac gimp
   aur signal-desktop
-  pac spotify-launcher
+  aur spotify yet-another-spotify-tray-git; {
+    aur spicetify spotify-player-full
+    pac ncspot
+  }
   pac discord; aur vesktop-bin
   pac perl; get_texlive; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
