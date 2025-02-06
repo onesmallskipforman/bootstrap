@@ -161,6 +161,7 @@ function packages()
   pxi 'pywal16[all]'; {
     ain imagemagick; coi okthief; goi github.com/thefryscorer/schemer2@latest
   }
+  aur wallust
 
   # gaming/school/work
   pac steam; aur steamcmd
