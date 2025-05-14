@@ -98,7 +98,7 @@ function packages()
   pac jq
   pac xsel xclip
   pac fzf ripgrep
-  pac neovim python-pynvim npm luarocks python-pip
+  pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli
   pac calc bc
   pac tmux
   pac docker docker-buildx docker-compose; {

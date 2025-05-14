@@ -85,7 +85,7 @@ function get_ros2() {
   " | awk '{$1=$1;print}' | tr '\n' ' ' \
     | sudo tee /etc/apt/sources.list.d/ros2.list
   sudo apt update -y
-  ain ros-*-ros-base ros-dev-tools python3-argcomplete
+  # ain ros-*-ros-base ros-dev-tools python3-argcomplete
 }
 
 #===============================================================================
@@ -113,7 +113,7 @@ function packages()
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
 
-  ain unminimize; yes | sudo unminimize
+  # ain unminimize; yes | sudo unminimize
   ain man-db manpages texinfo
   ppa ppa:longsleep/golang-backports; ain golang-go
   ain rustc
@@ -126,11 +126,11 @@ function packages()
     # .zprofile (which can just point to or source a generic shell profile).
     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
   }
-  ain less which
+  ain less
   ain systemd
   ain gcc make cmake bear
   deb https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-amd64.deb
-  ain dhcpcd iwd network-manager; { # network-manager includes nmtui
+  ain dhcpcd5 iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
       EnableNetworkConfiguration=true
@@ -154,7 +154,7 @@ function packages()
   ain jq
   ain xsel xclip
   ain fzf ripgrep
-  ain neovim python3-pynvim npm xsel xclip calc
+  ain neovim python3-pynvim npm xsel xclip calc; nxi tree-sitter
   ain calc bc
   ain tmux
   ain docker.io; {
@@ -165,7 +165,7 @@ function packages()
   ain htop
   ain openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   ain brightnessctl # brightness control
-  ain redshift
+  nxi redshift # apt's redshift currently does not work
   ain pipewire pipewire-audio pipewire-pulse wireplumber; {
     ain pavucontrol pulsemixer # audio controllers
     ain pipewire-libcamera # not needed but the wireplumber binary complains
