@@ -53,6 +53,17 @@ function install_steamgames() {
 
 function packages()
 {
+
+  # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#With_version
+  # list all explicitly installed packages
+  # pacman -Qe
+  # list all explcitly installed packages that arent required by other packages
+  # pacman -Qe -t
+  # list all foreign packages
+  # pacman -Qm
+  # list all native packages that are not direct or optional dependencies
+  # pacman -Qent
+
   # basics
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
