@@ -35,7 +35,6 @@ function install_steamgames() {
   # change RL's proton version
   aur --rebuild bakkesmod-steam; ln -sfT \
     $HOME/.config/bakkesmod \
-
     $HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod/cfg
   installBakkesExtensions
 }
@@ -68,7 +67,8 @@ function packages()
     # TODO: alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
     # only contents be setting ZDOTDIR, then move all other env setup to
     # .zprofile (which can just point to or source a generic shell profile).
-    echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
+    echo 'export ZDOTDIR=$HOME/.config/zsh' \
+      | sudo tee -a /etc/zsh/zshenv >/dev/null
   }
   pac less which
   pac systemd
@@ -121,7 +121,7 @@ function packages()
     pac sof-firware # not sure if needed
     pac alsa-utils
     systemctl --user daemon-reload
-    systemctl --user enable  pipewire pipewire-pulse wireplumber # covers both .service + .socket
+    systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
   pac bluez bluez-utils blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
@@ -191,7 +191,8 @@ function packages()
   aur scilab-bin
   aur arm-none-eabi-gcc stm32flash stm32cubeprog; pac libopenecm3 stlink openocd
   aur itd-bin siglo # pinetime dev tools
-  aur quartus-free quartus-free-devinfo-cyclone quartus-free-help
+  aur quartus-free \
+    quartus-free-devinfo-cyclone quartus-free-help modelsim-intel-starter
 }
 
 #===============================================================================
