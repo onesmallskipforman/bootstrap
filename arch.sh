@@ -17,11 +17,7 @@ function prepRoot() {
 }
 
 function prep() {
-  # NOTE: does not cover edge cases for .conf contents
-  cat /etc/pacman.conf \
-    | grep -qPzo "(?m)^\[multilib\][^]]*^Include = /etc/pacman.d/mirrorlist" \
-    || echo -e '[multilib]\nInclude = /etc/pacman.d/mirrorlist' \
-      | sudo tee -a /etc/pacman.conf >/dev/null
+  sed -i -e '/#\[multilib\]/,+1s/^#//' /etc/pacman.conf # enable multilib
   sudo pacman -Syu --noconfirm
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
 }
@@ -34,18 +30,15 @@ function install_steamgames() {
   steam_install_game 1493710 # proton experiemental
   steam_install_game 2805730 # proton 9.0
   steam_install_game 252950  # rocket league
-  # installation is dependent on RL's proton version. Game needs to be
-  # configured and run once before installing bakkesmod and after
-  # each time you change RL's proton version
+  # NOTE: installation is dependent on RL's proton version. Game needs to be
+  # configured and run once before installing bakkesmod and after each time you
+  # change RL's proton version
   aur --rebuild bakkesmod-steam; ln -sfT \
     $HOME/.config/bakkesmod \
 
     $HOME/.steam/steam/steamapps/compatdata/252950/pfx/drive_c/users/steamuser/AppData/Roaming/bakkesmod/bakkesmod/cfg
   installBakkesExtensions
 }
-
-
-
 
 #===============================================================================
 # INSTALLATIONS
@@ -197,9 +190,8 @@ function packages()
   aur zoom slack-desktop
   aur scilab-bin
   aur arm-none-eabi-gcc stm32flash stm32cubeprog; pac libopenecm3 stlink openocd
-  # sudo usermod -aG uucp skipper # for access to /dev/ttyUSB0
-  # aur quartus-130 # FIX: broken build
-  # aur itd-bin siglo # pinetime dev tools # TODO:lengthy builds
+  aur itd-bin siglo # pinetime dev tools
+  aur quartus-free quartus-free-devinfo-cyclone quartus-free-help
 }
 
 #===============================================================================
