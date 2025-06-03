@@ -191,8 +191,8 @@ function packages()
   aur scilab-bin
   aur arm-none-eabi-gcc stm32flash stm32cubeprog; pac libopenecm3 stlink openocd
   aur itd-bin siglo # pinetime dev tools
-  aur quartus-free \
-    quartus-free-devinfo-cyclone quartus-free-help modelsim-intel-starter
+  aur quartus-free quartus-free-devinfo-cyclone quartus-free-help
+  pac lib32-libpng12; aur quartus-130 modelsim-intel-starter
 }
 
 #===============================================================================
