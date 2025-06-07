@@ -29,6 +29,7 @@ function prep(){
   sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
+  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 }
 
 #===============================================================================
@@ -85,7 +86,7 @@ function get_ros2() {
   " | awk '{$1=$1;print}' | tr '\n' ' ' \
     | sudo tee /etc/apt/sources.list.d/ros2.list
   sudo apt update -y
-  # ain ros-*-ros-base ros-dev-tools python3-argcomplete
+  ain ros-dev-tools python3-argcomplete ros-jazzy-ros-base # ros-*-ros-base
 }
 
 #===============================================================================
@@ -109,7 +110,7 @@ function gaming()
 function packages()
 {
   # basics
-  ain wget curl tar unzip software-properties-common
+  ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
 
@@ -117,7 +118,7 @@ function packages()
   ain man-db manpages texinfo
   ppa ppa:longsleep/golang-backports; ain golang-go
   ain rustc
-  ppa ppa:git-core/ppa; ain git
+  ppa ppa:git-core/ppa; ain git git-extras
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
     # TODO: make a little more robust
@@ -129,7 +130,7 @@ function packages()
   ain less
   ain systemd
   ain gcc make cmake bear
-  deb https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-amd64.deb
+  nxi bazelisk
   ain dhcpcd5 iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
@@ -155,11 +156,13 @@ function packages()
   ain xsel xclip
   ain fzf ripgrep
   ain neovim python3-pynvim npm xsel xclip calc; nxi tree-sitter
+  ain vim
   ain calc bc
   ain tmux
-  ain docker.io; {
+  ain docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker; sudo usermod -aG docker $USER
+    ain iptables-persistent # TODO: might be needed for docker stuff
   }
   ain autojump
   ain htop
@@ -184,16 +187,16 @@ function packages()
   ain xserver-xorg-input-libinput xinput # allows for sane trackpad expeirence
   ain arandr autorandr # xrandr caching and gui
   ain rofi; ghb newmanls/rofi-themes-collection
-  ain bspwm sxhkd polybar picom
+  ain bspwm sxhkd polybar picom dunst
   ain fontconfig; fcn fonts
 
   # silly terminal scripts to show off
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text
   ain tty-clock # terminal digial clock
   ain neofetch
-  ppa ppa:zhangsongcui3371/fastfetch; ain fastfetch
   ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
-  nxi macchina # fetch
+  nxi macchina fastfetch # fetch
+  ain chafa # terminal graphics TODO: find use case with file browser
   ghb stark/Color-Scripts # TODO: not in PATH
   nxi ueberzugpp
 
@@ -231,7 +234,7 @@ function packages()
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
-  goi github.com/ankitpokhrel/jira-cli/cmd/jira@latest
+  nxi jira-cli-go
   nxi spotify spotify-qt
   get_texlive; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
@@ -242,6 +245,53 @@ function packages()
 
   get_ros2
   ain gcc-arm-none-eabi
+  ain gimp
+
+  # c++ tools
+  # TODO: move to docker environment
+  ain google-perftools doxygen
+  ain clangd clang-format cppcheck
+  ain can-utils
+  ain libc++abi1
+
+  # gp-saml-gui
+  ain python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1
+  pxi --user --upgrade https://github.com/dlenski/gp-saml-gui/archive/master.zip
+
+
+  # advent-of-code tools
+  ain datamash # statistics tool
+  ain rs # reshape data array
+
+  ain gh # github cli
+  nxi nyxt luakit
+
+  # calendars
+  nxi calcure
+  ain ncal
+
+
+  ain pass gnupg # for passwork management
+
+  # needed for different interfaces to enter password
+  # sudo update-alternatives --config pinentry
+  # https://unix.stackexchange.com/a/759603
+  ain pinentry-tty pinentry-curses pinentry-gnome3 pinetry-gtk pinentry-qt
+
+  ain sshpass # non-interactive ssh password authentication
+  ain cifs-utils # for mounting
+
+  # nework scanning: https://askubuntu.com/a/377796
+  ain nmap
+  ain arp-scan net-tools # net-tools has arp
+
+  ain speedtest-cli # speedtest.net by ookla
+  ain xmlto # can convert xml to pdf
+
+  ain haveged # random number generator
+
+
+
 }
 
 #===============================================================================
