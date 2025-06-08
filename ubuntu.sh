@@ -77,15 +77,14 @@ function install_quartus() {
 
 function get_ros2() {
   ppa universe
-  local KEYRING=/usr/share/keyrings/ros-archive-keyring.gpg
-  sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o $KEYRING
-  echo "
-    deb [arch=$(dpkg --print-architecture) signed-by=$KEYRING]
-    http://packages.ros.org/ros2/ubuntu
-    $(. /etc/os-release && echo $UBUNTU_CODENAME) main
-  " | awk '{$1=$1;print}' | tr '\n' ' ' \
-    | sudo tee /etc/apt/sources.list.d/ros2.list
-  sudo apt update -y
+  local ROS_APT_SOURCE_VERSION=$(
+    curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest \
+      | grep -F "tag_name" \
+      | awk -F\" '{print $4}'
+  )
+  curl -L -o /tmp/ros2-apt-source.deb \
+    "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" # If using Ubuntu derivates use $UBUNTU_CODENAME
+  sudo apt install /tmp/ros2-apt-source.deb
   ain ros-dev-tools python3-argcomplete ros-jazzy-ros-base # ros-*-ros-base
 }
 
@@ -188,6 +187,7 @@ function packages()
   ain arandr autorandr # xrandr caching and gui
   ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom dunst
+  nxi polybar sxhkd neovim bspwm thunderbird wget picom
   ain fontconfig; fcn fonts
 
   # silly terminal scripts to show off
@@ -233,7 +233,7 @@ function packages()
 
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
-  deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.41.105/slack-desktop-4.41.105-amd64.deb
+  deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.43.52/slack-desktop-4.43.52-amd64.deb
   nxi jira-cli-go
   nxi spotify spotify-qt
   get_texlive; {
@@ -267,7 +267,7 @@ function packages()
   nxi nyxt luakit
 
   # calendars
-  nxi calcure
+  nxi calcure calcurse
   ain ncal
 
 

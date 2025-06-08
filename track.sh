@@ -1,8 +1,7 @@
 #!/usr/bin/zsh
-# function pac() { echo $@ > pac.txt; }
-# function aur() { echo $@ > aur.txt; }
-# function pxi() { echo $@ > pxi.txt; }
 
+# script that compares packages listed in install scripts to packages installed
+# on the system
 
 function track() {
   OS=$1
@@ -14,25 +13,12 @@ function track() {
     | tr ' ' '\n'
 }
 
-function trackPacman() {
-  track arch pac
+function compare() {
+  PKG=$1; OS=$2
+  comm -13 \
+      <(track ubuntu $PKG | sort -u) \
+      <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
 }
-
-function trackAur() {
-  track arch aur
-  track arch amp
-}
-
-
-function trackPpa() {
-  # track ubuntu ain
-  track ubuntu ppa
-}
-
-function trackApt() {
-  track ubuntu ain
-}
-
 
 function listInstalledPpa() {
   # TODO: does not cover multiverse and universe
@@ -43,29 +29,51 @@ function listInstalledPpa() {
     | awk -F'/' '{print "ppa:"$4"/"$5}'
 }
 
-function listInstalledApt() {
+function listInstalledAin() {
   # TODO: does not cover multiverse and universe
-  comm -23 <(apt-mark showmanual | sort -u) <(gzip -dc /var/log/installer/initial-status.gz | sed -n 's/^Package: //p' | sort -u)
+  comm -23 \
+    <(apt-mark showmanual | sort -u) \
+    <(
+        gzip -dc /var/log/installer/initial-status.gz \
+          | sed -n 's/^Package: //p' \
+          | sort -u
+    )
 }
 
-
-function compareApt() {
-  comm -13 <(trackApt | sort -u) <(listInstalledApt)
+function listInstalledNxi() {
+  nix profile list --json | jq -r '.elements | keys[]'
 }
+function listInstalledAur() { pacman -Qm; }
+function listInstalledPac() { pacman -Qn; }
 
-# trackApt | sort -u
-# echo
-# listInstalledPpa
-# echo
-# comm -13 <(trackPpa | sort -u) <(listInstalledPpa)
-# echo
-compareApt
+echo "Comparing Nix Packages:"
+compare nxi
+echo
+echo "Compare PPA Repositories:"
+compare ppa
+echo
+echo "Compare Apt Packages:"
+compare ain
+echo
+echo "Compare Aur Packages:"
+compare aur
+echo
+echo "Compare Native Pacman Packages:"
+compare pac
 
-# {
-#   trackApt
-# } | sort -u
+# local OS=$(. /etc/os-release && echo $ID)
+
+
 
 # command to list reverse deps of manually-installed packages
 # using apt-mark auto <package> should be sufficient to deal with any reverse dependencies
 # that need to keep the package around
-# ./track.sh | xargs -L1 apt-cache rdepends --installed | sed 's/^[a-z]/\n&/g' > deps.txt
+# compare Apt | xargs -L1 apt-cache rdepends --installed | sed 's/^[a-z]/\n&/g' > deps.txt
+
+# sudo du -ca -BG -tG --max-depth=1 / 2>/dev/null | sort -nr
+
+
+# guix package --list-installed
+# guix gc
+# nix profile list
+# nix-collect-garbage
