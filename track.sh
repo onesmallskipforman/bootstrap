@@ -31,7 +31,14 @@ function track() {
 function compare() {
   local PKG=$1
   local OS=$2
+
+  echo "MISSING FROM SCRIPTS: "
   comm -13 \
+      <(track $OS $PKG | sort -u) \
+      <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
+
+  echo "MISSING FROM SYSTEM: "
+  comm -23 \
       <(track $OS $PKG | sort -u) \
       <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
 }
