@@ -10,14 +10,20 @@ function track() {
   # steps:
   #   cat file
   #   reformat multi-line commands as single-line
+  #   (hack) replace 'amp' with 'aur'
+  #   replace command delimeters with spaces
   #   find all occurances of $CMD
+  #   remove flag arguments
   #   remove $CMD prefix from results
   #   remove trailing whitespace
   #   convert lines with multiple packages into separate lines
   cat $OS.sh \
     | sed -z 's;\\\n;;g' \
-    | grep -o "$CMD [^#;]*" \
-    | sed "s/^$CMD //g" \
+    | sed 's/\(^\|[ ;|&]\+\)amp /aur /g' \
+    | sed "s/[;|&]\+$CMD / $CMD /g" \
+    | grep -o "\(^\| \)$CMD [^#;&|]*" \
+    | sed 's/ --[^ ]*//g' \
+    | sed "s/^ *$CMD //g" \
     | sed 's/ *$//g' \
     | tr ' ' '\n'
 }
@@ -54,7 +60,14 @@ function listInstalledNxi() {
   nix profile list --json | jq -r '.elements | keys[]'
 }
 function listInstalledAur() { pacman -Qqem; }
-function listInstalledPac() { pacman -Qqen; }
+function listInstalledPac() {
+    # list packages
+    # list groups
+    # if all packages
+
+
+    pacman -Qqen;
+}
 
 local OS=$(. /etc/os-release && echo $ID)
 echo "Comparing Nix Packages:"

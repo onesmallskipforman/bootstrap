@@ -58,9 +58,11 @@ function packages()
 
   # basics
   pac base linux linux-firmware
-  pac wget curl tar unzip git python python-pipx go util-linux base-devel
+  pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
+  pac wget curl tar unzip git; pac python python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
-  amp yay-bin paru-bin; pac nix; sudo usermod -aG nix-users $USER
+  amp yay-bin paru-bin;
+  pac nix; aur nix-zsh-completions; sudo usermod -aG nix-users $USER
   # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
@@ -104,6 +106,7 @@ function packages()
   pac xsel xclip
   pac fzf ripgrep; aur python-pyfzf
   pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli
+  pac vim
   pac calc bc
   pac tmux
 
@@ -136,10 +139,11 @@ function packages()
 
   # Desktop Environment
   pac xorg-server xorg-xev xorg-xinit
+  pac xorg-xsetroot # allows for setting cursor icon
   pac xdotool # for grabbing window names
   pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
   pac arandr autorandr # xrandr caching and gui
-  pac rofi; aur rofi-themes-collection-git
+  pac rofi; aur rofi-themes-collection-git rofi-games
   pac bspwm sxhkd polybar picom
   pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille; {
     sudo pacman -Rdd --noconfirm gnu-free-fonts
@@ -151,7 +155,7 @@ function packages()
   pac neofetch
   pac fastfetch
   pac asciiquarium; aur tty-clock
-  aur macchina-bin neofetch # fetch
+  pac macchina; aur neofetch # fetch
   aur ascii-image-converter-bin
   aur color-scripts-git
 
@@ -172,15 +176,19 @@ function packages()
   pxi 'pywal16[all]'; {
     ain imagemagick; coi okthief; goi github.com/thefryscorer/schemer2@latest
   }
-  aur wallust
+  aur wallust hellwal
 
   # gaming/school/work
+
+  # gaming
   pac steam; aur steamcmd
   pac prismlauncher; aur minecraft-launcher
   pac nvidia-open lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
   }
+  aur shadps4-bin
+
   pac gimp
   aur signal-desktop
   aur spotify yet-another-spotify-tray-git; {
@@ -207,29 +215,52 @@ function packages()
   aur aoc-cli
   pac datamash # statistics tool
   aur rs-git # reshape data array
+  aur csvtk-bin # CSV/TSV cli toolkit
 
   # robotics
   aur coolterm-bin tio # serial tools
+  pac minicom picocom  # serial tools
 
   # wayland
   aur lswt way-displays wideriver yambar river-git swhkd-git
   pac hyprland wl-clipboard wlr-randr wlsunset xdg-desktop-portal-hyprland xdg-desktop-portal-wlr
 
+  aur lifxlan-git # LIFX lights
 
   # TODO: sort
   pac dunst
   pac imagemagick
   pac ncdu
-  pac net-tools
+  pac arp-scan net-tools # net-tools has arp command
   pac platformio-core
-  pac refind
+  pac refind grub efibootmgr # TODO: not sure what efibootmgr is for
   pac screen
   pac signal-desktop
   pac sof-firmware
   pac sudo
-  pac fd
-  pac ueberzugpp
+  pac fd # find files
+  pac ueberzugpp # images in terminal
+  nxi joshuto # rust ranger-like file manager
+  nxi st # terminal
+  nxi scheme-full # texlive
+  pac time # time command
+  pac spotifyd
+  pac xorg-xauth
+  pac xorg-xdpyinfo
+  pac xorg-xmodmap
+  pac xorg-xrandr
+  pac xorg-xrdb
+  pac guvcview
+  pac cosmic-terminal # WIP terminal based on alacritty
+  pac pacman-contrib # various pacman utilities
+  pac openssh
 
+  # TODO: not sure if i need these
+  pac lshw
+  pac noto-fonts
+  pac qt6-multimedia
+  pac sdl2-compat
+  pac sndio
 }
 
 #===============================================================================
