@@ -4,9 +4,18 @@
 # on the system
 
 function track() {
-  OS=$1
-  CMD=$2
+  local OS=$1
+  local CMD=$2
+
+  # steps:
+  #   cat file
+  #   reformat multi-line commands as single-line
+  #   find all occurances of $CMD
+  #   remove $CMD prefix from results
+  #   remove trailing whitespace
+  #   convert lines with multiple packages into separate lines
   cat $OS.sh \
+    | sed -z 's;\\\n;;g' \
     | grep -o "$CMD [^#;]*" \
     | sed "s/^$CMD //g" \
     | sed 's/ *$//g' \
@@ -14,9 +23,10 @@ function track() {
 }
 
 function compare() {
-  PKG=$1; OS=$2
+  local PKG=$1
+  local OS=$2
   comm -13 \
-      <(track ubuntu $PKG | sort -u) \
+      <(track $OS $PKG | sort -u) \
       <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
 }
 
@@ -43,25 +53,25 @@ function listInstalledAin() {
 function listInstalledNxi() {
   nix profile list --json | jq -r '.elements | keys[]'
 }
-function listInstalledAur() { pacman -Qm; }
-function listInstalledPac() { pacman -Qn; }
+function listInstalledAur() { pacman -Qqem; }
+function listInstalledPac() { pacman -Qqen; }
 
+local OS=$(. /etc/os-release && echo $ID)
 echo "Comparing Nix Packages:"
-compare nxi
+compare nxi $OS
 echo
 echo "Compare PPA Repositories:"
-compare ppa
+compare ppa $OS
 echo
 echo "Compare Apt Packages:"
-compare ain
+compare ain $OS
 echo
 echo "Compare Aur Packages:"
-compare aur
+compare aur $OS
 echo
 echo "Compare Native Pacman Packages:"
-compare pac
+compare pac $OS
 
-# local OS=$(. /etc/os-release && echo $ID)
 
 
 
@@ -77,3 +87,7 @@ compare pac
 # guix gc
 # nix profile list
 # nix-collect-garbage
+
+# sudo apt autopurge
+# pacman -Qdtq | xargs pacman -Rsnu --noconfirm
+# paru -Qdtq | xargs paru -Rsnu --noconfirm

@@ -57,6 +57,7 @@ function packages()
   # pacman -Qent
 
   # basics
+  pac base linux linux-firmware
   pac wget curl tar unzip git python python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin; pac nix; sudo usermod -aG nix-users $USER
@@ -101,15 +102,20 @@ function packages()
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
-  pac fzf ripgrep
+  pac fzf ripgrep; aur python-pyfzf
   pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli
   pac calc bc
   pac tmux
+
+  # developer environments
   pac docker docker-buildx docker-compose; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker
     sudo usermod -aG docker $USER
   }
+  nxi devenv # consider https://github.com/the-nix-way/dev-templates/tree/main
+
+
   aur autojump
   pac htop
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
@@ -123,13 +129,13 @@ function packages()
     systemctl --user daemon-reload
     systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
-  pac bluez bluez-utils blueman rfkill playerctl; {
+  pac bluez bluez-utils bluez-tools blueman rfkill playerctl bluetui; aur bluetui-bin ; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl enable bluetooth.service
   }
 
   # Desktop Environment
-  pac xorg xorg-xev xorg-xinit
+  pac xorg-server xorg-xev xorg-xinit
   pac xdotool # for grabbing window names
   pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
   pac arandr autorandr # xrandr caching and gui
@@ -145,7 +151,8 @@ function packages()
   pac neofetch
   pac fastfetch
   pac asciiquarium; aur tty-clock
-  aur macchina-bin # fetch
+  aur macchina-bin neofetch # fetch
+  aur ascii-image-converter-bin
   aur color-scripts-git
 
   # essential gui/advanced tui programs
@@ -169,7 +176,7 @@ function packages()
 
   # gaming/school/work
   pac steam; aur steamcmd
-  pac prismlauncher
+  pac prismlauncher; aur minecraft-launcher
   pac nvidia-open lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
@@ -178,6 +185,7 @@ function packages()
   aur signal-desktop
   aur spotify yet-another-spotify-tray-git; {
     aur spicetify spotify-player-full
+    aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
     pac ncspot
   }
   pac discord; aur vesktop-bin
@@ -189,10 +197,39 @@ function packages()
   }
   aur zoom slack-desktop
   aur scilab-bin
-  aur arm-none-eabi-gcc stm32flash stm32cubeprog; pac libopenecm3 stlink openocd
+  pac arm-none-eabi-gcc libopenecm3 stlink openocd; aur gcc-arm-none-eabi-bin stm32flash stm32cubeprog
   aur itd-bin siglo # pinetime dev tools
   aur quartus-free quartus-free-devinfo-cyclone quartus-free-help
   pac lib32-libpng12; aur quartus-130 modelsim-intel-starter
+
+
+  # advent-of-code
+  aur aoc-cli
+  pac datamash # statistics tool
+  aur rs-git # reshape data array
+
+  # robotics
+  aur coolterm-bin tio # serial tools
+
+  # wayland
+  aur lswt way-displays wideriver yambar river-git swhkd-git
+  pac hyprland wl-clipboard wlr-randr wlsunset xdg-desktop-portal-hyprland xdg-desktop-portal-wlr
+
+
+  # TODO: sort
+  pac dunst
+  pac imagemagick
+  pac ncdu
+  pac net-tools
+  pac platformio-core
+  pac refind
+  pac screen
+  pac signal-desktop
+  pac sof-firmware
+  pac sudo
+  pac fd
+  pac ueberzugpp
+
 }
 
 #===============================================================================
