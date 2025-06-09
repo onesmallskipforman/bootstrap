@@ -219,25 +219,6 @@ getNixSingleUser() {
   export PATH=$PATH:~/.local/state/nix/profile/bin
 }
 
-nerdfont_install() {
-  local URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/$1.tar.xz"
-  local DIR=$( [ $(uname) = "Darwin" ] \
-    && echo ~/Library/Fonts \
-    || echo ~/.local/share/fonts)/$(echo $1 | sed 's/.*/\l&/')
-  mkdir -p $DIR
-  wget -qO- --show-progress $URL | xz -d | tar xvf - -C $DIR --wildcards "*.[ot]tf"
-  # wget -qO- --show-progress $URL | tar Jxvf - # NOTE: this version requires gnu tar
-}
-
-install_fonts() {
-  # TODO: consider https://github.com/getnf/getnf/tree/main
-  ndf Hack SourceCodePro UbuntuMono
-}
-
-install_getnf() {
-  curl -fsSL https://raw.githubusercontent.com/getnf/getnf/main/install.sh | bash
-}
-
 # TODO: relying on env var can make results vary between root and user
 function get_texlive() {
   local HOME=~/skipper
@@ -280,23 +261,6 @@ function install_guix() {
   #
   #
   # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
-}
-
-# TODO: replace version with latest
-function install_fzf() {
-  local URL=https://github.com/junegunn/fzf/archive/refs/tags/v0.55.0.tar.gz
-  local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  $DIR/install --bin
-  cp $DIR/bin/fzf $HOME/.local/bin 2>/dev/null
-}
-
-function install_zathura_pywal() {
-  local SHA="f5b6d4a452079d9b2cde070ac3b8c742b6952703"
-  local URL="https://github.com/matthewlscarlson/zathura-pywal/archive/$SHA.tar.gz"
-  local DIR=$(mktemp -d)
-  wget -qO- $URL | tar xz -C $DIR --strip-components=1
-  sudo make -C $DIR install
 }
 
 function install_ff_extension() {
@@ -389,7 +353,6 @@ function cln() {
 }
 function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
 function coi() { cargo install $@; }
-function ndf() { echo $@ | map nerdfont_install; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
 # function pxi() { sudo pipx install --global --force $@; }
@@ -399,8 +362,6 @@ function ghb() { cln "https://github.com/$1.git"; }
 function goi() { GOPATH=${XDG_DATA_HOME:-~/.local/share}/go go install $@; }
 # TODO: guix unfree software: https://gitlab.com/nonguix/nonguix
 function gxi() { guix install $@; }
-function fcn() { echo $@ | map custom_install; }
-# function pac() { sudo pacman -S --needed --noconfirm $@; }
 function pac() { sudo pacman -S --needed --noconfirm $@; }
 function ffe() { echo $@ | map install_ff_extension; }
 function tbe() { echo $@ | map install_tb_extension; }

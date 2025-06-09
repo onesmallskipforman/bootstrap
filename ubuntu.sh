@@ -188,13 +188,18 @@ function packages()
   ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom dunst
   nxi polybar sxhkd neovim bspwm thunderbird wget picom
-  ain fontconfig; fcn fonts
+  ain fontconfig; {
+    nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
+    fc-cache -rv
+
+  }
+
 
   # silly terminal scripts to show off
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text
   ain tty-clock # terminal digial clock
   ain neofetch
-  ppa ppa:ytvwld/asciiquarium; ain asciiquarium tty-clock
+  ain tty-clock; nxi asciiquarium pipes
   nxi macchina fastfetch # fetch
   ain chafa # terminal graphics TODO: find use case with file browser
   ghb stark/Color-Scripts # TODO: not in PATH
@@ -214,11 +219,11 @@ function packages()
       Pin-Priority: -1
     ' | awk '{$1=$1;print}' | sudo tee /etc/apt/preferences.d/mozilla-firefox
     ain firefox
-    fcn ff_profile
+    install_ff_profile
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search
     ain thunderbird
-    fcn tb_profile
+    install_tb_profile
     tbe darkreader tbsync eas-4-tbsync
   }
   ain qutebrowser
@@ -226,7 +231,7 @@ function packages()
   ain ffmpeg   # screen record utility # TODO: consider fbcat
   ain feh sxiv # image viewer
   ain mpv      # video player
-  ain zathura zathura-pdf-poppler; fcn zathura_pywal
+  ain zathura zathura-pdf-poppler
   nxi joshuto
   pxi 'pywal16[all]'; ain imagemagick
   ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'

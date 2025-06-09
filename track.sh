@@ -9,7 +9,7 @@ function track() {
 
   # steps:
   #   cat file
-  #   reformat multi-line commands as single-line
+  #   reformat multi-line shell commands as single-line
   #   (hack) replace 'amp' with 'aur'
   #   replace command delimeters with spaces
   #   find all occurances of $CMD
@@ -104,3 +104,16 @@ compare pac $OS
 # sudo apt autopurge
 # pacman -Qdtq | xargs pacman -Rsnu --noconfirm
 # paru -Qdtq | xargs paru -Rsnu --noconfirm
+
+
+
+
+# track fonts
+# fc-list ':' file # TODO: not really usre what "':' file" does
+# fc-list
+
+# get font name
+# fc-query -f '%{family[0]}\n' <path-to-font-file>
+
+# helpful
+# nix search nixpkgs 'nerd-fonts\.' --json | jq -r '. | keys[]' | fzf | xargs -I{} nix profile install nixpkgs#{}

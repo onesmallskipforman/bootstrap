@@ -145,8 +145,11 @@ function packages()
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git rofi-games
   pac bspwm sxhkd polybar picom
-  pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd; aur ttf-ubraille; {
+  pac fontconfig; {
+    pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd
+    aur ttf-ubraille
     sudo pacman -Rdd --noconfirm gnu-free-fonts
+    fc-cache -rv
   }
 
   # silly terminal scripts to show off
@@ -162,16 +165,16 @@ function packages()
   # essential gui/advanced tui programs
   pac alacritty
   pac qutebrowser
-  pac firefox; fcn ff_profile; {
+  pac firefox; install_ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search ublacklist
   }
-  pac thunderbird; fcn tb_profile; tbe darkreader tbsync eas-4-tbsync
+  pac thunderbird; install_tb_profile; tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
   pac ffmpeg   # screen record utility
   pac feh sxiv # image viewer
   pac mpv      # video player
-  pac zathura zathura-pdf-poppler; fcn zathura_pywal
+  pac zathura zathura-pdf-poppler
   aur joshuto-bin
   pxi 'pywal16[all]'; {
     ain imagemagick; coi okthief; goi github.com/thefryscorer/schemer2@latest
