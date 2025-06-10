@@ -111,6 +111,7 @@ function packages()
   # basics
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
+  # TODO: consider installing pipx with nix
   # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
 
   # ain unminimize; yes | sudo unminimize

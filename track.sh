@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/bash
 
 # script that compares packages listed in install scripts to packages installed
 # on the system
@@ -36,7 +36,7 @@ function compare() {
   comm -13 \
       <(track $OS $PKG | sort -u) \
       <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
-
+  echo
   echo "MISSING FROM SYSTEM: "
   comm -23 \
       <(track $OS $PKG | sort -u) \
@@ -64,19 +64,17 @@ function listInstalledAin() {
 }
 
 function listInstalledNxi() {
-  nix profile list --json | jq -r '.elements | keys[]'
+  nix profile list --json \
+    | jq -r '.elements[].attrPath' \
+    | sed 's/legacyPackages\.x86_64-linux\.//g'
 }
+
+# NOTE: these will not catch when groups are installed instead of packages
+# groups are tricky because you can't filter for explicitly-installed groups
 function listInstalledAur() { pacman -Qqem; }
-function listInstalledPac() {
-    # list packages
-    # list groups
-    # if all packages
+function listInstalledPac() { pacman -Qqen; }
 
-
-    pacman -Qqen;
-}
-
-local OS=$(. /etc/os-release && echo $ID)
+OS=$(. /etc/os-release && echo $ID)
 echo "Comparing Nix Packages:"
 compare nxi $OS
 echo
