@@ -3,6 +3,10 @@
 # script that compares packages listed in install scripts to packages installed
 # on the system
 
+function title() {
+  echo -e "\033[1;32m==> ${1}\033[0m"
+}
+
 function track() {
   local OS=$1
   local CMD=$2
@@ -28,19 +32,17 @@ function track() {
     | tr ' ' '\n'
 }
 
+# NOTE: util-linux >2.41 required as the column command can handle color escape sequences
+
 function compare() {
   local PKG=$1
   local OS=$2
+  local OMITCOLUMN=$3
 
-  echo "MISSING FROM SCRIPTS: "
-  comm -13 \
-      <(track $OS $PKG | sort -u) \
-      <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
-  echo
-  echo "MISSING FROM SYSTEM: "
-  comm -23 \
-      <(track $OS $PKG | sort -u) \
-      <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
+  comm -3 \
+    <(track $OS $PKG | sort -u) \
+    <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
+
 }
 
 function listInstalledPpa() {
@@ -75,19 +77,19 @@ function listInstalledAur() { pacman -Qqem; }
 function listInstalledPac() { pacman -Qqen; }
 
 OS=$(. /etc/os-release && echo $ID)
-echo "Comparing Nix Packages:"
+echo "==> Comparing Nix Packages:"
 compare nxi $OS
 echo
-echo "Compare PPA Repositories:"
+echo "==> Compare PPA Repositories:"
 compare ppa $OS
 echo
-echo "Compare Apt Packages:"
+echo "==> Compare Apt Packages:"
 compare ain $OS
 echo
-echo "Compare Aur Packages:"
+echo "==> Compare Aur Packages:"
 compare aur $OS
 echo
-echo "Compare Native Pacman Packages:"
+echo "==> Compare Native Pacman Packages:"
 compare pac $OS
 
 
