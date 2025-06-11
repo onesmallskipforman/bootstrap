@@ -4,7 +4,7 @@
 # on the system
 
 function title() {
-  echo -e "\033[1;32m==> ${1}\033[0m"
+  echo -e "\033[1;37m==> ${1}\033[0m"
 }
 
 function track() {
@@ -34,15 +34,27 @@ function track() {
 
 # NOTE: util-linux >2.41 required as the column command can handle color escape sequences
 
-function compare() {
+function commshortcut() {
   local PKG=$1
   local OS=$2
   local OMITCOLUMN=$3
 
-  comm -3 \
+  comm -${OMITCOLUMN}3 \
     <(track $OS $PKG | sort -u) \
-    <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u)
+    <(listInstalled$(echo $PKG | sed 's/^./\u&/g') 2>/dev/null | sort -u) \
+    | xargs -I{} echo -e '\033[1;37m{}\033[m' \
+    | column
+}
 
+function compare() {
+  local PKG=$1
+  local OS=$2
+
+  title "only in script"
+  commshortcut $PKG $OS 2
+  echo
+  title "only on system"
+  commshortcut $PKG $OS 1
 }
 
 function listInstalledPpa() {
