@@ -82,9 +82,7 @@ function get_ros2() {
       | grep -F "tag_name" \
       | awk -F\" '{print $4}'
   )
-  curl -L -o /tmp/ros2-apt-source.deb \
-    "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" # If using Ubuntu derivates use $UBUNTU_CODENAME
-  sudo apt install /tmp/ros2-apt-source.deb
+  deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
   ain ros-dev-tools python3-argcomplete ros-jazzy-ros-base # ros-*-ros-base
 }
 
