@@ -243,7 +243,8 @@ function packages()
   pac sudo
   pac fd # find files
   pac ueberzugpp # images in terminal
-  nxi joshuto # rust ranger-like file manager
+  nxi joshuto \
+    ranger
   nxi st # terminal
   nxi scheme-full # texlive
   pac time # time command
