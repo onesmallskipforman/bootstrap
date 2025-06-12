@@ -243,10 +243,9 @@ function packages()
   pac sudo
   pac fd # find files
   pac ueberzugpp # images in terminal
-  nxi joshuto \
-    ranger
+  nxi joshuto
   nxi st # terminal
-  nxi scheme-full # texlive
+  nxi texlive.combined.scheme-full
   pac time # time command
   pac spotifyd
   pac xorg-xauth

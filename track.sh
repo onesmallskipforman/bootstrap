@@ -1,4 +1,4 @@
-#!/usr/bin/zsh
+#!/usr/bin/bash
 
 # script that compares packages in install scripts to packages on the system
 
@@ -41,17 +41,15 @@ function track() {
     | tr ' ' '\n'
 }
 
-function commshortcut() {
+function missing() {
   local -r PKG=$1 # package type
   local -r SRC=$2 # script source
-  local -r OMITCOLUMN=$3
+  COL=$( [ $3 = 'script' ] && echo 2 || { [ $3 = 'system' ] && echo 1; })
 
   # NOTE: util-linux >2.41 required so column command can handle escape sequences
-  comm -${OMITCOLUMN}3 \
-    <(track $SRC $PKG       | sort -u) \
-    <(list_installed_${PKG} | sort -u) \
-    | xargs -I{} echo -e '\033[1;37m{}\033[m' \
-    | column
+  comm -${COL}3 \
+    <(track "$SRC" $PKG     | sort -u) \
+    <(list_installed_${PKG} | sort -u)
 }
 
 function compare() {
@@ -60,10 +58,10 @@ function compare() {
   local -r TITLE=$(describe $PKG)
 
   title "$TITLE: only in script"
-  commshortcut "$PKG" "$SRC" 2
+  missing "$PKG" "$SRC" script | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
   echo
   title "$TITLE: only on system"
-  commshortcut "$PKG" "$SRC" 1
+  missing "$PKG" "$SRC" system | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
 }
 
 ###############################################################################
@@ -122,6 +120,24 @@ function describe() {
 
 function cleanup() { local -r PKG=$1; clean_$PKG; }
 
+function add() {
+  case $1 in
+    nxi) nix profile install nixpkgs#$2 ;;
+    pac) sudo pacman -Sy             $2 ;;
+    aur) paru -Sy                    $2 ;;
+    *) : ;;
+  esac
+}
+
+function rem() {
+  case $1 in
+    nxi) nix profile remove $2 ;;
+    pac) sudo pacman -Rsnu  $2 ;;
+    aur) paru -Rsnu         $2 ;;
+    *) : ;;
+  esac
+}
+
 ###############################################################################
 # distros
 ###############################################################################
@@ -134,23 +150,28 @@ function packages_arch  () { echo nxi aur pac; }
 ###############################################################################
 
 function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
-function cleanup_multi() { local -r PKGS=$@; echo "$PKGS" | map cleanup; }
-function compare_multi() {
-  local -r SRC=$1; local -r PKGS="${@:2}"
-  echo "$PKGS" | map compare "$SRC"
-}
 
-function compare_os() { local -r OS=$1; compare_multi "$(cat $OS.sh)" $(packages_$OS);}
-function cleanup_os() { local -r OS=$1; cleanup_multi                 $(packages_$OS);}
+function syncup() { local -r PKG=$1; missing $PKG "$SH" script | map add $PKG; }
+function revert() { local -r PKG=$1; missing $PKG "$SH" system | map rem $PKG; }
+
+function compare_os() { packages_$ID | map compare "$(cat $ID.sh)"; }
+function clean_os  () { packages_$ID | map cleanup                ; }
+function syncup_os () { packages_$ID | map syncup                 ; }
+function revert_os () { packages_$ID | map revert                 ; }
+
 
 ###############################################################################
 # SCRIPT
 ###############################################################################
 
+# TODO: consider not using globals
 readonly ID=$(. /etc/os-release && echo $ID)
+readonly SH="$(cat $ID.sh)"
 case $1 in
   compare) compare_os $ID ;;
-  cleanup) cleanup_os $ID ;;
+  clean  ) clean_os   $ID ;;
+  syncup ) syncup_os  $ID ;;
+  revert ) revert_os  $ID ;;
   *) echo 'track (compare|cleanup)'; exit 1 ;;
 esac
 
