@@ -17,6 +17,7 @@ function line() {
 function track() {
   local -r CMD=$1          # package command
 
+  # TODO: commented-out packages are being counted
   # steps:
   #   cat file
   #   reformat multi-line shell commands as single-line
@@ -205,3 +206,6 @@ esac
 
 # helpful
 # nix search nixpkgs 'nerd-fonts\.' --json | jq -r '. | keys[]' | fzf | xargs -I{} nix profile install nixpkgs#{}
+
+
+# NOTE: pacman package database needs to be synced as well with pacman -Fy
