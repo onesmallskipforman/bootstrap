@@ -57,12 +57,16 @@ function packages()
   # pacman -Qent
 
   # basics
-  pac base linux linux-firmware
+  pac base linux linux-firmware lsb-release
   pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
   pac wget curl tar unzip git; pac python python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin;
-  pac nix; aur nix-zsh-completions; sudo usermod -aG nix-users $USER
+  pac nix; {
+    sudo usermod -aG nix-users $USER
+    sudo systemctl enable --now nix-daemon.service
+    aur nix-zsh-completions
+  }
   # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
@@ -75,6 +79,7 @@ function packages()
   }
   pac less which
   pac systemd
+  pac reflector && sudo systemctl enable reflector.service
   pac man-db man-pages texinfo
   pac inetutils # has hostname commmand in arch
   pac gcc make cmake bazel bear
@@ -151,6 +156,8 @@ function packages()
     sudo pacman -Rdd --noconfirm gnu-free-fonts
     fc-cache -rv
   }
+# lib32-sdl2-compat   xorg-fonts-encodings    xorg-setxkbmap      xorg-xwayland
+# ttf-nerd-fonts-symbols-common xorg-server-common    xorg-xkbcomp
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text

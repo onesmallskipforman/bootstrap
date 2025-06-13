@@ -15,8 +15,7 @@ function line() {
 }
 
 function track() {
-  local -r SRC=$1 # script source
-  local -r CMD=$2 # package command
+  local -r CMD=$1          # package command
 
   # steps:
   #   cat file
@@ -29,7 +28,7 @@ function track() {
   #   remove trailing whitespace
   #   reduce extra spacing between packages to single spaces
   #   convert lines with multiple packages into separate lines
-  echo "$SRC" \
+  cat $ID.sh \
     | sed -z 's;\\\n;;g' \
     | sed 's/\(^\|[ ;|&]\+\)amp /aur /g' \
     | sed "s/[;|&]\+$CMD / $CMD /g" \
@@ -43,25 +42,23 @@ function track() {
 
 function missing() {
   local -r PKG=$1 # package type
-  local -r SRC=$2 # script source
-  COL=$( [ $3 = 'script' ] && echo 2 || { [ $3 = 'system' ] && echo 1; })
+  local -r COL=$( [ $2 = 'script' ] && echo 2 || { [ $2 = 'system' ] && echo 1; })
 
   # NOTE: util-linux >2.41 required so column command can handle escape sequences
   comm -${COL}3 \
-    <(track "$SRC" $PKG     | sort -u) \
-    <(list_installed_${PKG} | sort -u)
+    <(track          $PKG | sort -u) \
+    <(list_installed_$PKG | sort -u)
 }
 
 function compare() {
-  local -r SRC=$1 # script source
-  local -r PKG=$2 # package type
+  local -r PKG=$1 # package type
   local -r TITLE=$(describe $PKG)
 
   title "$TITLE: only in script"
-  missing "$PKG" "$SRC" script | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
+  missing "$PKG" script | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
   echo
   title "$TITLE: only on system"
-  missing "$PKG" "$SRC" system | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
+  missing "$PKG" system | xargs -I{} echo -e '\033[1;37m{}\033[m'| column
 }
 
 ###############################################################################
@@ -103,7 +100,7 @@ function clean_aur         () { paru -Qdtq | xargs -r paru -Rnsu ; }
 
 # PACMAN
 function list_installed_pac() { pacman -Qqen; }
-function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rnsu; }
+function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rns --noconfirm; }
 
 # utilities
 function describe() {
@@ -131,9 +128,9 @@ function add() {
 
 function rem() {
   case $1 in
-    nxi) nix profile remove $2 ;;
-    pac) sudo pacman -Rsnu  $2 ;;
-    aur) paru -Rsnu         $2 ;;
+    nxi) nix profile remove           $2 ;;
+    pac) sudo pacman -Rsn --noconfirm $2 || sudo pacman -D --asdeps $2 ;;
+    aur) paru        -Rsn --noconfirm $2 || sudo paru   -D --asdeps $2 ;;
     *) : ;;
   esac
 }
@@ -149,31 +146,31 @@ function packages_arch  () { echo nxi aur pac; }
 # higher-order functions
 ###############################################################################
 
-function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
+function map() { tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
 
-function syncup() { local -r PKG=$1; missing $PKG "$SH" script | map add $PKG; }
-function revert() { local -r PKG=$1; missing $PKG "$SH" system | map rem $PKG; }
+function syncup() { local -r PKG=$1; missing $PKG script | map add $PKG; }
+function revert() { local -r PKG=$1; missing $PKG system | map rem $PKG; }
 
-function compare_os() { packages_$ID | map compare "$(cat $ID.sh)"; }
-function clean_os  () { packages_$ID | map cleanup                ; }
-function syncup_os () { packages_$ID | map syncup                 ; }
-function revert_os () { packages_$ID | map revert                 ; }
-
+function compare_os() { packages_$ID | map compare; }
+function cleanup_os() { packages_$ID | map cleanup; }
+function syncup_os () { packages_$ID | map syncup ; }
+function revert_os () { packages_$ID | map revert ; }
 
 ###############################################################################
 # SCRIPT
 ###############################################################################
 
+
 # TODO: consider not using globals
 readonly ID=$(. /etc/os-release && echo $ID)
-readonly SH="$(cat $ID.sh)"
 case $1 in
   compare) compare_os $ID ;;
-  clean  ) clean_os   $ID ;;
+  cleanup) cleanup_os $ID ;;
   syncup ) syncup_os  $ID ;;
   revert ) revert_os  $ID ;;
   *) echo 'track (compare|cleanup)'; exit 1 ;;
 esac
+# missing pac system | map rem pac
 
 # TODO: use 'read -r'
 # see 'man read'
