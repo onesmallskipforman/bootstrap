@@ -63,6 +63,7 @@ function packages()
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin;
   pac nix; {
+    pac aws-sdk-cpp # NOTE: this seems to be missing from the nix pkg deps
     sudo usermod -aG nix-users $USER
     sudo systemctl enable --now nix-daemon.service
     aur nix-zsh-completions
