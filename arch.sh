@@ -186,8 +186,9 @@ function packages()
   pac mpv      # video player
   pac zathura zathura-pdf-poppler
   aur joshuto-bin
-  pxi 'pywal16[all]'; {
-    ain imagemagick; coi okthief; goi github.com/thefryscorer/schemer2@latest
+  aur python-pywal16; {
+    pac python-colorthief; aur colorz python-haishoku
+    pac imagemagick
   }
   aur wallust hellwal
 
