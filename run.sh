@@ -2,8 +2,8 @@
 # TODO: make this script only executable as root
 set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
 
-LIB=$(source /etc/os-release; echo $ID).sh
-source $LIB; prepRoot skipper
+LIB=$(. /etc/os-release; echo $ID).sh
+. $LIB; prepRoot skipper
 
 DIR=/home/skipper/Projects/bootstrap
 
