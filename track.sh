@@ -15,30 +15,24 @@ function line() {
 }
 
 function track() {
-  local -r CMD=$1          # package command
+  local -r CMD=$1 # package command
 
-  # TODO: commented-out packages are being counted
-  # steps:
-  #   cat file
-  #   reformat multi-line shell commands as single-line
-  #   (hack) replace 'amp' with 'aur'
-  #   replace command delimeters with spaces
-  #   find all occurances of $CMD
-  #   remove flag arguments
-  #   remove $CMD prefix from results
-  #   remove trailing whitespace
-  #   reduce extra spacing between packages to single spaces
-  #   convert lines with multiple packages into separate lines
+  # cat file
+  # convert multi-line commands into single-line
+  # remove strings, comments, and flags
+  # replace statement separators with newlines
+  # (hack) replace 'amp' with 'aur'
+  # filter for all instances of using CMD
+  # convert lines with multiple packages into separate lines
+  # remove empty lines
   cat $ID.sh \
-    | sed -z 's;\\\n;;g' \
-    | sed 's/\(^\|[ ;|&]\+\)amp /aur /g' \
-    | sed "s/[;|&]\+$CMD / $CMD /g" \
-    | grep -o "\(^\| \)$CMD [^#;&|]*" \
-    | sed 's/ --[^ ]*//g' \
+    | sed -z 's;\\\n; ;g' \
+    | sed -e 's/"[^"]*"//g' -e "s/'[^']*'//g" -e 's/#.*//g' -e 's/ -[^ ]*//g' \
+    | sed -E 's/(&&|\|\||;)/\n/g' \
+    | sed -E 's/(^| )amp / aur /g' \
+    | grep -oE "(^| )$CMD [^|&;]*" \
     | sed "s/^ *$CMD //g" \
-    | sed 's/ *$//g' \
-    | sed 's/ \+/ /g' \
-    | tr ' ' '\n'
+    | tr ' ' '\n' | awk NF
 }
 
 function missing() {
@@ -97,15 +91,14 @@ function clean_nxi() { nix-collect-garbage; nix-collect-garbage -d; }
 # NOTE: these will not catch when groups are installed instead of packages
 # groups are tricky because you can't filter for explicitly-installed groups
 function list_installed_aur() { pacman -Qqem; }
-function clean_aur         () { paru -Qdtq | xargs -r paru -Rnsu ; }
+function clean_aur         () { paru -Qdtq | xargs -r paru -Rnsu --noconfirm ; }
 
 # PACMAN
 function list_installed_pac() { pacman -Qqen; }
-function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rns --noconfirm; }
+function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rnsu --noconfirm; }
 
 # utilities
 function describe() {
-  # local -r PKG=$(cat)
   local -r PKG=$1
   case $PKG in
     nxi) echo "Nix Packages"           ;;
@@ -120,18 +113,28 @@ function cleanup() { local -r PKG=$1; clean_$PKG; }
 
 function add() {
   case $1 in
-    nxi) nix profile install nixpkgs#$2 ;;
-    pac) sudo pacman -Sy             $2 ;;
-    aur) paru -Sy                    $2 ;;
+    nxi) nix profile install               nixpkgs#$2 ;;
+    pac) sudo pacman -syu --noconfirm --asexplicit $2 ;;
+    aur) paru        -syu --noconfirm --asexplicit $2 ;;
     *) : ;;
   esac
 }
 
 function rem() {
+  # TODO: add apt-mark command to mark package as a dep
   case $1 in
     nxi) nix profile remove           $2 ;;
     pac) sudo pacman -Rsn --noconfirm $2 || sudo pacman -D --asdeps $2 ;;
     aur) paru        -Rsn --noconfirm $2 || sudo paru   -D --asdeps $2 ;;
+    *) : ;;
+  esac
+}
+
+function update() {
+  case $1 in
+    nxi) nix profile upgrade --all    ;;
+    pac) sudo pacman -Syu --noconfirm ;;
+    aur) paru        -Syu --noconfirm ;;
     *) : ;;
   esac
 }
@@ -157,6 +160,22 @@ function cleanup_os() { packages_$ID | map cleanup; }
 function syncup_os () { packages_$ID | map syncup ; }
 function revert_os () { packages_$ID | map revert ; }
 
+# guix package --list-installed
+# guix gc
+
+# track fonts
+# fc-list ':' file # TODO: not really usre what "':' file" does
+# fc-list
+
+# get font name
+# fc-query -f '%{family[0]}\n' <path-to-font-file>
+
+# helpful
+# nix search nixpkgs 'nerd-fonts\.' --json | jq -r '. | keys[]' | fzf | xargs -I{} nix profile install nixpkgs#{}
+
+
+# NOTE: pacman package database needs to be synced as well with pacman -Fy
+
 ###############################################################################
 # SCRIPT
 ###############################################################################
@@ -171,41 +190,3 @@ case $1 in
   revert ) revert_os  $ID ;;
   *) echo 'track (compare|cleanup)'; exit 1 ;;
 esac
-# missing pac system | map rem pac
-
-# TODO: use 'read -r'
-# see 'man read'
-# example: echo a | read -r var
-
-# command to list reverse deps of manually-installed packages
-# using apt-mark auto <package> should be sufficient to deal with any reverse dependencies
-# that need to keep the package around
-# compare Apt | xargs -L1 apt-cache rdepends --installed | sed 's/^[a-z]/\n&/g' > deps.txt
-
-# sudo du -ca -BG -tG --max-depth=1 / 2>/dev/null | sort -nr
-
-
-# guix package --list-installed
-# guix gc
-# nix profile list
-# nix-collect-garbage
-
-# sudo apt autopurge
-# pacman -Qdtq | xargs pacman -Rsnu --noconfirm
-# paru -Qdtq | xargs paru -Rsnu --noconfirm
-
-
-
-
-# track fonts
-# fc-list ':' file # TODO: not really usre what "':' file" does
-# fc-list
-
-# get font name
-# fc-query -f '%{family[0]}\n' <path-to-font-file>
-
-# helpful
-# nix search nixpkgs 'nerd-fonts\.' --json | jq -r '. | keys[]' | fzf | xargs -I{} nix profile install nixpkgs#{}
-
-
-# NOTE: pacman package database needs to be synced as well with pacman -Fy

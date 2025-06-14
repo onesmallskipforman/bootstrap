@@ -59,7 +59,7 @@ function packages()
   # basics
   pac base linux linux-firmware lsb-release
   pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
-  pac wget curl tar unzip git; pac python python-pipx go util-linux base-devel
+  pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin;
   pac nix; {
@@ -70,6 +70,7 @@ function packages()
     sudo systemctl enable --now nix-daemon.service
     aur nix-zsh-completions
   }
+  pac terminus-font
   # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
@@ -135,12 +136,12 @@ function packages()
   pac pipewire pipewire-audio pipewire-pulse wireplumber; {
     pac pavucontrol pulsemixer # audio controllers
     pac pipewire-libcamera # not needed but the wireplumber binary complains
-    pac sof-firware # not sure if needed
+    pac sof-firmware # not sure if needed
     pac alsa-utils
     systemctl --user daemon-reload
     systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
-  pac bluez bluez-utils bluez-tools blueman rfkill playerctl bluetui; aur bluetui-bin ; {
+  pac bluez bluez-utils bluez-tools blueman playerctl bluetui; aur bluetui-bin ; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl enable bluetooth.service
   }
@@ -165,7 +166,6 @@ function packages()
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
   aur ascii-image-converter; cargo install ascii-gen
-  pac neofetch
   pac fastfetch
   pac asciiquarium; aur tty-clock
   pac macchina; aur neofetch # fetch
@@ -218,10 +218,13 @@ function packages()
   }
   aur zoom slack-desktop
   aur scilab-bin
-  pac arm-none-eabi-gcc libopenecm3 stlink openocd; aur gcc-arm-none-eabi-bin stm32flash stm32cubeprog
+  pac arm-none-eabi-gcc; {
+    pac arm-none-eabi-newlib libopencm3 stlink openocd
+    aur stm32flash stm32cubeprog
+  }
   aur itd-bin siglo # pinetime dev tools
-  aur quartus-free quartus-free-devinfo-cyclone quartus-free-help
-  pac lib32-libpng12; aur quartus-130 modelsim-intel-starter
+  # aur quartus-free quartus-free-devinfo-cyclone quartus-free-help # TODO: these conflict with quartus-130
+  pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
 
 
   # advent-of-code
@@ -233,10 +236,11 @@ function packages()
   # robotics
   aur coolterm-bin tio # serial tools
   pac minicom picocom  # serial tools
+  aur xctu
 
   # wayland
-  aur lswt way-displays wideriver yambar river-git swhkd-git
-  pac hyprland wl-clipboard wlr-randr wlsunset xdg-desktop-portal-hyprland xdg-desktop-portal-wlr
+  aur lswt way-displays wideriver yambar swhkd-git
+  pac river hyprland wl-clipboard wlr-randr wlsunset xdg-desktop-portal-hyprland xdg-desktop-portal-wlr
 
   aur lifxlan-git # LIFX lights
 
@@ -249,7 +253,6 @@ function packages()
   pac refind grub efibootmgr # TODO: not sure what efibootmgr is for
   pac screen
   pac signal-desktop
-  pac sof-firmware
   pac sudo
   pac fd # find files
   pac ueberzugpp # images in terminal
