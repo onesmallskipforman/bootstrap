@@ -239,9 +239,20 @@ function packages()
   pac minicom picocom  # serial tools
   aur xctu
 
+  # TODO: not sure if I need this
+  pac xdg-desktop-portal \
+    && systemctl --user enable xdg-desktop-portal
+
   # wayland
-  aur lswt way-displays wideriver yambar swhkd-git
-  pac river hyprland wl-clipboard wlr-randr wlsunset xdg-desktop-portal-hyprland xdg-desktop-portal-wlr
+  pac wl-clipboard wlr-randr
+  pac river
+  pac hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-wlr \
+    && systemctl --user enable xdg-desktop-portal-hyprland
+  pac wlsunset gammastep geoclue # color temperature
+  pac swww # wallpaper
+  pac waybar # bar
+  pac fuzzel wofi # pickers
+  aur lswt way-displays wideriver swhkd-git # TDB
 
   aur lifxlan-git # LIFX lights
 
