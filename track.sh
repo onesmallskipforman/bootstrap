@@ -114,8 +114,8 @@ function cleanup() { local -r PKG=$1; clean_$PKG; }
 function add() {
   case $1 in
     nxi) nix profile install               nixpkgs#$2 ;;
-    pac) sudo pacman -syu --noconfirm --asexplicit $2 ;;
-    aur) paru        -syu --noconfirm --asexplicit $2 ;;
+    pac) sudo pacman -Syu --noconfirm --asexplicit $2 ;;
+    aur) paru        -Syu --noconfirm --asexplicit $2 ;;
     *) : ;;
   esac
 }

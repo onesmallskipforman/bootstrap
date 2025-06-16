@@ -211,7 +211,7 @@ function packages()
     pac ncspot
   }
   pac discord; aur vesktop-bin
-  pac perl; get_texlive; {
+  nxi texlive.combined.scheme-full; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
     pac entr        # run arbitrary commands when files change, for live edit
     pac ghostscript # installs ps2pdf
@@ -270,7 +270,6 @@ function packages()
   pac ueberzugpp # images in terminal
   nxi joshuto
   nxi st # terminal
-  nxi texlive.combined.scheme-full
   pac time # time command
   pac spotifyd
   pac xorg-xauth

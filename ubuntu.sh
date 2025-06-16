@@ -240,7 +240,7 @@ function packages()
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.43.52/slack-desktop-4.43.52-amd64.deb
   nxi jira-cli-go
   nxi spotify spotify-qt
-  get_texlive; {
+  nxi texlive.combined.scheme-full; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit
     ain ghostscript # installs ps2pdf
