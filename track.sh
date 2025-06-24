@@ -72,10 +72,10 @@ function clean_ppa() { true; }
 
 # APT
 function list_installed_ain() {
-  # comm -23 <(apt-mark showmanual | sort -u) \
-  #          <(gzip -dc /var/log/installer/initial-status.gz
-  #             | sed -n 's/^Package: //p' | sort -u)
-  apt-mark showmanual | sort -u
+  comm -23 <(apt-mark showmanual | sort -u) \
+           <(gzip -dc /var/log/installer/initial-status.gz \
+              | sed -n 's/^Package: //p' | sort -u)
+  # apt-mark showmanual | sort -u
 }
 function clean_ain() { sudo apt autopurge -y; }
 

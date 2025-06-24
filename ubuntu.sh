@@ -111,6 +111,11 @@ function packages()
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # TODO: consider installing pipx with nix
   # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
+  ain nix-bin nix-setup-systemd; {
+    sudo usermod -aG nix-users $USER
+    sudo systemctl enable --now nix-daemon.service
+    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
+  }
 
   # ain unminimize; yes | sudo unminimize
   ain man-db manpages texinfo
@@ -152,7 +157,7 @@ function packages()
   ain cifs-utils # tool for mounding temp drives
   ain jq
   ain xsel xclip
-  ain fzf ripgrep
+  nxi fzf ripgrep
   ain neovim python3-pynvim npm xsel xclip calc; nxi tree-sitter
   ain vim
   ain calc bc
@@ -186,7 +191,7 @@ function packages()
   ain arandr autorandr # xrandr caching and gui
   ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom dunst
-  nxi polybar sxhkd neovim bspwm thunderbird wget picom
+  nxi polybarFull sxhkd neovim bspwm thunderbird wget picom
   ain fontconfig; {
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
     fc-cache -rv
@@ -232,8 +237,11 @@ function packages()
   ain mpv      # video player
   ain zathura zathura-pdf-poppler
   nxi joshuto
-  pxi 'pywal16[all]'; ain imagemagick
   ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
+
+  # color manipulation
+  nxi pywal16 python313Packages.colorthief imagemagick wallust hellwal
+
 
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
