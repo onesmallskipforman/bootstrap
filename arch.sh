@@ -63,12 +63,9 @@ function packages()
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp yay-bin paru-bin;
   pac nix; {
-    # NOTE: this seems to be missing from the nix pkg deps
-    # https://gitlab.archlinux.org/archlinux/packaging/packages/nix/-/issues/18
-    pac aws-sdk-cpp-iam
     sudo usermod -aG nix-users $USER
     sudo systemctl enable --now nix-daemon.service
-    aur nix-zsh-completions
+    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
   }
   pac terminus-font
   # aur guix
@@ -125,8 +122,6 @@ function packages()
     sudo groupadd -f docker
     sudo usermod -aG docker $USER
   }
-  nxi devenv # consider https://github.com/the-nix-way/dev-templates/tree/main
-
 
   aur autojump
   pac htop
@@ -160,8 +155,6 @@ function packages()
     sudo pacman -Rdd --noconfirm gnu-free-fonts
     fc-cache -rv
   }
-# lib32-sdl2-compat   xorg-fonts-encodings    xorg-setxkbmap      xorg-xwayland
-# ttf-nerd-fonts-symbols-common xorg-server-common    xorg-xkbcomp
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
@@ -186,13 +179,13 @@ function packages()
   pac mpv      # video player
   pac zathura zathura-pdf-poppler
   aur joshuto-bin
-  aur python-pywal16; {
-    pac python-colorthief; aur colorz python-haishoku
-    pac imagemagick
-  }
-  aur wallust hellwal
+
+  # color manipulation
+  nxi pywal16 python313Packages.colorthief imagemagick wallust hellwal
 
   # gaming/school/work
+
+  aur lifxlan-git; nxi python313Packages.aiolifx # LIFX lights
 
   # gaming
   pac steam; aur steamcmd
@@ -204,7 +197,7 @@ function packages()
   aur shadps4-bin
 
   pac gimp
-  aur signal-desktop
+  pac signal-desktop
   aur spotify yet-another-spotify-tray-git; {
     aur spicetify spotify-player-full
     aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
@@ -224,7 +217,6 @@ function packages()
     aur stm32flash stm32cubeprog
   }
   aur itd-bin siglo # pinetime dev tools
-  # aur quartus-free quartus-free-devinfo-cyclone quartus-free-help # TODO: these conflict with quartus-130
   pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
 
 
@@ -253,8 +245,6 @@ function packages()
   pac waybar # bar
   pac fuzzel wofi # pickers
   aur lswt way-displays wideriver swhkd-git # TDB
-
-  aur lifxlan-git # LIFX lights
 
   # TODO: sort
   pac dunst

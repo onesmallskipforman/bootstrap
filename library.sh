@@ -169,82 +169,8 @@ function install_waspos() {
 }
 
 #===============================================================================
-# CUSTOM INSTALLATION
-#===============================================================================
-
-function install_drivers() {
-  # show current graphics card
-  # lspci -k | grep -A 2 -E "(VGA|3D)"
-
-  # there's also https://us.download.nvidia.com but it's slower
-  # check https://download.nvidia.com/XFree86/Linux-x86_64/
-  # https://www.nvidia.com/en-us/drivers/unix/
-  # https://www.nvidia.com/Download/index.aspx
-  # https://github.com/aaronp24/nvidia-versions
-
-  # basic version. actually readable
-  local BASE=https://download.nvidia.com/XFree86/Linux-x86_64
-  local VER=$(wget -qO- $BASE/latest.txt | awk '{print $2}')
-  local URL=$BASE/$VER
-  local BIN=$(mktemp -d)/install.sh
-  echo $URL
-  wget --show-progress -qO $BIN $URL
-  chmod +x $BIN; sudo $BIN -s
-
-  # epic version: identify latest, download latest, run latest. no subshells
-  # local URL=https://download.nvidia.com/XFree86/Linux-x86_64
-  # { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
-  #   | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
-  #   | xargs -o -i sudo sh # gah i guess this is a subshell at the end
-
-  # TODO: why does "fname | xargs sh" work but not "fname | sh -" when
-  # chmod +x is NOT set???
-
-  # # slightly more epic version
-  # # was worth a shot, but i havent found a way to pipe to execution without
-  # # a new shell
-  # local URL=https://download.nvidia.com/XFree86/Linux-x86_64
-  # { mktemp -d; wget -qO- $URL/latest.txt | awk "{print \"$URL/\"\$2}"; }\
-  #   | xargs wget -nv -P 2>&1 | cut -d\" -f2 \
-  #   | xargs chmod -v +x | cut -d\' -f2
-}
-
-#===============================================================================
 # PACKAGE INSTALLATION
 #===============================================================================
-
-getNixSingleUser() {
-  curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
-  . ~/.nix-profile/etc/profile.d/nix.sh
-  export PATH=$PATH:~/.local/state/nix/profile/bin
-}
-
-# TODO: relying on env var can make results vary between root and user
-function get_texlive() {
-  local HOME=~/skipper
-  local DIR=$(mktemp -d)
-  local URL='https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz'
-  wget -qO- $URL | tar xvz -C $DIR --strip-components=1
-  # TODO: need better way to resolve home paths when running as root
-  sudo perl $DIR/install-tl \
-    --no-gui \
-    --portable \
-    --no-interaction \
-    --scheme=scheme-infraonly \
-    --texdir /usr/local/texlive # \
-    # --texmfhome   $HOME/.local/share/texmf \
-    # --texmfvar    $HOME/.cache/texlive/texmf-var \
-    # --texmfconfig $HOME/.config/texlive/texmf-config
-
-  # update
-  # tlmgr update --self
-  # tlmgr update --all
-  # tlmgr install scheme-full
-  # fmtutil-user --missing # add missing fmt files
-
-  # uninstall
-  # tlmgr remove --all; sudo rm -rf /usr/local/texlive
-}
 
 function install_guix() {
   local DIR=$(mktemp -d)
@@ -261,6 +187,12 @@ function install_guix() {
   #
   #
   # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
+}
+
+getNixSingleUser() {
+  curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
+  . ~/.nix-profile/etc/profile.d/nix.sh
+  export PATH=$PATH:~/.local/state/nix/profile/bin
 }
 
 function install_ff_extension() {
@@ -319,7 +251,6 @@ function addSudoers() {
   sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a /etc/sudoers.d/$(whoami)
 }
 
-function custom_install() { eval install_$1; }
 
 
 # TODO: using makepkg -d might be preventing makedeps from being installed
