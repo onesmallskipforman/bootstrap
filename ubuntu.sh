@@ -16,12 +16,14 @@ function prepRoot() {
   update-locale LANG=en_US.UTF-8
   export LANG=en_US.UTF-8
 
-  # NOTE: required for nix multi-user setup. installing nix runs createes this
-  # group automatically, id prefer to keep this close to installing nix, but an
-  # intermediate login is required between the creation of the group and
-  # installing packages with multi-user nix
-  ain nix-bin nix-setup-systemd; nix-daemon >/dev/null 2>&1 &
+  # sudo groupadd -r nixbld
+  # for n in $(seq 1 10); do sudo useradd -c "Nix build user $n" \
+  #     -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" \
+  #     nixbld$n; done
+
   groupadd -f nix-users; usermod -aG nix-users $USER
+  # chgrp nix-users /nix/var/nix/daemon-socket
+  # chmod ug=rwx,o= /nix/var/nix/daemon-socket
 }
 
 function prep(){
@@ -29,7 +31,7 @@ function prep(){
   sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
-  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+  # sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 }
 
 #===============================================================================
@@ -104,32 +106,38 @@ function gaming()
   ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
 }
 
+
+
 function packages()
 {
+  # nix
+  ain nix-bin nix-setup-systemd; {
+    sudo systemctl enable nix-daemon.service
+    echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
+    sudo nix-daemon >/dev/null 2>&1 &
+    # sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
+    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
+  }
+
   # basics
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # TODO: consider installing pipx with nix
   # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
-  ain nix-bin nix-setup-systemd; {
-    sudo usermod -aG nix-users $USER
-    sudo systemctl enable --now nix-daemon.service
-    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
-  }
 
-  # ain unminimize; yes | sudo unminimize
-  ain man-db manpages texinfo
-  ppa ppa:longsleep/golang-backports; ain golang-go
-  ain rustc
-  ppa ppa:git-core/ppa; ain git git-extras
-  ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
-    sudo chsh -s /bin/zsh $(whoami)
-    # TODO: make a little more robust
-    # alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
-    # only contents be setting ZDOTDIR, then move all other env setup to
-    # .zprofile (which can just point to or source a generic shell profile).
-    echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
-  }
+   # ain unminimize; yes | sudo unminimize
+   ain man-db manpages texinfo
+   ppa ppa:longsleep/golang-backports; ain golang-go
+   ain rustc
+   ppa ppa:git-core/ppa; ain git git-extras
+   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
+     sudo chsh -s /bin/zsh $(whoami)
+     # TODO: make a little more robust
+     # alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
+     # only contents be setting ZDOTDIR, then move all other env setup to
+     # .zprofile (which can just point to or source a generic shell profile).
+     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
+   }
   ain less
   ain systemd
   ain gcc make cmake bear
@@ -162,6 +170,23 @@ function packages()
   ain vim
   ain calc bc
   ain tmux
+
+  # docker
+  {
+    # Add Docker's official GPG key:
+    sudo apt-get update
+    ain ca-certificates curl
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+    # Add the repository to Apt sources:
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+  }
   ain docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker; sudo usermod -aG docker $USER
@@ -195,7 +220,6 @@ function packages()
   ain fontconfig; {
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
     fc-cache -rv
-
   }
 
 
@@ -301,9 +325,6 @@ function packages()
   ain xmlto # can convert xml to pdf
 
   ain haveged # random number generator
-
-
-
 }
 
 #===============================================================================

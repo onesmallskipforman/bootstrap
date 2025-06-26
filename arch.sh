@@ -14,6 +14,8 @@ function prepRoot() {
   sed -i '/en_US.UTF-8 UTF-8/s/#//g' /etc/locale.gen
   locale-gen
   echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
+  groupadd -f nix-users; usermod -aG nix-users $USER
 }
 
 function prep() {
@@ -45,6 +47,14 @@ function install_steamgames() {
 
 function packages()
 {
+  # nix
+  pac nix; {
+    sudo systemctl enable nix-daemon.service
+    echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
+    # sudo nix-daemon >/dev/null 2>&1 &
+    sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
+    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
+  }
 
   # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#With_version
   # list all explicitly installed packages
@@ -62,11 +72,6 @@ function packages()
   pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp paru-bin;
-  pac nix; {
-    sudo usermod -aG nix-users $USER
-    sudo systemctl enable --now nix-daemon.service
-    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
-  }
   pac terminus-font
   # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
