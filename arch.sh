@@ -61,7 +61,7 @@ function packages()
   pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
   pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
-  amp yay-bin paru-bin;
+  amp paru-bin;
   pac nix; {
     sudo usermod -aG nix-users $USER
     sudo systemctl enable --now nix-daemon.service
@@ -136,13 +136,14 @@ function packages()
     systemctl --user daemon-reload
     systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
-  pac bluez bluez-utils bluez-tools blueman playerctl bluetui; aur bluetui-bin ; {
+  pac bluez bluez-utils bluez-tools blueman playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl enable bluetooth.service
+    nxi bluetui
   }
 
   # Desktop Environment
-  pac xorg-server xorg-xev xorg-xinit
+  pac xorg-server xorg-xev xorg-xinit xorg-xwininfo
   pac xorg-xsetroot # allows for setting cursor icon
   pac xdotool # for grabbing window names
   pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
@@ -158,11 +159,10 @@ function packages()
 
   # silly terminal scripts to show off
   pac figlet; aur figlet-fonts # For writing asciiart text
-  aur ascii-image-converter; cargo install ascii-gen
+  nxi ascii-image-converter; cargo install ascii-gen
   pac fastfetch
   pac asciiquarium; aur tty-clock
   pac macchina; aur neofetch # fetch
-  aur ascii-image-converter-bin
   aur color-scripts-git
 
   # essential gui/advanced tui programs
@@ -189,17 +189,19 @@ function packages()
 
   # gaming
   pac steam; aur steamcmd
-  pac prismlauncher; aur minecraft-launcher
+  pac prismlauncher
   pac nvidia-open lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
   }
-  aur shadps4-bin
+  nxi shadps4
 
   pac gimp
   pac signal-desktop
-  aur spotify yet-another-spotify-tray-git; {
-    aur spicetify spotify-player-full
+  aur spotify; {
+    nxi spicetify-cli
+    # nxi spotify-player
+    aur spotify-player-full
     aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
     pac ncspot
   }
@@ -211,13 +213,14 @@ function packages()
     pac inkscape    # for latex drawings
   }
   aur zoom slack-desktop
-  aur scilab-bin
+  nxi scilab-bin
   pac arm-none-eabi-gcc; {
     pac arm-none-eabi-newlib libopencm3 stlink openocd
-    aur stm32flash stm32cubeprog
+    nxi stm32flash
+    # aur stm32cubeprog
   }
-  aur itd-bin siglo # pinetime dev tools
-  pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
+  nxi itd siglo # pinetime dev tools
+  # pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
 
 
   # advent-of-code
@@ -244,7 +247,8 @@ function packages()
   pac swww # wallpaper
   pac waybar # bar
   pac fuzzel wofi # pickers
-  aur lswt way-displays wideriver swhkd-git # TDB
+  aur lswt way-displays swhkd-git # TDB
+  nxi wideriver
 
   # TODO: sort
   pac dunst
