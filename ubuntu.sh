@@ -207,6 +207,8 @@ function packages()
   ain bluez bluez-tools blueman rfkill playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl enable bluetooth.service
+    # needed on ubuntu https://stackoverflow.com/a/68335639
+    sudo systemctl disable blueman-mechanism.service
   }
 
   # Desktop Environment
