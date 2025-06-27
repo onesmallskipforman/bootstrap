@@ -283,7 +283,7 @@ function cln() {
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
 }
 function map() { cat | tr ' ' '\n' | while read -r a; do "$@" "$a"; done; }
-function coi() { cargo install $@; }
+function coi() { cargo install --locked $@; }
   # TODO: specify python version for pip install function
 function pin() { python3 -m pip install --user --upgrade $@; }
 # function pxi() { sudo pipx install --global --force $@; }
