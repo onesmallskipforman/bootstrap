@@ -216,7 +216,7 @@ function packages()
   pac signal-desktop
   aur spotify; {
     nxi spicetify-cli
-    aur spotify-player-full
+    pac spotify-player
     aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
     pac ncspot
     nxi spotify-player
