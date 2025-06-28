@@ -53,6 +53,9 @@ function packages()
     echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
     # sudo nix-daemon >/dev/null 2>&1 &
     sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
+
+    nix registry add nixpkgs $(pwd)
+    nix profile upgrade --all
     nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
   }
 
@@ -208,30 +211,15 @@ function packages()
     aur spotify-player-full
     aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
     pac ncspot
-
-    # NOTE:
-    # https://docs.lix.systems/manual/lix/nightly/command-ref/new-cli/nix.html#nix-expression
-    # https://discourse.nixos.org/t/how-to-override-and-build-certain-package-from-master-main-branch/61877
-    # https://discourse.nixos.org/t/how-to-use-unmodified-default-nix-from-nixpkgs/63270/3
-    # https://discourse.nixos.org/t/using-the-default-nix-from-nixos-nixpkgs-to-launch-a-shell/16160
-    # https://github.com/mhwombat/nix-for-numbskulls/blob/72cc904f69c618b45f1266261288283a1f6beede/reuse-nixos-derivation.md
-    # https://github.com/NixOS/nixpkgs/blob/5e53f5a78529dba970a82e46fdbe5753dec43f9b/pkgs/by-name/README.md
-    # https://discourse.nixos.org/t/how-to-use-unmodified-default-nix-from-nixpkgs/63270
-    # https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/sp/spotify-player/package.nix
-    # https://ryantm.github.io/nixpkgs/using/overrides/
-    # https://www.reddit.com/r/NixOS/comments/cn6nt4/how_is_overrideattrs_different_from_override/
-    nix profile install --impure --expr '
-      with import <nixpkgs> { };
-      spotify-player.override{ withAudioBackend = "pulseaudio"; }
-    '
+    nxi spotify-player
 
     # NOTE: current way to list arguments of a package function locally
     # not sure if there's an easier way
     # https://noogle.dev/f/lib/functionArgs
     # nixos.org/manual/nixpkgs/stable/#function-library-lib.trivial.functionArgs
-    #
+    # nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+    # nix-channel --update
     # nix eval --impure --expr 'with import <nixpkgs> { }; lib.functionArgs spotify-player.override' --json
-
   }
   pac discord; aur vesktop-bin
   nxi texlive.combined.scheme-full; {

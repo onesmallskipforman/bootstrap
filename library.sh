@@ -310,9 +310,10 @@ function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }
 function nxi() {
   # TODO: some of these flags should hopefully not be necessary once dotfiles are synced
-  # TODO: check ubuntu test
-  NIXPKGS_ALLOW_UNFREE=1 nix \
-    --use-xdg-base-directories \
-    --extra-experimental-features nix-command \
-    --extra-experimental-features flakes profile install --impure -f '<nixpkgs>' $@
+  echo $@ \
+    | sed 's/[^ ]* */nixpkgs#&/g' \
+    | NIXPKGS_ALLOW_UNFREE=1 xargs nix \
+      --use-xdg-base-directories \
+      --extra-experimental-features nix-command \
+      --extra-experimental-features flakes profile install --impure
 }
