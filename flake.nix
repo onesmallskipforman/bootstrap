@@ -97,7 +97,9 @@
   outputs = { self, nixpkgs }:
   let
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
+    # using import so i can configure nix
+    # pkgs = nixpkgs.legacyPackages.${system};
+    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs //
       builtins.mapAttrs (name: value: pkgs.${name}.override value) {
         spotify-player = { withAudioBackend = "pulseaudio"; };

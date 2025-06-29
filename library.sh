@@ -312,8 +312,8 @@ function nxi() {
   # TODO: some of these flags should hopefully not be necessary once dotfiles are synced
   echo $@ \
     | sed 's/[^ ]* */nixpkgs#&/g' \
-    | NIXPKGS_ALLOW_UNFREE=1 xargs nix \
+    | xargs nix \
       --use-xdg-base-directories \
       --extra-experimental-features nix-command \
-      --extra-experimental-features flakes profile install --impure
+      --extra-experimental-features flakes profile install
 }
