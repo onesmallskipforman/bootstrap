@@ -1,3 +1,87 @@
+{
+  description = "A flake that provides nixpkgs outputs with custom packages";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+  outputs = { self, nixpkgs }:
+  let
+    system = "x86_64-linux";
+    # using import so i can configure nix
+    # pkgs = nixpkgs.legacyPackages.${system};
+    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+    legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs //
+      builtins.mapAttrs (name: value: pkgs.${name}.override value) {
+        spotify-player = { withAudioBackend = "pulseaudio"; };
+        librespot      = { withPulseAudio   = true        ; };
+      };
+    };
+  in
+  nixpkgs // { inherit legacyPackages; };
+}
+
+# least agro version: a single additional package
+# {
+#   description = "A flake to install a custom-build of spotify-player";
+#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+#
+#   outputs = { self, nixpkgs }:
+#   let
+#     system = "x86_64-linux";
+#     pkgs = nixpkgs.legacyPackages.${system};
+#   in
+#   {
+#     legacyPackages.${system} =
+#       builtins.mapAttrs (name: value: pkgs.${name}.override value) {
+#         spotify-player = { withAudioBackend = "pulseaudio"; };
+#         librespot      = { withPulseAudio   = true        ; };
+#     };
+#   };
+# }
+
+# medium agro version: expose all of nix through this flake without overlaying
+# this version prevents rebuilds when overriding a dependency like gcc and is
+# more of a convenient way to use nixpkgs and mask (ideally only) leaf packages
+# {
+#   description = "A flake to install a custom-build of spotify-player";
+#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+#
+#   outputs = { self, nixpkgs }:
+#   let
+#     system = "x86_64-linux";
+#     # using import so i can configure nix
+#     # pkgs = nixpkgs.legacyPackages.${system};
+#     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+#     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs //
+#       builtins.mapAttrs (name: value: pkgs.${name}.override value) {
+#         spotify-player = { withAudioBackend = "pulseaudio"; };
+#         librespot      = { withPulseAudio   = true        ; };
+#       };
+#     };
+#   in
+#   nixpkgs // { inherit legacyPackages; };
+# }
+
+# most agro version: basically recreate nixpkgs
+# {
+#   description = "A flake to install a custom-build of spotify-player";
+#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+#
+#   outputs = { self, nixpkgs }:
+#   let
+#     system = "x86_64-linux";
+#     pkgs = import nixpkgs {
+#       inherit system;
+#       overlays = [(self: super:
+#         builtins.mapAttrs (name: value: super.${name}.override value) {
+#           spotify-player = { withAudioBackend = "pulseaudio"; };
+#           librespot      = { withPulseAudio   = true        ; };
+#         }
+#       )];
+#     };
+#     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs; };
+#   in
+#   nixpkgs // { inherit legacyPackages; };
+# }
+
 # {
 #   description = "A flake to install a custom-build of spotify-player";
 #   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -44,68 +128,3 @@
 #     };
 #   };
 # }
-
-
-# most agro version: basically recreate nixpkgs
-# {
-#   description = "A flake to install a custom-build of spotify-player";
-#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-#
-#   outputs = { self, nixpkgs }:
-#   let
-#     system = "x86_64-linux";
-#     pkgs = import nixpkgs {
-#       inherit system;
-#       overlays = [(self: super:
-#         builtins.mapAttrs (name: value: super.${name}.override value) {
-#           spotify-player = { withAudioBackend = "pulseaudio"; };
-#           librespot      = { withPulseAudio   = true        ; };
-#         }
-#       )];
-#     };
-#     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs; };
-#   in
-#   nixpkgs // { inherit legacyPackages; };
-# }
-
-# least agro version: a single additional package
-# {
-#   description = "A flake to install a custom-build of spotify-player";
-#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-#
-#   outputs = { self, nixpkgs }:
-#   let
-#     system = "x86_64-linux";
-#     pkgs = nixpkgs.legacyPackages.${system};
-#   in
-#   {
-#     legacyPackages.${system} =
-#       builtins.mapAttrs (name: value: pkgs.${name}.override value) {
-#         spotify-player = { withAudioBackend = "pulseaudio"; };
-#         librespot      = { withPulseAudio   = true        ; };
-#     };
-#   };
-# }
-
-# medium agro version: expose all of nix through this flake without overlaying
-# this version prevents rebuilds when overriding a dependency like gcc and is
-# more of a convenient way to use nixpkgs and mask (ideally only) leaf packages
-{
-  description = "A flake to install a custom-build of spotify-player";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-  outputs = { self, nixpkgs }:
-  let
-    system = "x86_64-linux";
-    # using import so i can configure nix
-    # pkgs = nixpkgs.legacyPackages.${system};
-    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-    legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs //
-      builtins.mapAttrs (name: value: pkgs.${name}.override value) {
-        spotify-player = { withAudioBackend = "pulseaudio"; };
-        librespot      = { withPulseAudio   = true        ; };
-      };
-    };
-  in
-  nixpkgs // { inherit legacyPackages; };
-}
