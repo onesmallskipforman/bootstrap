@@ -117,6 +117,9 @@ function packages()
     echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
     sudo nix-daemon >/dev/null 2>&1 &
     # sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
+    nix registry add nixpkgs $(pwd)
+    nix flake update --flake nixpkgs
+    nix profile upgrade --all
     nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
   }
 

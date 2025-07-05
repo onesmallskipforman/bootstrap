@@ -8,12 +8,11 @@
     # using import so i can configure nix
     # pkgs = nixpkgs.legacyPackages.${system};
     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-    legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs //
-      builtins.mapAttrs (name: value: pkgs.${name}.override value) {
-        spotify-player = { withAudioBackend = "pulseaudio"; };
-        librespot      = { withPulseAudio   = true        ; };
-      };
+    overrides = builtins.mapAttrs (name: value: pkgs.${name}.override value) {
+      spotify-player = { withAudioBackend = "pulseaudio"; };
+      librespot      = { withPulseAudio   = true        ; };
     };
+    legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs // overrides; };
   in
   nixpkgs // { inherit legacyPackages; };
 }
@@ -128,3 +127,11 @@
 #     };
 #   };
 # }
+
+# some example commands
+# nix flake metadata 'github:NixOS/nixpkgs/nixpkgs-unstable'
+# nix flake metadata 'flake:nixpkgs'
+# nix flake update --flake 'github:NixOS/nixpkgs/nixpkgs-unstable'
+# nix flake update --flake 'flake:nixpkgs'
+# nix flake update --flake nixpkgs
+# nix flake update $(pwd)
