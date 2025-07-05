@@ -85,6 +85,7 @@ function get_ros2() {
       | awk -F\" '{print $4}'
   )
   deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
+  sudo apt update -y
   ain ros-dev-tools python3-argcomplete ros-jazzy-ros-base # ros-*-ros-base
 }
 
