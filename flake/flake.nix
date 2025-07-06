@@ -22,7 +22,7 @@
     //
     {
       # TODO: figure out what's wrong with pywal >=3.8.9
-      pywal16 = pkgs.pywal16.overridePythonAttrs (old: rec {
+      pywal16 = (pkgs.pywal16.overridePythonAttrs (old: rec {
         version = "3.8.6";
         src = pkgs.fetchFromGitHub {
           owner = "eylles";
@@ -31,7 +31,12 @@
           # TODO: figure out where to get this hash
           hash = "sha256-aq9I9KJnzwFjfLZ2fzW80abJQ/oSX7FcmCXYi1JMY7Q=";
         };
-      });
+      }));
+      # .override {
+      #   python3 = (pkgs.python3.withPackages (python-pkgs:
+      #     pkgs.pywal16.optional-dependencies.all
+      #   ));
+      # };
     };
     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs // overrides; };
   in

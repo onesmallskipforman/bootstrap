@@ -90,12 +90,12 @@ function clean_nxi() { nix-collect-garbage; nix-collect-garbage -d; }
 # AUR
 # NOTE: these will not catch when groups are installed instead of packages
 # groups are tricky because you can't filter for explicitly-installed groups
-function list_installed_aur() { pacman -Qqem; }
-function clean_aur         () { paru -Qdtq | xargs -r paru -Rnsu --noconfirm ; }
+function list_installed_aur() { paru -Qqem; }
+function clean_aur         () { paru -Qdtq | xargs -r paru -Rnsu --noconfirm ; paru -Sccd --noconfirm; }
 
 # PACMAN
 function list_installed_pac() { pacman -Qqen; }
-function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rnsu --noconfirm; }
+function clean_pac         () { pacman -Qdtq | xargs -r sudo pacman -Rnsu --noconfirm; sudo pacman -Sccd --noconfirm; }
 
 # utilities
 function describe() {

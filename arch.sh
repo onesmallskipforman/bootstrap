@@ -56,7 +56,7 @@ function packages()
     nix registry add nixpkgs $(pwd)
     nix flake update --flake nixpkgs
     nix profile upgrade --all
-    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
+    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix home-manager
   }
 
   # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#With_version
@@ -118,7 +118,7 @@ function packages()
   pac cifs-utils # tool for mounding temp drives
   pac jq
   pac xsel xclip
-  pac fzf ripgrep; aur python-pyfzf
+  pac fzf ripgrep; nxi python313Packages.pyfzf
   pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli
   pac vim
   pac calc bc
@@ -147,7 +147,7 @@ function packages()
   pac bluez bluez-utils bluez-tools blueman playerctl; {
     rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
     sudo systemctl enable bluetooth.service
-    nxi bluetui
+    pac bluetui
   }
 
   # Desktop Environment
@@ -189,7 +189,8 @@ function packages()
   aur joshuto-bin
 
   # color manipulation
-  nxi pywal16 python313Packages.colorthief imagemagick wallust hellwal
+  nxi pywal16 imagemagick wallust hellwal
+  aur themecord walcord
 
   # gaming/school/work
 
@@ -207,11 +208,12 @@ function packages()
   pac gimp
   pac signal-desktop
   aur spotify; {
-    nxi spicetify-cli
     pac spotify-player
-    aur pywal-spicetify # TODO: add https://github.com/spicetify/spicetify-themes/tree/master via git
     pac ncspot
     nxi spotify-player
+    nxi ncspot
+    aur librespot
+    nxi librespot
 
     # NOTE: current way to list arguments of a package function locally
     # not sure if there's an easier way
@@ -228,25 +230,25 @@ function packages()
     pac ghostscript # installs ps2pdf
     pac inkscape    # for latex drawings
   }
-  aur zoom slack-desktop
+  # aur zoom slack-desktop
   nxi scilab-bin
   pac arm-none-eabi-gcc; {
     pac arm-none-eabi-newlib libopencm3 stlink openocd
     nxi stm32flash
-    # aur stm32cubeprog
+    aur stm32cubeprog
   }
   nxi itd siglo # pinetime dev tools
-  # pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
+  pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
 
 
   # advent-of-code
-  aur aoc-cli
+  nxi aoc-cli
   pac datamash # statistics tool
   aur rs-git # reshape data array
   aur csvtk-bin # CSV/TSV cli toolkit
 
   # robotics
-  aur coolterm-bin tio # serial tools
+  aur coolterm-bin; nxi tio # serial tools
   pac minicom picocom  # serial tools
   aur xctu
 
@@ -263,8 +265,9 @@ function packages()
   pac swww # wallpaper
   pac waybar # bar
   pac fuzzel wofi # pickers
-  aur lswt way-displays swhkd-git # TDB
-  nxi wideriver
+  nxi lswt # list wayland toplevels
+  nxi wideriver # bspwm-like layout for river
+  nxi way-displays # like arandr
 
   # TODO: sort
   pac dunst
@@ -294,10 +297,20 @@ function packages()
 
   # TODO: not sure if i need these
   pac lshw
-  pac noto-fonts
+  pac noto-fonts noto-fonts-emoji
   pac qt6-multimedia
   pac sdl2-compat
   pac sndio
+
+
+  pac parted gparted gptfdisk testdisk lvm2 # disk utilities
+
+  pac augeas # for editing conf files
+
+
+  pac lemurs # custom display login manager
+  pac swaylock waylock # lock screens
+  pac wmctrl # interact with EMWH compatible X window managers
 }
 
 #===============================================================================
