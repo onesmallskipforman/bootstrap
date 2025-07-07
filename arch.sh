@@ -132,7 +132,7 @@ function packages()
   }
 
   aur autojump
-  pac htop
+  pac htop powertop
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   pac brightnessctl # brightness control
   pac redshift
