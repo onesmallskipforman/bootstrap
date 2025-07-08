@@ -235,7 +235,6 @@ function packages()
   pac arm-none-eabi-gcc; {
     pac arm-none-eabi-newlib libopencm3 stlink openocd
     nxi stm32flash
-    aur stm32cubeprog
   }
   nxi itd siglo # pinetime dev tools
   pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
