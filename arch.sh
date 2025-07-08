@@ -174,7 +174,7 @@ function packages()
   aur color-scripts-git
 
   # essential gui/advanced tui programs
-  pac alacritty
+  pac alacritty wezterm
   pac qutebrowser
   pac firefox; install_ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
@@ -279,7 +279,7 @@ function packages()
   pac signal-desktop
   pac sudo
   pac fd # find files
-  pac ueberzugpp # images in terminal
+  pac ueberzugpp openslide libvips # images in terminal
   nxi joshuto
   nxi st # terminal
   pac time # time command
