@@ -56,7 +56,7 @@ function packages()
     nix registry add nixpkgs $(pwd)
     nix flake update --flake nixpkgs
     nix profile upgrade --all
-    nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix home-manager
+    nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix home-manager
   }
 
   # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#With_version
@@ -113,6 +113,7 @@ function packages()
     ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
     sudo systemctl enable dhcpcd.service
     sudo systemctl enable iwd.service
+    sudo systemctl enable systemd-networkd.service
     sudo systemctl enable NetworkManager.service
   }
   pac cifs-utils # tool for mounding temp drives
@@ -176,6 +177,7 @@ function packages()
   # essential gui/advanced tui programs
   pac alacritty wezterm
   pac qutebrowser
+  pac nyxt
   pac firefox; install_ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search ublacklist
@@ -223,7 +225,7 @@ function packages()
     # nix-channel --update
     # nix eval --impure --expr 'with import <nixpkgs> { }; lib.functionArgs spotify-player.override' --json
   }
-  pac discord; aur vesktop-bin
+  aur vesktop-bin
   nxi texlive.combined.scheme-full; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
     pac entr        # run arbitrary commands when files change, for live edit
