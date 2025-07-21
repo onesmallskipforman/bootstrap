@@ -70,7 +70,8 @@ function packages()
   # pacman -Qent
 
   # basics
-  pac base linux linux-firmware lsb-release
+  pac base linux linux-lts linux-firmware lsb-release
+  pac linux-headers linux-lts-headers
   pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
   pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
@@ -137,7 +138,7 @@ function packages()
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   pac brightnessctl # brightness control
   pac redshift
-  pac pipewire pipewire-audio pipewire-pulse wireplumber; {
+  pac pipewire pipewire-pulse pipewire-alsa alsa-firmware wireplumber; {
     pac pavucontrol pulsemixer # audio controllers
     pac pipewire-libcamera # not needed but the wireplumber binary complains
     pac sof-firmware # not sure if needed
@@ -201,7 +202,7 @@ function packages()
   # gaming
   pac steam; aur steamcmd
   pac prismlauncher
-  pac nvidia-open lib32-nvidia-utils; {
+  pac nvidia-open nvidia-open-lts lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P
   }
@@ -254,7 +255,7 @@ function packages()
   aur xctu
 
   # TODO: not sure if I need this
-  pac xdg-desktop-portal \
+  pac xdg-desktop-portal xdg-desktop-portal-gtk \
     && systemctl --user enable xdg-desktop-portal
 
   # wayland
@@ -277,11 +278,12 @@ function packages()
   pac arp-scan net-tools # net-tools has arp command
   pac platformio-core
   pac refind grub efibootmgr # TODO: not sure what efibootmgr is for
+  aur refind-theme-regular-git
   pac screen
   pac signal-desktop
   pac sudo
   pac fd # find files
-  pac ueberzugpp openslide libvips # images in terminal
+  pac ueberzugpp openslide # images in terminal
   nxi joshuto
   nxi st # terminal
   pac time # time command
@@ -303,15 +305,23 @@ function packages()
   pac sdl2-compat
   pac sndio
 
-
   pac parted gparted gptfdisk testdisk lvm2 # disk utilities
 
   pac augeas # for editing conf files
 
-
   pac lemurs # custom display login manager
   pac swaylock waylock # lock screens
   pac wmctrl # interact with EMWH compatible X window managers
+
+  # macbook
+  aur facetimehd-dkms
+
+  # intel
+  pac intel-media-sdk intel-media-driver
+  pac vulkan-intel
+
+  # system info
+  pac inxi sysfsutils
 }
 
 #===============================================================================
