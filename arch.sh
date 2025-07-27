@@ -186,7 +186,7 @@ function packages()
   pac thunderbird; install_tb_profile; tbe darkreader tbsync eas-4-tbsync
   pac maim     # screenshot utility
   pac ffmpeg   # screen record utility
-  pac feh sxiv # image viewer
+  pac feh nsxiv xwallpaper # image viewer and wallpaper
   pac mpv      # video player
   pac zathura zathura-pdf-poppler
   aur joshuto-bin
