@@ -178,7 +178,7 @@ function packages()
   # essential gui/advanced tui programs
   pac alacritty wezterm
   pac qutebrowser
-  pac nyxt
+  pac nyxt nuspell aspell
   pac firefox; install_ff_profile; {
     ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
       facebook-container news-feed-eradicator archlinux-wiki-search ublacklist
