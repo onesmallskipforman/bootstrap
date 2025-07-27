@@ -72,7 +72,7 @@ function packages()
   # basics
   pac base linux linux-lts linux-firmware lsb-release
   pac linux-headers linux-lts-headers
-  pac intel-ucode # TODO: check hardware to determine intel-ucode or amd-ucode
+  pac amd-ucode intel-ucode
   pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp paru-bin;
@@ -213,10 +213,6 @@ function packages()
   aur spotify; {
     pac spotify-player
     pac ncspot
-    nxi spotify-player
-    nxi ncspot
-    aur librespot
-    nxi librespot
 
     # NOTE: current way to list arguments of a package function locally
     # not sure if there's an easier way
@@ -241,6 +237,7 @@ function packages()
   }
   nxi itd siglo # pinetime dev tools
   pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
+  nxi librepcb verilator
 
 
   # advent-of-code
@@ -270,6 +267,7 @@ function packages()
   nxi lswt # list wayland toplevels
   nxi wideriver # bspwm-like layout for river
   nxi way-displays # like arandr
+  pac foot
 
   # TODO: sort
   pac dunst
