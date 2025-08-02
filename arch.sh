@@ -59,16 +59,6 @@ function packages()
     nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix home-manager
   }
 
-  # https://wiki.archlinux.org/title/Pacman/Tips_and_tricks#With_version
-  # list all explicitly installed packages
-  # pacman -Qe
-  # list all explcitly installed packages that arent required by other packages
-  # pacman -Qe -t
-  # list all foreign packages
-  # pacman -Qm
-  # list all native packages that are not direct or optional dependencies
-  # pacman -Qent
-
   # basics
   pac base linux linux-lts linux-firmware lsb-release
   pac linux-headers linux-lts-headers
@@ -77,7 +67,6 @@ function packages()
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp paru-bin;
   pac terminus-font
-  # aur guix
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
     # TODO: make a little more robust
@@ -213,14 +202,6 @@ function packages()
   aur spotify; {
     pac spotify-player
     pac ncspot
-
-    # NOTE: current way to list arguments of a package function locally
-    # not sure if there's an easier way
-    # https://noogle.dev/f/lib/functionArgs
-    # nixos.org/manual/nixpkgs/stable/#function-library-lib.trivial.functionArgs
-    # nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-    # nix-channel --update
-    # nix eval --impure --expr 'with import <nixpkgs> { }; lib.functionArgs spotify-player.override' --json
   }
   aur vesktop-bin
   nxi texlive.combined.scheme-full; {
