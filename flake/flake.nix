@@ -1,5 +1,6 @@
 {
   description = "A flake that provides nixpkgs outputs with custom packages";
+  # inputs.nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs = { self, nixpkgs }:
@@ -44,75 +45,11 @@
     # TODO: allow for layering of deps
     # using with self.packages.${system}.devShells; [ foo bar ]
 
-    # DEV ENVS
-    devShells.${system} = {
+    # TODO: use symlinkJoin to create metapackages for easy loading and
+    # unloading of sets of packages
 
-      # TODO: use symlinkJoin to create metapackages for easy loading and
-      # unloading of sets of packages
-      latex = pkgs.mkShell {
-        packages = with pkgs; [
-          texlive.combined.scheme-full
-          texlab
-          tectonic
-          # TODO: not yet working in isolated enf
-          # needs display, xauthority, and xdg_cache_home
-          zathura
-        ];
-        # TODO: not working in zsh
-        shellHook = '' export PS1="(nixdev) $PS1" '';
-      };
-
-      arm = pkgs.mkShell {
-        packages = with pkgs; [
-          gcc-arm-embedded
-          bear
-          codespell
-          cppcheck
-          doxygen
-          gtest
-          lcov
-          gdb
-          stm32flash
-        ];
-      };
-
-      cpp = pkgs.mkShell.override {
-        packages = with pkgs; [
-          clang-tools
-          cmake
-          codespell
-          conan
-          cppcheck
-          doxygen
-          gtest
-          lcov
-          vcpkg
-          vcpkg-tool
-        ] ++ (if system == "aarch64-darwin" then [ ] else [ gdb ]);
-      };
-
-      systemverilog = pkgs.mkShell {
-        packages = with pkgs; [
-          quartus-prime-lite
-          usb-blaster-udev-rules
-        ];
-        shellHook = ''
-          # export PATH=$XDG_STATE_HOME/nix/profile/questa_fse/bin:$PATH
-          # export PATH=$XDG_STATE_HOME/nix/profile/quartus/bin:$PATH
-          export PS1="(nixdev) $PS1"
-        '';
-      };
-
-      pinetime = pkgs.mkShell {
-        packages = with pkgs; [
-          # TODO: basics: find out why these parentheses were needed
-          (siglo.override { python3 = python-with-distutils; })
-          itd
-        ];
-      };
-    };
   in
-  nixpkgs // { inherit legacyPackages; inherit devShells; };
+  nixpkgs // { inherit legacyPackages; };
 }
 
 # least agro version: a single additional package
