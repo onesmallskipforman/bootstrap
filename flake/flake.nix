@@ -12,9 +12,6 @@
     overrides = builtins.mapAttrs (name: value: pkgs.${name}.override value) {
       spotify-player = { withAudioBackend = "pulseaudio"; };
       librespot      = { withPulseAudio   = true        ; };
-      siglo          = { python3 = (pkgs.python3.withPackages (python-pkgs: [
-        python-pkgs.setuptools
-      ]));};
       # TODO: needs work
       # pywal16        = { python3 = (pkgs.python3.withPackages (python-pkgs:
       #     pkgs.pywal16.optional-dependencies.all

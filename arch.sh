@@ -63,7 +63,8 @@ function packages()
   pac base linux linux-lts linux-firmware lsb-release
   pac linux-headers linux-lts-headers
   pac amd-ucode intel-ucode
-  pac wget curl tar unzip git; pac python python-pip python-pipx go util-linux base-devel
+  pac wget curl tar unzip git go; pac util-linux base-devel
+  pac python python-pip python-pipx uv
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp paru-bin;
   pac terminus-font
@@ -217,20 +218,10 @@ function packages()
     nxi stm32flash
   }
   nxi itd siglo # pinetime dev tools
-  pac lib32-libpng12 lib32-fakeroot; aur quartus-130 modelsim-intel-starter
   nxi librepcb verilator
 
-
-  # advent-of-code
-  nxi aoc-cli
-  pac datamash # statistics tool
-  aur rs-git # reshape data array
-  aur csvtk-bin # CSV/TSV cli toolkit
-
   # robotics
-  aur coolterm-bin; nxi tio # serial tools
-  pac minicom picocom  # serial tools
-  aur xctu
+  aur xctu coolterm-bin
 
   # TODO: not sure if I need this
   pac xdg-desktop-portal xdg-desktop-portal-gtk \
