@@ -276,6 +276,7 @@ function packages()
   # gaming/school/work
   deb https://zoom.us/client/latest/zoom_amd64.deb
   deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.43.52/slack-desktop-4.43.52-amd64.deb
+  nxi slack
   nxi jira-cli-go
   nxi spotify spotify-qt
   nxi texlive.combined.scheme-full; {
