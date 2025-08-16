@@ -91,28 +91,7 @@
 #   nixpkgs // { inherit legacyPackages; };
 # }
 
-# most agro version: basically recreate nixpkgs
-# {
-#   description = "A flake to install a custom-build of spotify-player";
-#   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-#
-#   outputs = { self, nixpkgs }:
-#   let
-#     system = "x86_64-linux";
-#     pkgs = import nixpkgs {
-#       inherit system;
-#       overlays = [(self: super:
-#         builtins.mapAttrs (name: value: super.${name}.override value) {
-#           spotify-player = { withAudioBackend = "pulseaudio"; };
-#           librespot      = { withPulseAudio   = true        ; };
-#         }
-#       )];
-#     };
-#     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs; };
-#   in
-#   nixpkgs // { inherit legacyPackages; };
-# }
-
+# most agro version: basically recreate nixpkgs with an overlay
 # {
 #   description = "A flake to install a custom-build of spotify-player";
 #   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -159,11 +138,3 @@
 #     };
 #   };
 # }
-
-# some example commands
-# nix flake metadata 'github:NixOS/nixpkgs/nixpkgs-unstable'
-# nix flake metadata 'flake:nixpkgs'
-# nix flake update --flake 'github:NixOS/nixpkgs/nixpkgs-unstable'
-# nix flake update --flake 'flake:nixpkgs'
-# nix flake update --flake nixpkgs
-# nix flake update $(pwd)
