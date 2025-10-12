@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
 
 # script that compares packages in install scripts to packages on the system
 
@@ -188,5 +189,5 @@ case $1 in
   cleanup) cleanup_os $ID ;;
   syncup ) syncup_os  $ID ;;
   revert ) revert_os  $ID ;;
-  *) echo 'track (compare|cleanup)'; exit 1 ;;
+  *) echo 'track (compare|cleanup|syncup|revert)'; exit 1 ;;
 esac
