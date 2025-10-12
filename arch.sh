@@ -63,7 +63,7 @@ function packages()
   pac base linux linux-lts linux-firmware lsb-release
   pac linux-headers linux-lts-headers
   pac amd-ucode intel-ucode
-  pac wget curl tar unzip git go; pac util-linux base-devel
+  pac wget curl tar unzip git; pac util-linux base-devel
   pac python python-pip python-pipx uv
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
   amp paru-bin;
@@ -82,7 +82,7 @@ function packages()
   pac reflector && sudo systemctl enable reflector.service
   pac man-db man-pages texinfo
   pac inetutils # has hostname commmand in arch
-  pac gcc make cmake bazel bear
+  pac gcc make bear
   pac pass
   pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
     mkdir -p /etc/iwd

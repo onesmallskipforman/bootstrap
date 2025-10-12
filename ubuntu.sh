@@ -59,7 +59,7 @@ function packages()
 
   ain unminimize; yes | sudo unminimize
   ain man-db manpages texinfo
-  nxi go rustc git git-extras
+  nxi rustc git git-extras
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
     # TODO: make a little more robust
@@ -200,6 +200,7 @@ function packages()
     ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
   deb https://zoom.us/client/latest/zoom_amd64.deb
   nxi slack
+  nxi dmidecode
   nxi jira-cli-go
   nxi spotify spotify-qt spotify-player
   nxi texlive.combined.scheme-full; {

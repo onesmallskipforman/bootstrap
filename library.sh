@@ -290,7 +290,6 @@ function pin() { python3 -m pip install --user --upgrade $@; }
 function pxi() { pipx install --force $@; }
 # TODO: (maybe instead of ghb use wget to overwrite dir or just add submodules to dotfiles)
 function ghb() { cln "https://github.com/$1.git"; }
-function goi() { GOPATH=${XDG_DATA_HOME:-~/.local/share}/go go install $@; }
 # TODO: guix unfree software: https://gitlab.com/nonguix/nonguix
 function gxi() { guix install $@; }
 function pac() { sudo pacman -S --needed --noconfirm $@; }
