@@ -190,7 +190,7 @@ function packages()
   aur lifxlan-git; nxi python313Packages.aiolifx # LIFX lights
 
   # gaming
-  pac steam; aur steamcmd
+  pac steam; aur steamcmd geforce-infinity
   pac prismlauncher
   pac nvidia-open nvidia-open-lts lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
@@ -210,12 +210,6 @@ function packages()
     pac entr        # run arbitrary commands when files change, for live edit
     pac ghostscript # installs ps2pdf
     pac inkscape    # for latex drawings
-  }
-  # aur zoom slack-desktop
-  nxi scilab-bin
-  pac arm-none-eabi-gcc; {
-    pac arm-none-eabi-newlib libopencm3 stlink openocd
-    nxi stm32flash
   }
   nxi itd siglo # pinetime dev tools
   nxi librepcb verilator

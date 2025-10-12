@@ -35,79 +35,8 @@ function prep(){
 }
 
 #===============================================================================
-# POST-INSTALL CONFIGS
-#===============================================================================
-
-function install_steamgames() {
-  steam_install_game 1493710 # proton experiemental
-  steam_install_game 2805730 # proton 9.0
-  steam_install_game 252950  # rocket league
-
-  # bakkesmod for rocket league
-  local URL='https://github.com/bakkesmodorg/BakkesModInjectorCpp/releases/latest/download/BakkesModSetup.zip'
-  local DIR=$(mktemp -d)
-  wget -qP $DIR $URL; unzip $DIR/BakkesModSetup.zip -d $DIR
-
-  local COMPATDATA="$HOME/.steam/steam/steamapps/compatdata/252950"
-  local PROTON="$(sed -n 4p "$COMPATDATA"/config_info | xargs -d '\n' dirname)"
-  WINEESYNC=1 WINEPREFIX="$COMPATDATA"/pfx "$PROTON"/bin/wine64 $DIR/BakkesModSetup.exe
-
-  installBakkesExtensions
-}
-
-#===============================================================================
-# CUSTOM INSTALL FUNCTIONS
-#===============================================================================
-
-function install_quartus() {
-  # 32-bit architechture for modelsim
-  sudo dpkg --add-architecture i386 # NOTE: handled in prep() function
-  ain "libc6:i386" "libncurses5:i386" "libstdc++6:i386" "libxext6:i386" "libxft2:i386" # dependencies
-
-  local URL='https://cdrdv2.intel.com/v1/dl/getContent/666220/666242?filename=Quartus-web-13.1.0.162-linux.tar'
-  local DIR="$(mktemp -d)"
-  wget -qO- $URL | tar x -C $DIR
-  sudo $DIR/setup.sh --mode unattended --unattendedmodeui minimalWithDialogs --installdir /opt/altera/15.0
-
-  # set up permissions for usb blaster
-  echo '# For Altera USB-Blaster permissions. \SUBSYSTEM=="usb",\
-  local ENV{DEVTYPE}=="usb_device",\ATTR{idVendor}=="09fb",\ATTR{idProduct}=="6001",\
-  local MODE="0666",\NAME="bus/usb/$env{BUSNUM}/$env{DEVNUM}",\
-  local RUN+="/bin/chmod 0666 %c"'| \
-    sudo tee /etc/udev/rules.d/51-usbblaster.rules > /dev/null
-}
-
-function get_ros2() {
-  ppa universe
-  local ROS_APT_SOURCE_VERSION=$(
-    curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest \
-      | grep -F "tag_name" \
-      | awk -F\" '{print $4}'
-  )
-  deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
-  sudo apt update -y
-  ain ros-dev-tools python3-argcomplete ros-jazzy-ros-base # ros-*-ros-base
-}
-
-#===============================================================================
 # INSTALLATIONS
 #===============================================================================
-
-function gaming()
-{
-  ppa multiverse; {
-    # https://askubuntu.com/a/1017487
-    echo steam steam/question select "I AGREE" | sudo debconf-set-selections
-    echo steam steam/license note '' | sudo debconf-set-selections
-    ain steam # NOTE: https://askubuntu.com/a/1225192
-    ain steamcmd
-  }
-  deb https://launcher.mojang.com/download/Minecraft.deb
-  # FIX: hangs during docker testing
-  ain ubuntu-drivers-common; ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
-}
-
-
 
 function packages()
 {
@@ -127,30 +56,25 @@ function packages()
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # TODO: consider installing pipx with nix
-  # ain guix; sudo guix-daemon --build-users-group=_guixbuild & guix pull
 
-   # ain unminimize; yes | sudo unminimize
-   ain man-db manpages texinfo
-   ppa ppa:longsleep/golang-backports; ain golang-go
-   ain rustc
-   ppa ppa:git-core/ppa; ain git git-extras
-   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
-     sudo chsh -s /bin/zsh $(whoami)
-     # TODO: make a little more robust
-     # alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
-     # only contents be setting ZDOTDIR, then move all other env setup to
-     # .zprofile (which can just point to or source a generic shell profile).
-     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
-   }
+  ain unminimize; yes | sudo unminimize
+  ain man-db manpages texinfo
+  nxi go rustc git git-extras
+  ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
+    sudo chsh -s /bin/zsh $(whoami)
+    # TODO: make a little more robust
+    # alternative: leave $HOME/.zshenv WITHOUT a symlink and have its
+    # only contents be setting ZDOTDIR, then move all other env setup to
+    # .zprofile (which can just point to or source a generic shell profile).
+    echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
+  }
   ain less
   ain systemd
-  ain gcc make cmake bear
-  nxi bazelisk
   ain dhcpcd5 iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
       EnableNetworkConfiguration=true
-    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
+    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf;
     echo '
       # Configuration file for NetworkManager.
       # See "man 5 NetworkManager.conf" for details.
@@ -161,7 +85,7 @@ function packages()
 
       [Network]
       NameResolvingService=systemd
-    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf;
     sudo systemctl enable dhcpcd.service
     sudo systemctl enable iwd.service
     sudo systemctl enable NetworkManager.service
@@ -170,8 +94,7 @@ function packages()
   ain jq
   ain xsel xclip
   nxi fzf ripgrep
-  ain neovim python3-pynvim npm xsel xclip calc; nxi tree-sitter
-  ain vim
+  nxi neovim python3-pynvim nodejs-slim xsel xclip calc tree-sitter vim
   ain calc bc
   ain tmux
 
@@ -233,7 +156,7 @@ function packages()
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text
   ain tty-clock # terminal digial clock
   ain neofetch
-  ain tty-clock; nxi asciiquarium pipes
+  nxi asciiquarium pipes
   nxi macchina fastfetch # fetch
   ain chafa # terminal graphics TODO: find use case with file browser
   ghb stark/Color-Scripts # TODO: not in PATH
@@ -272,48 +195,29 @@ function packages()
   # color manipulation
   nxi pywal16 python313Packages.colorthief imagemagick wallust hellwal
 
-
   # gaming/school/work
+  ain ubuntu-drivers-common;
+    ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
   deb https://zoom.us/client/latest/zoom_amd64.deb
-  deb https://downloads.slack-edge.com/desktop-releases/linux/x64/4.43.52/slack-desktop-4.43.52-amd64.deb
   nxi slack
   nxi jira-cli-go
-  nxi spotify spotify-qt
+  nxi spotify spotify-qt spotify-player
   nxi texlive.combined.scheme-full; {
     ain enscript    # converts textfile to postscript (use with ps2pdf)
     ain entr        # run arbitrary commands when files change, for live edit
     ain ghostscript # installs ps2pdf
-    ppa ppa:inkscape.dev/stable; ain inkscape # for latex drawings
+    nxi inkscape    # for latex drawings
   }
-
-  get_ros2
-  ain gcc-arm-none-eabi
   ain gimp
-
-  # c++ tools
-  # TODO: move to docker environment
-  ain google-perftools doxygen
-  ain clangd clang-format cppcheck
   ain can-utils
-  ain libc++abi1
 
   # gp-saml-gui
   ain python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1
   pxi --user --upgrade https://github.com/dlenski/gp-saml-gui/archive/master.zip
 
+  nxi nyxt
 
-  # advent-of-code tools
-  ain datamash # statistics tool
-  ain rs # reshape data array
-
-  ain gh # github cli
-  nxi nyxt luakit
-
-  # calendars
-  nxi calcure calcurse
-  ain ncal
-
-
+  nxi calcure calcurse; ain ncal # calendars
   ain pass gnupg # for passwork management
 
   # needed for different interfaces to enter password
@@ -325,8 +229,7 @@ function packages()
   ain cifs-utils # for mounting
 
   # nework scanning: https://askubuntu.com/a/377796
-  ain nmap
-  ain arp-scan net-tools # net-tools has arp
+  ain nmap arp-scan net-tools # net-tools has arp
 
   ain speedtest-cli # speedtest.net by ookla
   ain xmlto # can convert xml to pdf
