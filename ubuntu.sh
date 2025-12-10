@@ -31,7 +31,9 @@ function prep(){
   sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
-  # sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+  # TODO: apply this to a file in /etc/sysctl.d/ instead of running a command
+  # this can eventually be managed by system-manager
+  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 }
 
 #===============================================================================
@@ -94,7 +96,7 @@ function packages()
   ain jq
   ain xsel xclip
   nxi fzf ripgrep
-  nxi neovim python3-pynvim nodejs-slim xsel xclip calc tree-sitter vim
+  nxi neovim python313Packages.pynvim nodejs-slim xsel xclip calc tree-sitter vim
   ain calc bc
   ain tmux
 
@@ -145,7 +147,7 @@ function packages()
   ain arandr autorandr # xrandr caching and gui
   ain rofi; ghb newmanls/rofi-themes-collection
   ain bspwm sxhkd polybar picom dunst
-  nxi polybarFull sxhkd neovim bspwm thunderbird wget picom
+  nxi polybarFull sxhkd neovim bspwm wget picom
   ain fontconfig; {
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
     fc-cache -rv
@@ -176,12 +178,12 @@ function packages()
       Pin-Priority: -1
     ' | awk '{$1=$1;print}' | sudo tee /etc/apt/preferences.d/mozilla-firefox
     ain firefox
-    install_ff_profile
-    ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-      facebook-container news-feed-eradicator archlinux-wiki-search
+    # install_ff_profile
+    # ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
+    #   facebook-container news-feed-eradicator archlinux-wiki-search
     ain thunderbird
-    install_tb_profile
-    tbe darkreader tbsync eas-4-tbsync
+    # install_tb_profile
+    # tbe darkreader tbsync eas-4-tbsync
   }
   ain qutebrowser
   ain maim     # screenshot utility
@@ -202,13 +204,7 @@ function packages()
   nxi slack
   nxi dmidecode
   nxi jira-cli-go
-  nxi spotify spotify-qt spotify-player
-  nxi texlive.combined.scheme-full; {
-    ain enscript    # converts textfile to postscript (use with ps2pdf)
-    ain entr        # run arbitrary commands when files change, for live edit
-    ain ghostscript # installs ps2pdf
-    nxi inkscape    # for latex drawings
-  }
+  nxi spotify spotify-qt spotify-player ncspot
   ain gimp
   ain can-utils
 

@@ -86,6 +86,7 @@ function config() {
   echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
   sudo systemctl set-default multi-user.target
   # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
+  echo 'Defaults !admin_flag' | sudo tee /etc/sudoers.d/disable_admin_file_in_home
 }
 
 #===============================================================================
@@ -195,61 +196,76 @@ getNixSingleUser() {
   export PATH=$PATH:~/.local/state/nix/profile/bin
 }
 
-function install_ff_extension() {
-  local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
-  local DIR=$(mktemp -d)
-  local XPI=$DIR/tmp.xpi
-  wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
-  local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
-  mkdir -p $EXTDIR
-  cp $XPI $EXTDIR/$NAME
-  # NOTE: need to install in system to use unsigned non-mozilla extensions
-  # TODO: figure out if behavior is similar with thunderbird
-  # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
-}
-function install_tb_extension() {
-  local URL="https://addons.thunderbird.net/thunderbird/downloads/latest/$1"
-  local DIR=$(mktemp -d)
-  local XPI=$DIR/tmp.xpi
-  wget -qO $XPI $URL
-  local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
-  local EXTDIR=$(find ~/.thunderbird -name '*.default-release*')/extensions
-  mkdir -p $EXTDIR
-  cp $XPI $EXTDIR/$NAME
-}
-# TODO: generalize install ff and tb extensions
-
-
-# TODO: separate dotfiles sync and profile generation
-# function sync_moz_dotfiles() {
-#
+# function install_ff_extension() {
+#   local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
+#   local DIR=$(mktemp -d)
+#   local XPI=$DIR/tmp.xpi
+#   wget -qO $XPI $URL
+#   local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
+#   local EXTDIR=$(find ~/.mozilla/firefox -name '*.default-release*')/extensions
+#   mkdir -p $EXTDIR
+#   cp $XPI $EXTDIR/$NAME
+#   # NOTE: need to install in system to use unsigned non-mozilla extensions
+#   # TODO: figure out if behavior is similar with thunderbird
+#   # sudo cp dr.xpi /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/$NAME
 # }
-function ensure_moz_profile() {
-  local CMD=$1
-  local DIR=$2
-  local CFG=$3
-  # use subshell to kill background browser once loop is complete
-  # (
-    $CMD --headless >/dev/null 2>&1 & local PID=$!
-    until [ "$(find $DIR -name '*.default-release*')" != "" ] >/dev/null 2>&1; do sleep 1; done
-    kill $PID
-  # )
-  local PRF=$(find $DIR -name '*.default-release*')
-  find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
-}
-function install_ff_profile() {
-  ensure_moz_profile firefox $HOME/.mozilla/firefox $HOME/.config/firefox
-}
-function install_tb_profile() {
-  ensure_moz_profile thunderbird $HOME/.thunderbird $HOME/.config/thunderbird
-}
+# function install_tb_extension() {
+#   local URL="https://addons.thunderbird.net/thunderbird/downloads/latest/$1"
+#   local DIR=$(mktemp -d)
+#   local XPI=$DIR/tmp.xpi
+#   wget -qO $XPI $URL
+#   local NAME=$(unzip -p $XPI | grep -a '"id": ' | sed -r 's/[\t\n\r," ]//g;s/id://g').xpi
+#   local EXTDIR=$(find ~/.thunderbird -name '*.default-release*')/extensions
+#   mkdir -p $EXTDIR
+#   cp $XPI $EXTDIR/$NAME
+# }
+# # TODO: generalize install ff and tb extensions
+#
+#
+# # TODO: separate dotfiles sync and profile generation
+# # function sync_moz_dotfiles() {
+# #
+# # }
+# function ensure_moz_profile() {
+#   local CMD=$1
+#   local DIR=$2
+#   local CFG=$3
+#   # use subshell to kill background browser once loop is complete
+#   # (
+#     $CMD --headless >/dev/null 2>&1 & local PID=$!
+#     until [ "$(find $DIR -name '*.default-release*')" != "" ] >/dev/null 2>&1; do sleep 1; done
+#     kill $PID
+#   # )
+#   local PRF=$(find $DIR -name '*.default-release*')
+#   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
+# }
+# # NOTE: get official extensions from
+#
+# function install_moz_profile() {
+#   local CMD=$1;
+#   local PROFILE=$2;
+#   local CFG=$HOME/.config/$CMD
+#   local DIR=$HOME/.mozilla/$CMD/$PROFILE
+#   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" \
+#     | xargs -r -I{} ln -sfT $CFG/{} "$DIR/{}"
+# }
+# function install_ff_profile() {
+#   ensure_moz_profile firefox skipper
+# }
+# function install_tb_profile() {
+#   ensure_moz_profile thunderbird skipper
+# }
 
-# TODO: rewrite so it doesn't keep appending the same line to the file
+
+
 # TODO: consider using wheel group instead of manaually adding every user
 function addSudoers() {
-  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a /etc/sudoers.d/$(whoami)
+  local FILE=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;[/\.-];_;g')
+  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $FILE
 }
+
+# function addSudoersSetting() {
+# }
 
 
 
