@@ -31,9 +31,9 @@ function prep(){
   sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
   sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
-  # TODO: apply this to a file in /etc/sysctl.d/ instead of running a command
-  # this can eventually be managed by system-manager
-  sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+  # https://askubuntu.com/a/1511983
+  echo 'kernel.apparmor_restrict_unprivileged_userns=0' \
+    | sudo tee /etc/sysctl.d/20-apparmor-allow-unprivileged-userns.conf
 }
 
 #===============================================================================
