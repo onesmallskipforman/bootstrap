@@ -7,8 +7,8 @@ source library.sh
 function prepRoot() {
   pacman -Syu --noconfirm sudo; pacman -Fy --noconfirm
   USER=$1
-  useradd -m $USER; passwd -d $USER
-  echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
+  useradd -m $USER || echo "User $USER exists"; passwd -d $USER
+  echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
 
   sed -i '/en_US.UTF-8 UTF-8/s/#//g' /etc/locale.gen

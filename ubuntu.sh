@@ -9,7 +9,7 @@ function prepRoot() {
   apt update -y; apt install -y sudo locales
   USER=$1
   useradd -m $USER || echo "User $USER exists"; passwd -d $USER
-  echo "$USER ALL=(ALL) ALL" | tee -a /etc/sudoers.d/$USER
+  echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
   chown $USER /home/$USER; chmod ug+w /home/$USER
 
   locale-gen en_US en_US.UTF-8

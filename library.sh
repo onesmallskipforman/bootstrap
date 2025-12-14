@@ -256,12 +256,9 @@ getNixSingleUser() {
 #   ensure_moz_profile thunderbird skipper
 # }
 
-
-
-# TODO: consider using wheel group instead of manaually adding every user
 function addSudoers() {
-  local FILE=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;[/\.-];_;g')
-  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $FILE
+  local FNAME=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;[/\.-];_;g')
+  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $NAME
 }
 
 # function addSudoersSetting() {
