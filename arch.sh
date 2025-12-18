@@ -89,23 +89,32 @@ function packages()
     echo '
       [General]
       EnableNetworkConfiguration=true
-    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf
-    mkdir -p /etc/NetworkManager
-    echo '
-      # Configuration file for NetworkManager.
-      # See "man 5 NetworkManager.conf" for details.
-
-      [device]
-      wifi.scan-rand-mac-address=no
-      wifi.backend=iwd
 
       [Network]
       NameResolvingService=systemd
-    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/NetworkManager.conf
-    sudo systemctl enable dhcpcd.service
-    sudo systemctl enable iwd.service
-    sudo systemctl enable systemd-networkd.service
+    ' | awk '{$1=$1;print}' | sudo tee /etc/iwd/main.conf;
+
+    # https://wiki.archlinux.org/title/NetworkManager#Configuring_MAC_address_randomization
+    echo '
+      [device]
+      wifi.scan-rand-mac-address=no
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/conf.d/wifi-rand-mac.conf
+
+    # https://wiki.archlinux.org/title/NetworkManager#Using_iwd_as_the_Wi-Fi_backend
+    sudo systemctl disable iwd.service
+    echo '
+      [device]
+      wifi.backend=iwd
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/conf.d/wifi-backend.conf
+
+    # https://wiki.archlinux.org/title/NetworkManager#DHCP_client
+    sudo systemctl disable dhcpcd.service
+    echo '
+      [main]
+      dhcp=dhcpcd
+    ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/conf.d/dhcp-client.conf
     sudo systemctl enable NetworkManager.service
+    sudo systemctl enable systemd-networkd.service
   }
   pac cifs-utils # tool for mounding temp drives
   pac jq

@@ -257,8 +257,8 @@ getNixSingleUser() {
 # }
 
 function addSudoers() {
-  local FNAME=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;[/\.-];_;g')
-  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $NAME
+  local FNAME=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;^/;;g;s;[/\.-];_;g')
+  sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $FNAME
 }
 
 # function addSudoersSetting() {
