@@ -225,7 +225,7 @@ function packages() {
   # needed for different interfaces to enter password
   # sudo update-alternatives --config pinentry
   # https://unix.stackexchange.com/a/759603
-  ain pinentry-tty pinentry-curses pinentry-gnome3 pinetry-gtk pinentry-qt
+  ain pinentry-tty pinentry-curses pinentry-gnome3 pinentry-gtk pinentry-qt
 
   ain sshpass # non-interactive ssh password authentication
   ain cifs-utils # for mounting
