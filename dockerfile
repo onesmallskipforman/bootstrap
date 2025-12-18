@@ -5,7 +5,10 @@ SHELL ["/bin/bash", "-c"]
 
 # set up working directory
 WORKDIR /home/skipper/Projects/bootstrap
-COPY --chown=skipper:skipper ${OS}.sh library.sh dotfiles ./
+COPY --chown=skipper:skipper ${OS}.sh   ./
+COPY --chown=skipper:skipper library.sh ./
+COPY --chown=skipper:skipper flake      ./flake
+COPY --chown=skipper:skipper dotfiles   ./dotfiles
 
 # exit needed to allow logout+login, https://stackoverflow.com/a/72596120
 RUN set -euxo pipefail && source ${OS}.sh && prepRoot skipper && exit

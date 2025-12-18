@@ -21,7 +21,7 @@ function prepRoot() {
   ain nix-bin # needs relogin to work (for nixbld groups)
 }
 
-function prep(){
+function prep() {
   sudo apt update -y
   sudo apt full-upgrade -y
   sudo dpkg --add-architecture i386
@@ -35,8 +35,7 @@ function prep(){
 # INSTALLATIONS
 #===============================================================================
 
-function packages()
-{
+function packages() {
   # start nix daemon if service is not running
   # need to suppres stderr for nix daemon because it was printing blank outputs
   # when working interactively in a docker container
