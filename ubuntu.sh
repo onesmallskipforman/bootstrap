@@ -6,24 +6,19 @@ source library.sh
 
 function prepRoot() {
   # everything needed to run as user
-  apt update -y; apt install -y sudo locales
+  apt-get update -y; apt-get install -y sudo locales
   USER=$1
   useradd -m $USER || echo "User $USER exists"; passwd -d $USER
   echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
-  chown $USER /home/$USER; chmod ug+w /home/$USER
+  chown -R $USER:$USER /home/$USER; chmod ug+w /home/$USER
 
   locale-gen en_US en_US.UTF-8
   update-locale LANG=en_US.UTF-8
   export LANG=en_US.UTF-8
 
-  # sudo groupadd -r nixbld
-  # for n in $(seq 1 10); do sudo useradd -c "Nix build user $n" \
-  #     -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" \
-  #     nixbld$n; done
-
-  groupadd -f nix-users; usermod -aG nix-users $USER
-  # chgrp nix-users /nix/var/nix/daemon-socket
-  # chmod ug=rwx,o= /nix/var/nix/daemon-socket
+  # nix prep
+  groupadd -f nix-users; usermod -aG nix-users $USER # needs relogin to work
+  ain nix-bin # needs relogin to work (for nixbld groups)
 }
 
 function prep(){
@@ -42,24 +37,25 @@ function prep(){
 
 function packages()
 {
+  # start nix daemon if service is not running
+  # need to suppres stderr for nix daemon because it was printing blank outputs
+  # when working interactively in a docker container
+  systemctl is-active --quiet nix-daemon.service >/dev/null 2>&1 \
+    && sudo systemctl restart nix-daemon.service \
+    || sudo nix --extra-experimental-features nix-command daemon \
+      >/dev/null 2>&1 &
+
   # nix
-  ain nix-bin nix-setup-systemd; {
-    sudo systemctl enable nix-daemon.service
-    echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
-    sudo nix-daemon >/dev/null 2>&1 &
-    # sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
-    nix registry add nixpkgs $(pwd)
-    nix flake update --flake nixpkgs
-    nix profile upgrade --all
-    nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
-  }
+  ain nix-setup-systemd && systemctl enable nix-daemon.service
+  nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
 
   # basics
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # TODO: consider installing pipx with nix
 
-  ain unminimize; yes | sudo unminimize
+
+  ain unminimize; yes | sudo unminimize || true # "yes |" triggers a pipefail
   ain man-db manpages texinfo
   nxi rustc git git-extras
   ain zsh zsh-syntax-highlighting zsh-autosuggestions; {
@@ -128,7 +124,7 @@ function packages()
   }
   ain docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; {
     sudo systemctl enable docker.service
-    sudo groupadd -f docker; sudo usermod -aG docker $USER
+    sudo groupadd -f docker; sudo usermod -aG docker $(whoami)
     ain iptables-persistent # TODO: might be needed for docker stuff
   }
   ain autojump
@@ -143,8 +139,10 @@ function packages()
     ain alsa-utils
     systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
-  ain bluez bluez-tools blueman rfkill playerctl; {
-    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
+  ain bluez bluez-tools blueman rfkill kmod playerctl; {
+    # modprobe, and therefore rfkill, do not work in docker
+    sudo modprobe rfkill || true
+    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock || true
     sudo systemctl enable bluetooth.service
     # needed on ubuntu https://stackoverflow.com/a/68335639
     sudo systemctl disable blueman-mechanism.service
@@ -162,7 +160,6 @@ function packages()
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
     fc-cache -rv
   }
-
 
   # silly terminal scripts to show off
   ain figlet; ghb xero/figlet-fonts # For writing asciiart text
@@ -214,11 +211,10 @@ function packages()
   nxi slack
   nxi dmidecode
   nxi jira-cli-go
-  nxi spotify spotify-qt spotify-player ncspot
   ain gimp
   ain can-utils
 
-  # gp-saml-gui
+  # globalprotect
   ppa ppa:yuezk/globalprotect-openconnect; ain globalprotect-openconnect
   addSudoers /usr/bin/gpclient
 
@@ -242,6 +238,8 @@ function packages()
   ain xmlto # can convert xml to pdf
 
   ain haveged # random number generator
+
+  nxi spotify spotify-qt spotify-player ncspot
 }
 
 #===============================================================================

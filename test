@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
 
 readonly ID=${1:-$(. /etc/os-release && echo $ID)}

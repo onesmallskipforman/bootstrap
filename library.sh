@@ -315,7 +315,7 @@ function brw() { yes | brew install --force --no-quarantine --overwrite $@; }
 function key() { echo $@ | map echo "sudo apt-key adv --fetch-keys"; }
 function ppa() { sudo add-apt-repository -yu $1 ; }
 function deb() { local D=$(mktemp -d)/t.deb; wget -qO $D $1; ain $D; }
-function ain() { sudo DEBIAN_FRONTEND=noninteractive apt install -qqy $@; }
+function ain() { sudo DEBIAN_FRONTEND=noninteractive apt-get install -qqy $@; }
 function amp() { echo $@ | map aur_makepkg; }
 function yyi() { yay  -S --noconfirm --needed $@; }
 function pri() { paru -S --noconfirm --needed $@; }
@@ -324,7 +324,7 @@ function nxi() {
   # TODO: some of these flags should hopefully not be necessary once dotfiles are synced
   echo $@ \
     | sed 's/[^ ]* */nixpkgs#&/g' \
-    | xargs nix \
+    | NIX_REMOTE=daemon xargs nix \
       --use-xdg-base-directories \
       --extra-experimental-features nix-command \
       --extra-experimental-features flakes profile install

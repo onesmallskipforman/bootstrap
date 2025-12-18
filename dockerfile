@@ -1,16 +1,15 @@
-ARG BASE
+ARG BASE=archlinux:base # default arg is required to prevent complaint
 FROM $BASE
-# OS arg must go after FROM statement
-# https://stackoverflow.com/a/56748289
-ARG OS
+ARG OS # must go after FROM statement, https://stackoverflow.com/a/56748289
 SHELL ["/bin/bash", "-c"]
+
+# set up working directory
 WORKDIR /home/skipper/Projects/bootstrap
-COPY ./ ./
-RUN set -e && source ${OS}.sh && prepRoot skipper
-# exit is needed to allow for logout before switching users
-# https://stackoverflow.com/a/72596120
-RUN exit
+COPY --chown=skipper:skipper ${OS}.sh library.sh dotfiles ./
+
+# exit needed to allow logout+login, https://stackoverflow.com/a/72596120
+RUN set -euxo pipefail && source ${OS}.sh && prepRoot skipper && exit
 USER skipper
-RUN set -e && source $OS.sh && syncDots
-RUN set -e && source $OS.sh && packages
+RUN set -euxo pipefail && source ${OS}.sh && syncDots
+RUN set -euxo pipefail && source ${OS}.sh && packages
 CMD ["bash", "-li"]

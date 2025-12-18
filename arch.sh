@@ -15,7 +15,9 @@ function prepRoot() {
   locale-gen
   echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
-  groupadd -f nix-users; usermod -aG nix-users $USER
+  # nix prep
+  groupadd -f nix-users; usermod -aG nix-users $USER # needs relogin to work
+  pac nix # needs relogin to work (for nixbld groups)
 }
 
 function prep() {
@@ -47,17 +49,17 @@ function install_steamgames() {
 
 function packages()
 {
+  # start nix daemon if service is not running
+  # need to suppres stderr for nix daemon because it was printing blank outputs
+  # when working interactively in a docker container
+  systemctl is-active --quiet nix-daemon.service >/dev/null 2>&1 \
+    && sudo systemctl restart nix-daemon.service \
+    || sudo nix --extra-experimental-features nix-command daemon \
+      >/dev/null 2>&1 &
+
   # nix
-  pac nix; {
-    sudo systemctl enable nix-daemon.service
-    echo "trusted-users = $(whoami)" | sudo tee -a /etc/nix/nix.conf
-    # sudo nix-daemon >/dev/null 2>&1 &
-    sudo nix --extra-experimental-features nix-command daemon >/dev/null 2>&1 &
-    nix registry add nixpkgs $(pwd)
-    nix flake update --flake nixpkgs
-    nix profile upgrade --all
-    nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix home-manager
-  }
+  sudo systemctl enable nix-daemon.service
+  nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
 
   # basics
   pac base linux linux-lts linux-firmware lsb-release
@@ -129,7 +131,7 @@ function packages()
   pac docker docker-buildx docker-compose; {
     sudo systemctl enable docker.service
     sudo groupadd -f docker
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker $(whoami)
   }
 
   aur autojump
@@ -209,10 +211,6 @@ function packages()
 
   pac gimp
   pac signal-desktop
-  aur spotify; {
-    pac spotify-player
-    pac ncspot
-  }
   aur vesktop-bin
   nxi texlive.combined.scheme-full; {
     pac enscript    # converts textfile to postscript (use with ps2pdf)
@@ -295,6 +293,11 @@ function packages()
 
   # system info
   pac inxi sysfsutils
+
+  aur spotify; {
+    pac spotify-player
+    pac ncspot
+  }
 }
 
 #===============================================================================
