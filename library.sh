@@ -48,6 +48,14 @@ function menuRun() {
 # PREP
 #===============================================================================
 
+function createUser() {
+  # everything needed to run as user
+  USER=$1
+  # PASS=$2
+  useradd -m $USER || echo "User $USER exists"; passwd -d $USER #$PASS
+  echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
+}
+
 function copyDots() {
     # identify files, make directories, copy files
     DOTS="dotfiles"
@@ -79,14 +87,15 @@ function syncDots() {
   echo "$TARGETS" | xargs -I{} ln -sfT $DOTS/{} $HOME/{}
 }
 
-function config() {
-  local TZU=https://ipapi.co/timezone
-  sudo ln -sfT /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
+function setHostname() {
   local HN=wb-sgonzalez
   echo $HN | sudo tee /etc/hostname >/dev/null # hostnamectl set-hostname $HN
-  sudo systemctl set-default multi-user.target
-  # grep -q "127.0.0.1\s$(hostname)" /etc/hosts || echo "127.0.0.1 $(hostname)" >  /etc/hosts
-  echo 'Defaults !admin_flag' | sudo tee /etc/sudoers.d/disable_admin_file_in_home
+}
+
+function setTimezone() {
+  local TZU=https://ipapi.co/timezone
+  sudo ln -sfT /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
+  # sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime
 }
 
 #===============================================================================
@@ -190,12 +199,6 @@ function install_guix() {
   # hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/skipper/.config/guix/current/bin/guix'.
 }
 
-getNixSingleUser() {
-  curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
-  . ~/.nix-profile/etc/profile.d/nix.sh
-  export PATH=$PATH:~/.local/state/nix/profile/bin
-}
-
 # function install_ff_extension() {
 #   local URL="https://addons.mozilla.org/firefox/downloads/latest/$1"
 #   local DIR=$(mktemp -d)
@@ -291,6 +294,15 @@ function aur_makepkg() {
   ( cd $DIR; makepkg -si --noconfirm )
 }
 
+# TODO: does not work with snapshot file
+# function aur_pacman_install() {
+#   sudo pacman -S --needed --noconfirm wget
+#   local DIR=$(mktemp -d)
+#   local URL=https://aur.archlinux.org/cgit/aur.git/snapshot/$1.tar.gz
+#   wget -qP $DIR $URL
+#   sudo pacman -U $DIR/${1}.tar.gz
+# }
+
 function cln() {
   local DIR=$HOME/.local/src/$(basename $1 .git)
   [ -d "$DIR/.git" ] || git clone --depth 1 $1 $DIR
@@ -317,6 +329,7 @@ function ppa() { sudo add-apt-repository -yu $1 ; }
 function deb() { local D=$(mktemp -d)/t.deb; wget -qO $D $1; ain $D; }
 function ain() { sudo DEBIAN_FRONTEND=noninteractive apt-get install -qqy $@; }
 function amp() { echo $@ | map aur_makepkg; }
+# function apm() { echo $@ | map aur_pacman_install; }
 function yyi() { yay  -S --noconfirm --needed $@; }
 function pri() { paru -S --noconfirm --needed $@; }
 function aur() { pri $@; }

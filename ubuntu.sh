@@ -4,28 +4,30 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-function prepRoot() {
-  # everything needed to run as user
-  apt-get update -y; apt-get install -y sudo locales
-  USER=$1
-  useradd -m $USER || echo "User $USER exists"; passwd -d $USER
-  echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
-  chown -R $USER:$USER /home/$USER; chmod ug+w /home/$USER
-
-  locale-gen en_US en_US.UTF-8
-  update-locale LANG=en_US.UTF-8
-  export LANG=en_US.UTF-8
-
-  # nix prep
-  groupadd -f nix-users; usermod -aG nix-users $USER # needs relogin to work
-  ain nix-bin # needs relogin to work (for nixbld groups)
-}
+function getSudo() { apt-get update -y; apt-get install -y sudo; }
 
 function prep() {
-  sudo apt update -y
-  sudo apt full-upgrade -y
+  # stuff that should only really need to be run on a new machine
+
+  # set locale
+  ain locales
+  sudo locale-gen en_US en_US.UTF-8
+  sudo update-locale LANG=en_US.UTF-8
+
+  # nix prep, needs relogin to work
+  sudo groupadd -f nix-users; sudo usermod -aG nix-users $(whoami)
+  ain nix-bin # needs relogin to work (for nixbld groups)
+
+  # add 32bit
   sudo dpkg --add-architecture i386
-  sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
+  sudo apt update -y
+
+  setTimezone # prevents tz dialogue
+  setHostname
+
+  # set multi-user target
+  sudo systemctl set-default multi-user.target
+
   # https://askubuntu.com/a/1511983
   echo 'kernel.apparmor_restrict_unprivileged_userns=0' \
     | sudo tee /etc/sysctl.d/20-apparmor-allow-unprivileged-userns.conf

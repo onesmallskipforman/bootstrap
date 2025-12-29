@@ -4,26 +4,35 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-function prepRoot() {
-  pacman -Syu --noconfirm sudo; pacman -Fy --noconfirm
-  USER=$1
-  useradd -m $USER || echo "User $USER exists"; passwd -d $USER
-  echo "$USER ALL=(ALL) ALL" | tee /etc/sudoers.d/$USER
-  chown $USER /home/$USER; chmod ug+w /home/$USER
-
-  sed -i '/en_US.UTF-8 UTF-8/s/#//g' /etc/locale.gen
-  locale-gen
-  echo "LANG=en_US.UTF-8" > /etc/locale.conf
-
-  # nix prep
-  groupadd -f nix-users; usermod -aG nix-users $USER # needs relogin to work
-  pac nix # needs relogin to work (for nixbld groups)
-}
+function getSudo() { pacman -Sy --noconfirm sudo; }
 
 function prep() {
-  sed -i -e '/#\[multilib\]/,+1s/^#//' /etc/pacman.conf # enable multilib
-  sudo pacman -Syu --noconfirm
-  sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime # prevents tz dialogue
+  # stuff that should only really need to be run on a new machine
+
+  # set locale
+  sudo sed -i '/en_US.UTF-8 UTF-8/s/#//g' /etc/locale.gen
+  sudo locale-gen
+  echo "LANG=en_US.UTF-8" | sudo tee /etc/locale.conf
+
+  # nix prep, needs relogin to work
+  sudo groupadd -f nix-users; sudo usermod -aG nix-users $(whoami)
+  pac nix # needs relogin to work (for nixbld groups)
+
+  # add 32bit
+  grep '#\[multilib\]' \
+    || echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" \
+    |  sudo tee -a /etc/pacman.conf
+  sudo sed -i -e '/#\[multilib\]/,+1s/^#//' /etc/pacman.conf # enable multilib
+  sudo pacman -Sy
+
+  setTimezone # prevents tz dialogue
+  setHostname
+
+  # set multi-user target
+  sudo systemctl set-default multi-user.target
+
+  # aur prep
+  amp paru-bin
 }
 
 #===============================================================================
@@ -31,6 +40,7 @@ function prep() {
 #===============================================================================
 
 function install_steamgames() {
+  pac steam; aur steamcmd
   steam_install_game 1493710 # proton experiemental
   steam_install_game 2805730 # proton 9.0
   steam_install_game 252950  # rocket league
@@ -47,8 +57,7 @@ function install_steamgames() {
 # INSTALLATIONS
 #===============================================================================
 
-function packages()
-{
+function packages() {
   # start nix daemon if service is not running
   # need to suppres stderr for nix daemon because it was printing blank outputs
   # when working interactively in a docker container
@@ -62,13 +71,14 @@ function packages()
   nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
 
   # basics
+  pac moreutils # has sponge command
   pac base linux linux-lts linux-firmware lsb-release
   pac linux-headers linux-lts-headers
   pac amd-ucode intel-ucode
   pac wget curl tar unzip git; pac util-linux base-devel
   pac python python-pip python-pipx uv
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
-  amp paru-bin;
+  amp paru;
   pac terminus-font
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
@@ -122,7 +132,7 @@ function packages()
   pac jq
   pac xsel xclip
   pac fzf ripgrep; nxi python313Packages.pyfzf
-  pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli
+  pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli vivify-git
   pac vim
   pac calc bc
   pac tmux
