@@ -4,7 +4,9 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-function getSudo() { apt-get update -y; apt-get install -y sudo; }
+function getSudo() {
+  apt-get update -y; apt-get install -y sudo;
+}
 
 function prep() {
   # stuff that should only really need to be run on a new machine

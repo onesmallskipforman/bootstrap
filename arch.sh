@@ -30,9 +30,6 @@ function prep() {
 
   # set multi-user target
   sudo systemctl set-default multi-user.target
-
-  # aur prep
-  amp paru-bin
 }
 
 #===============================================================================
@@ -66,6 +63,9 @@ function packages() {
     || sudo nix --extra-experimental-features nix-command daemon \
       >/dev/null 2>&1 &
 
+  # paru
+  nxi paru
+
   # nix
   sudo systemctl enable nix-daemon.service
   nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
@@ -78,7 +78,6 @@ function packages() {
   pac wget curl tar unzip git; pac util-linux base-devel
   pac python python-pip python-pipx uv
   pac rust # https://wiki.archlinux.org/title/Rust#Installation
-  amp paru;
   pac terminus-font
   pac zsh zsh-syntax-highlighting zsh-autosuggestions; {
     sudo chsh -s /bin/zsh $(whoami)
@@ -97,7 +96,7 @@ function packages() {
   pac gcc make bear
   pac pass
   pac dhcpcd iwd networkmanager; { # networkmanager includes nmtui
-    mkdir -p /etc/iwd
+    sudo mkdir -p /etc/iwd
     echo '
       [General]
       EnableNetworkConfiguration=true
@@ -132,7 +131,7 @@ function packages() {
   pac jq
   pac xsel xclip
   pac fzf ripgrep; nxi python313Packages.pyfzf
-  pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli vivify-git
+  pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli; aur vivify-git
   pac vim
   pac calc bc
   pac tmux
