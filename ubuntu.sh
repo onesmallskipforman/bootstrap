@@ -68,7 +68,7 @@ function packages() {
     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
   }
   ain less
-  ain systemd
+  ain systemd init
   ain dhcpcd5 iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
