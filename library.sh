@@ -224,50 +224,39 @@ function install_guix() {
 # }
 # # TODO: generalize install ff and tb extensions
 #
-#
-# # TODO: separate dotfiles sync and profile generation
-# # function sync_moz_dotfiles() {
-# #
-# # }
-# function ensure_moz_profile() {
-#   local CMD=$1
-#   local DIR=$2
-#   local CFG=$3
-#   # use subshell to kill background browser once loop is complete
-#   # (
-#     $CMD --headless >/dev/null 2>&1 & local PID=$!
-#     until [ "$(find $DIR -name '*.default-release*')" != "" ] >/dev/null 2>&1; do sleep 1; done
-#     kill $PID
-#   # )
-#   local PRF=$(find $DIR -name '*.default-release*')
-#   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" | xargs -r -I{} ln -sfT $CFG/{} $PRF/{}
-# }
-# # NOTE: get official extensions from
-#
-# function install_moz_profile() {
-#   local CMD=$1;
-#   local PROFILE=$2;
-#   local CFG=$HOME/.config/$CMD
-#   local DIR=$HOME/.mozilla/$CMD/$PROFILE
-#   find -L $CFG -mindepth 1 -maxdepth 1 | sed "s;$CFG/;;g" \
-#     | xargs -r -I{} ln -sfT $CFG/{} "$DIR/{}"
-# }
-# function install_ff_profile() {
-#   ensure_moz_profile firefox skipper
-# }
-# function install_tb_profile() {
-#   ensure_moz_profile thunderbird skipper
-# }
+
+function install_mozilla_profile() {
+  local PROGRAM=$1
+  local PROFILE=$2
+  local FOLDER=$3
+  local CFG=$HOME/.config/$PROGRAM
+  local DIR=$HOME/$FOLDER
+  find -L $CFG -mindepth 1 -maxdepth 1 | xargs -L1 basename \
+    | xargs -r -I{} ln -sfT $CFG/{} "$DIR/$PROFILE/{}"
+
+  echo "
+  [General]
+  StartWithLastProfile=1
+  Version=2
+
+  [Profile0]
+  Default=1
+  IsRelative=1
+  Name=$PROFILE
+  Path=$PROFILE
+  " | awk '{$1=$1;print}' > $DIR/profiles.ini
+}
+function install_ff_profile() {
+  install_mozilla_profile firefox profile .mozilla/firefox
+}
+function install_tb_profile() {
+  install_mozilla_profile thunderbird profile .thunderbird
+}
 
 function addSudoers() {
   local FNAME=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;^/;;g;s;[/\.-];_;g')
   sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $FNAME
 }
-
-# function addSudoersSetting() {
-# }
-
-
 
 # TODO: using makepkg -d might be preventing makedeps from being installed
 # Consider just giving nobody some sudo nopasswd permissions
@@ -318,8 +307,6 @@ function ghb() { cln "https://github.com/$1.git"; }
 # TODO: guix unfree software: https://gitlab.com/nonguix/nonguix
 function gxi() { guix install $@; }
 function pac() { sudo pacman -S --needed --noconfirm $@; }
-function ffe() { echo $@ | map install_ff_extension; }
-function tbe() { echo $@ | map install_tb_extension; }
 
 # OS-specific
 function tap() { brew tap --quiet; }

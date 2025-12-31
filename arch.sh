@@ -190,11 +190,8 @@ function packages() {
   pac alacritty wezterm
   pac qutebrowser
   pac nyxt nuspell aspell
-  pac firefox; install_ff_profile; {
-    ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-      facebook-container news-feed-eradicator archlinux-wiki-search ublacklist
-  }
-  pac thunderbird; install_tb_profile; tbe darkreader tbsync eas-4-tbsync
+  pac firefox; install_ff_profile
+  pac thunderbird; install_tb_profile
   pac maim     # screenshot utility
   pac ffmpeg   # screen record utility
   pac feh nsxiv xwallpaper # image viewer and wallpaper

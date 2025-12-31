@@ -185,13 +185,8 @@ function packages() {
       Pin: version 1:1snap*
       Pin-Priority: -1
     ' | awk '{$1=$1;print}' | sudo tee /etc/apt/preferences.d/mozilla-firefox
-    ain firefox
-    # install_ff_profile
-    # ffe darkreader ublock-origin vimium-ff youtube-recommended-videos \
-    #   facebook-container news-feed-eradicator archlinux-wiki-search
-    ain thunderbird
-    # install_tb_profile
-    # tbe darkreader tbsync eas-4-tbsync
+    ain firefox; install_ff_profile
+    ain thunderbird; install_tb_profile
   }
   ain qutebrowser
   ain maim     # screenshot utility
