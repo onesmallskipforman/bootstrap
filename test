@@ -1,6 +1,34 @@
 #!/bin/zsh
 set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
 
+function cache() {
+  local FUNCTION=$1
+  local OS=$2
+  local OUT=$OS/$(echo $FUNCTION | sed 's/[A-Z]/-\L&/g')
+  echo '
+    #!/bin/bash
+    set -euxo pipefail
+
+    DIR=$(dirname $0 | xargs dirname | xargs realpath)
+    source $DIR/library.sh
+  ' | awk '{$1=$1;print}' \
+    | sed -e '/./,$!d' | sed -z 's/\n*$//' > $OUT
+
+  echo >> $OUT
+  echo >> $OUT
+
+  pcregrep -M "(?s)function $FUNCTION.*?^}" $OS.sh \
+    | sed '1d;$d;s/^  //g' >> $OUT
+
+}
+
+function cache_all() {
+  local OS=$1
+  cache getSudo $OS
+  cache prep $OS
+  cache packages $OS
+}
+
 readonly ID=${1:-$(. /etc/os-release && echo $ID)}
 case "$ID" in
   arch)   IMG=archlinux:base;;
@@ -8,5 +36,11 @@ case "$ID" in
   *)      echo "Not a valid OS"; exit 1;;
 esac
 
+# mkdir -p $1
+# cache_all $1
+
 docker build --build-arg BASE=$IMG --build-arg OS=$1 -t dfile -f dockerfile .
 docker run --rm -it dfile
+
+# podman build --format docker --build-arg BASE=$IMG --build-arg OS=$1 -t dfile -f Containerfile .
+# podman run --rm -it dfile
