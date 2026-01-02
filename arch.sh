@@ -55,6 +55,7 @@ function install_steamgames() {
 #===============================================================================
 
 function packages() {
+
   # start nix daemon if service is not running
   # need to suppres stderr for nix daemon because it was printing blank outputs
   # when working interactively in a docker container
@@ -62,8 +63,9 @@ function packages() {
     && sudo systemctl restart nix-daemon.service \
     || sudo nix --extra-experimental-features nix-command daemon \
       >/dev/null 2>&1 &
+  export PATH=$HOME/.local/state/nix/profile/bin:$PATH
 
-  # paru
+  # aur prep
   nxi paru
 
   # nix
@@ -133,7 +135,8 @@ function packages() {
   pac fzf ripgrep; nxi python313Packages.pyfzf
   pac neovim python-pynvim npm luarocks python-pip tree-sitter-cli; aur vivify-git
   pac vim
-  pac calc bc
+  pac calc bc libqalculate # calculators!
+  pac gnuplot # plotter
   pac tmux
 
   # developer environments
@@ -143,7 +146,7 @@ function packages() {
     sudo usermod -aG docker $(whoami)
   }
 
-  aur autojump
+  nxi autojump
   pac htop powertop
   pac openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
   pac brightnessctl # brightness control
@@ -153,11 +156,12 @@ function packages() {
     pac pipewire-libcamera # not needed but the wireplumber binary complains
     pac sof-firmware # not sure if needed
     pac alsa-utils
-    systemctl --user daemon-reload
     systemctl --user enable pipewire pipewire-pulse wireplumber # covers both .service + .socket
   }
   pac bluez bluez-utils bluez-tools blueman playerctl; {
-    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock
+    # modprobe, and therefore rfkill, do not work in docker
+    sudo modprobe rfkill || true
+    rfkill | awk '/hci0/{print $1}' | xargs rfkill unblock || true
     sudo systemctl enable bluetooth.service
     pac bluetui
   }
@@ -173,7 +177,7 @@ function packages() {
   pac fontconfig; {
     pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd
     aur ttf-ubraille
-    sudo pacman -Rdd --noconfirm gnu-free-fonts
+    sudo pacman -Rdd --noconfirm gnu-free-fonts || true
     fc-cache -rv
   }
 
@@ -195,6 +199,7 @@ function packages() {
   pac ffmpeg   # screen record utility
   pac feh nsxiv xwallpaper # image viewer and wallpaper
   pac mpv      # video player
+  pac mpd mpd-mpris ncmpcpp timidity++ mpc # music player
   pac zathura zathura-pdf-poppler
   aur joshuto-bin
 
