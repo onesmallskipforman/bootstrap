@@ -12,29 +12,13 @@
     overrides = builtins.mapAttrs (name: value: pkgs.${name}.override value) {
       spotify-player = { withAudioBackend = "pulseaudio"; };
       librespot      = { withPulseAudio   = true        ; };
-      # TODO: needs work
-      # pywal16        = { python3 = (pkgs.python3.withPackages (python-pkgs:
-      #     pkgs.pywal16.optional-dependencies.all
-      # ));};
-    }
-    //
-    {
-      # TODO: figure out what's wrong with pywal >=3.8.9
-      pywal16 = (pkgs.pywal16.overridePythonAttrs (old: rec {
-        version = "3.8.6";
-        src = pkgs.fetchFromGitHub {
-          owner = "eylles";
-          repo = "pywal16";
-          tag = version;
-          # TODO: figure out where to get this hash
-          hash = "sha256-aq9I9KJnzwFjfLZ2fzW80abJQ/oSX7FcmCXYi1JMY7Q=";
-        };
-      }));
-      # .override {
-      #   python3 = (pkgs.python3.withPackages (python-pkgs:
-      #     pkgs.pywal16.optional-dependencies.all
-      #   ));
-      # };
+      pywal16      = {
+        withColorthief = true;
+        withColorz = true;
+        withFastColorthief = true;
+        withHaishoku = true;
+        withModernColorthief = true;
+      };
     };
     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs // overrides; };
 
