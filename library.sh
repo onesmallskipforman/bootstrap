@@ -94,8 +94,8 @@ function setHostname() {
 
 function setTimezone() {
   local TZU=https://ipapi.co/timezone
-  sudo ln -sfT /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
-  # sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime
+  # sudo ln -sfT /usr/share/zoneinfo/$(curl $TZU) /etc/localtime
+  sudo ln -sfT /usr/share/zoneinfo/UTC /etc/localtime
 }
 
 #===============================================================================
@@ -231,6 +231,7 @@ function install_mozilla_profile() {
   local FOLDER=$3
   local CFG=$HOME/.config/$PROGRAM
   local DIR=$HOME/$FOLDER
+  mkdir -p $DIR/$PROFILE
   find -L $CFG -mindepth 1 -maxdepth 1 | xargs -L1 basename \
     | xargs -r -I{} ln -sfT $CFG/{} "$DIR/$PROFILE/{}"
 
@@ -318,7 +319,7 @@ function ain() { sudo DEBIAN_FRONTEND=noninteractive apt-get install -qqy $@; }
 function amp() { echo $@ | map aur_makepkg; }
 # function apm() { echo $@ | map aur_pacman_install; }
 function yyi() { yay  -S --noconfirm --needed $@; }
-function pri() { paru -S --noconfirm --needed $@; }
+function pri() { paru -S --noconfirm --needed --pgpfetch $@; }
 function aur() { pri $@; }
 function nxi() {
   # TODO: some of these flags should hopefully not be necessary once dotfiles are synced

@@ -4,7 +4,9 @@ source library.sh
 # SYSTEM PREPS
 #===============================================================================
 
-function getSudo() { pacman -Sy --noconfirm sudo; }
+function getSudo() {
+  pacman -Sy --noconfirm sudo
+}
 
 function prep() {
   # stuff that should only really need to be run on a new machine
@@ -55,7 +57,6 @@ function install_steamgames() {
 #===============================================================================
 
 function packages() {
-
   # start nix daemon if service is not running
   # need to suppres stderr for nix daemon because it was printing blank outputs
   # when working interactively in a docker container
@@ -66,6 +67,8 @@ function packages() {
   export PATH=$HOME/.local/state/nix/profile/bin:$PATH
 
   # aur prep
+  # https://wiki.archlinux.org/title/Arch_User_Repository#Prerequisites
+  pac base-devel git
   nxi paru
 
   # nix
@@ -216,7 +219,7 @@ function packages() {
   pac prismlauncher
   pac nvidia-open nvidia-open-lts lib32-nvidia-utils; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
-    sudo mkinitcpio -P
+    sudo mkinitcpio -P || true
   }
   nxi shadps4
 

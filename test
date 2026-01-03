@@ -1,32 +1,53 @@
 #!/bin/zsh
 set -euxo pipefail # https://stackoverflow.com/questions/2870992/automatic-exit-from-bash-shell-script-on-error
 
-function cache() {
+function get_function_contents() {
   local FUNCTION=$1
-  local OS=$2
-  local OUT=$OS/$(echo $FUNCTION | sed 's/[A-Z]/-\L&/g')
+  local FILE=$2
+  pcregrep -M "(?s)function $FUNCTION.*?^}" $FILE \
+    | sed '1d;$d;s/^  //g'
+}
+
+function header() {
   echo '
     #!/bin/bash
     set -euxo pipefail
+  ' | awk '{$1=$1;print}' \
+    | sed -e '/./,$!d'
+}
 
+function source_library() {
+  echo '
     DIR=$(dirname $0 | xargs dirname | xargs realpath)
     source $DIR/library.sh
   ' | awk '{$1=$1;print}' \
-    | sed -e '/./,$!d' | sed -z 's/\n*$//' > $OUT
-
-  echo >> $OUT
-  echo >> $OUT
-
-  pcregrep -M "(?s)function $FUNCTION.*?^}" $OS.sh \
-    | sed '1d;$d;s/^  //g' >> $OUT
-
+    | sed -e '/./,$!d'
 }
+
+# function generate_file_contents() {
+#   local FUNCTION=$1
+#   local OS=$2
+#   local OUT=$OS/$(echo $FUNCTION | sed 's/[A-Z]/-\L&/g')
+#
+#   header > $OUT
+#   get_function_contents getSudo $OS.sh >> $OUT
+# }
 
 function cache_all() {
   local OS=$1
-  cache getSudo $OS
-  cache prep $OS
-  cache packages $OS
+  header > $OS/get-sudo
+  get_function_contents getSudo $OS.sh >> $OS/get-sudo
+  chmod +x $OS/get-sudo
+
+  header > $OS/prep
+  source_library >> $OS/prep
+  get_function_contents prep $OS.sh >> $OS/prep
+  chmod +x $OS/prep
+
+  header > $OS/packages
+  source_library >> $OS/packages
+  get_function_contents packages $OS.sh >> $OS/packages
+  chmod +x $OS/packages
 }
 
 readonly ID=${1:-$(. /etc/os-release && echo $ID)}
@@ -36,11 +57,8 @@ case "$ID" in
   *)      echo "Not a valid OS"; exit 1;;
 esac
 
-# mkdir -p $1
-# cache_all $1
+mkdir -p $1
+cache_all $1
 
-docker build --build-arg BASE=$IMG --build-arg OS=$1 -t dfile -f dockerfile .
-docker run --rm -it dfile
-
-# podman build --format docker --build-arg BASE=$IMG --build-arg OS=$1 -t dfile -f Containerfile .
-# podman run --rm -it dfile
+podman build --format docker --build-arg BASE=$IMG --build-arg OS=$1 -t dfile -f Containerfile .
+podman run --rm -it dfile
