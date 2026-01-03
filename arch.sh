@@ -175,7 +175,7 @@ function packages() {
   pac xdotool # for grabbing window names
   pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
   pac arandr autorandr # xrandr caching and gui
-  pac rofi; aur rofi-themes-collection-git rofi-games
+  pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
   pac fontconfig; {
     pac ttf-hack-nerd ttf-sourcecodepro-nerd ttf-ubuntu-mono-nerd
@@ -211,13 +211,13 @@ function packages() {
   aur themecord walcord
 
   # gaming/school/work
-
   aur lifxlan-git; nxi python313Packages.aiolifx # LIFX lights
 
   # gaming
+  aur rgd # game detector
   pac steam; aur steamcmd geforce-infinity
   pac prismlauncher
-  pac nvidia-open nvidia-open-lts lib32-nvidia-utils; {
+  pac nvidia-open nvidia-open-lts lib32-nvidia-utils || true; {
     sudo sed -n '/^HOOKS/s/kms \| kms//gp' /etc/mkinitcpio.conf
     sudo mkinitcpio -P || true
   }
@@ -266,13 +266,11 @@ function packages() {
   aur refind-theme-regular-git
   pac screen
   pac signal-desktop
-  pac sudo
   pac fd # find files
   pac ueberzugpp openslide # images in terminal
   nxi joshuto
   nxi st # terminal
   pac time # time command
-  pac spotifyd
   pac xorg-xauth
   pac xorg-xdpyinfo
   pac xorg-xmodmap
@@ -308,10 +306,7 @@ function packages() {
   # system info
   pac inxi sysfsutils
 
-  aur spotify; {
-    pac spotify-player
-    pac ncspot
-  }
+  aur spotify; pac spotify-player spotifyd ncspot
 }
 
 #===============================================================================
