@@ -310,7 +310,7 @@ function packages() {
   aur spotify; pac spotify-player spotifyd ncspot
 
   # external monitor control
-  pac ddcutil ddcui
+  pac ddcutil; nxi ddcui
 }
 
 #===============================================================================
