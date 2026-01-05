@@ -306,7 +306,11 @@ function packages() {
   # system info
   pac inxi sysfsutils
 
+  # spotify
   aur spotify; pac spotify-player spotifyd ncspot
+
+  # external monitor control
+  pac ddcutil ddcui
 }
 
 #===============================================================================
