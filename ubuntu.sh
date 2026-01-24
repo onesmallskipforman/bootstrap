@@ -40,13 +40,7 @@ function prep() {
 #===============================================================================
 
 function packages() {
-  # start nix daemon if service is not running
-  # need to suppres stderr for nix daemon because it was printing blank outputs
-  # when working interactively in a docker container
-  systemctl is-active --quiet nix-daemon.service >/dev/null 2>&1 \
-    && sudo systemctl restart nix-daemon.service \
-    || sudo nix --extra-experimental-features nix-command daemon \
-      >/dev/null 2>&1 &
+  start_nix
 
   # nix
   ain nix-setup-systemd && systemctl enable nix-daemon.service
@@ -56,7 +50,6 @@ function packages() {
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
   ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
   # TODO: consider installing pipx with nix
-
 
   ain unminimize; yes | sudo unminimize || true # "yes |" triggers a pipefail
   ain man-db manpages texinfo
@@ -99,15 +92,17 @@ function packages() {
       [main]
       dhcp=dhcpcd
     ' | awk '{$1=$1;print}' | sudo tee /etc/NetworkManager/conf.d/dhcp-client.conf
-    sudo systemctl enable NetworkManager.service
+    sudo systemctl enable NetworkManager.service;
   }
+
+
   ain cifs-utils # tool for mounding temp drives
-  ain jq
-  ain xsel xclip
+  nxi jq
+  nxi xsel xclip
   nxi fzf ripgrep
   nxi neovim python313Packages.pynvim nodejs-slim xsel xclip calc tree-sitter vim
-  ain calc bc
-  ain tmux
+  nxi calc bc
+  nxi tmux
 
   # docker
   {
@@ -130,10 +125,10 @@ function packages() {
     sudo groupadd -f docker; sudo usermod -aG docker $(whoami)
     ain iptables-persistent # TODO: might be needed for docker stuff
   }
-  ain autojump
-  ain htop
+  nxi autojump
+  nxi htop
   ain openconnect; addSudoers /usr/bin/openconnect; addSudoers /usr/bin/pkill
-  ain brightnessctl # brightness control
+  nxi brightnessctl # brightness control
   nxi redshift # apt's redshift currently does not work
   ain pipewire pipewire-audio pipewire-pulse wireplumber; {
     ain pavucontrol pulsemixer # audio controllers
@@ -155,9 +150,10 @@ function packages() {
   ain xorg xinit x11-utils # x11-utils contains xev
   ain xdotool # for grabbing window names
   ain xserver-xorg-input-libinput xinput # allows for sane trackpad expeirence
-  ain arandr autorandr # xrandr caching and gui
-  ain rofi; ghb newmanls/rofi-themes-collection
-  ain bspwm sxhkd polybar picom dunst
+  install_libinput_settings
+  nxi arandr autorandr # xrandr caching and gui
+  nxi rofi; ghb newmanls/rofi-themes-collection
+  nxi bspwm sxhkd polybar picom dunst
   nxi polybarFull sxhkd neovim bspwm wget picom
   ain fontconfig; {
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
@@ -165,13 +161,13 @@ function packages() {
   }
 
   # silly terminal scripts to show off
-  ain figlet; ghb xero/figlet-fonts # For writing asciiart text
-  ain tty-clock # terminal digial clock
-  ain neofetch
+  nxi figlet; ghb xero/figlet-fonts # For writing asciiart text
+  nxi tty-clock # terminal digial clock
+  nxi neofetch
   nxi asciiquarium pipes
   nxi macchina fastfetch # fetch
-  ain chafa # terminal graphics TODO: find use case with file browser
-  ghb stark/Color-Scripts # TODO: not in PATH
+  nxi chafa # terminal graphics TODO: find use case with file browser
+  nxi dwt1-shell-color-scripts
   nxi ueberzugpp
 
   # essential gui/advanced tui programs
@@ -191,13 +187,13 @@ function packages() {
     ain thunderbird; install_tb_profile
   }
   ain qutebrowser
-  ain maim     # screenshot utility
-  ain ffmpeg   # screen record utility # TODO: consider fbcat
-  ain feh sxiv # image viewer
-  ain mpv      # video player
-  ain zathura zathura-pdf-poppler
+  nxi maim     # screenshot utility
+  nxi ffmpeg   # screen record utility # TODO: consider fbcat
+  nxi feh nsxiv # image viewer
+  nxi mpv      # video player
+  nxi zathura zathuraPkgs.zathura_pdf_poppler
   nxi joshuto
-  ain xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
+  nxi xsecurelock xscreensaver slock physlock vlock xss-lock # lockscreens. slock seems to be an alias to the package 'suckless-tools'
 
   # color manipulation
   nxi pywal16 python313Packages.colorthief imagemagick wallust hellwal
@@ -205,12 +201,13 @@ function packages() {
   # gaming/school/work
   ain ubuntu-drivers-common;
     ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
-  deb https://zoom.us/client/latest/zoom_amd64.deb
+  # deb https://zoom.us/client/latest/zoom_amd64.deb
+  nxi zoom-us
   nxi slack
   nxi dmidecode
   nxi jira-cli-go
-  ain gimp
-  ain can-utils
+  nxi gimp
+  nxi can-utils
 
   # globalprotect
   ppa ppa:yuezk/globalprotect-openconnect; ain globalprotect-openconnect
@@ -219,23 +216,23 @@ function packages() {
   nxi nyxt
 
   nxi calcure calcurse; ain ncal # calendars
-  ain pass gnupg # for passwork management
+  nxi pass gnupg # for passwork management
 
   # needed for different interfaces to enter password
   # sudo update-alternatives --config pinentry
   # https://unix.stackexchange.com/a/759603
   ain pinentry-tty pinentry-curses pinentry-gnome3 pinentry-gtk2 pinentry-qt
 
-  ain sshpass # non-interactive ssh password authentication
-  ain cifs-utils # for mounting
+  nxi sshpass # non-interactive ssh password authentication
+  nxi cifs-utils # for mounting
 
   # nework scanning: https://askubuntu.com/a/377796
-  ain nmap arp-scan net-tools # net-tools has arp
+  nxi nmap arp-scan net-tools # net-tools has arp
 
-  ain speedtest-cli # speedtest.net by ookla
-  ain xmlto # can convert xml to pdf
+  nxi speedtest-cli # speedtest.net by ookla
+  nxi xmlto # can convert xml to pdf
 
-  ain haveged # random number generator
+  nxi haveged # random number generator
 
   nxi spotify spotify-qt spotify-player ncspot
 }

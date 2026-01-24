@@ -28,6 +28,17 @@ function changeUser() {
   sudo mv /etc/sudoers.d/$OLD /etc/sudoers.d/$NEW
 }
 
+function start_nix() {
+  # start nix daemon if service is not running
+  # need to suppres stderr for nix daemon because it was printing blank outputs
+  # when working interactively in a docker container
+  systemctl is-active --quiet nix-daemon.service >/dev/null 2>&1 \
+    && sudo systemctl restart nix-daemon.service \
+    || sudo nix --extra-experimental-features nix-command daemon \
+      >/dev/null 2>&1 &
+  export PATH=$HOME/.local/state/nix/profile/bin:$PATH
+}
+
 #===============================================================================
 # MAIN SCRIPT
 #===============================================================================
@@ -257,6 +268,29 @@ function install_tb_profile() {
 function addSudoers() {
   local FNAME=/etc/sudoers.d/$(whoami)_$(echo $1 | sed 's;^/;;g;s;[/\.-];_;g')
   sudo echo "$(whoami) ALL=(root) NOPASSWD: $1" | sudo tee -a $FNAME
+}
+
+function install_libinput_settings() {
+  echo '
+    Section "InputClass"
+        Identifier "libinput"
+        Driver "libinput"
+        # MatchIsTouchpad "on"
+        # MatchIsPointer "on"
+        # Option "Tapping" "on"
+        # Option "TappingButtonMap" "lrm"
+
+        # set natural scrolling
+        Option "NaturalScrolling" "on"
+
+        # set mouse speed and acceleration
+        Option "AccelProfile" "Adaptive"
+        # Option "AccelSpeed" "0.5"
+
+        # set key repeat delay (225 ms) and repeat time (30 ms -> ~33 reapeats/s)
+        Option "AutoRepeat" "225 30"
+    EndSection
+  ' | sed 's/^    //g' | awk NF | sudo tee /etc/X11/xorg.conf.d/libinput.conf
 }
 
 # TODO: using makepkg -d might be preventing makedeps from being installed

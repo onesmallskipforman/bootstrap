@@ -10,8 +10,6 @@
     # pkgs = nixpkgs.legacyPackages.${system};
     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     overrides = builtins.mapAttrs (name: value: pkgs.${name}.override value) {
-      spotify-player = { withAudioBackend = "pulseaudio"; };
-      librespot      = { withPulseAudio   = true        ; };
       pywal16      = {
         withColorthief = true;
         withColorz = true;

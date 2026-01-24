@@ -57,14 +57,7 @@ function install_steamgames() {
 #===============================================================================
 
 function packages() {
-  # start nix daemon if service is not running
-  # need to suppres stderr for nix daemon because it was printing blank outputs
-  # when working interactively in a docker container
-  systemctl is-active --quiet nix-daemon.service >/dev/null 2>&1 \
-    && sudo systemctl restart nix-daemon.service \
-    || sudo nix --extra-experimental-features nix-command daemon \
-      >/dev/null 2>&1 &
-  export PATH=$HOME/.local/state/nix/profile/bin:$PATH
+  start_nix
 
   # aur prep
   # https://wiki.archlinux.org/title/Arch_User_Repository#Prerequisites
@@ -174,6 +167,8 @@ function packages() {
   pac xorg-xsetroot # allows for setting cursor icon
   pac xdotool # for grabbing window names
   pac xf86-input-libinput xorg-xinput # allows for sane trackpad expeirence
+  install_libinput_settings
+
   pac arandr autorandr # xrandr caching and gui
   pac rofi; aur rofi-themes-collection-git
   pac bspwm sxhkd polybar picom
