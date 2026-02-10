@@ -17,6 +17,12 @@
         withHaishoku = true;
         withModernColorthief = true;
       };
+      # zoom-us = {
+      #   xdgDesktopPortalSupport = true;
+      #   gnomeXdgDesktopPortalSupport = true;
+      #   # hyprlandXdgDesktopPortalSupport = true;
+      #   # wlrXdgDesktopPortalSupport = true;
+      # };
     };
     legacyPackages = nixpkgs.legacyPackages // { ${system} = pkgs // overrides; };
 

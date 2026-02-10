@@ -30,6 +30,7 @@ function prep() {
   # set multi-user target
   sudo systemctl set-default multi-user.target
 
+  # this is required to get certain apps to work, including nix-installed packages like chrome and vscode
   # https://askubuntu.com/a/1511983
   echo 'kernel.apparmor_restrict_unprivileged_userns=0' \
     | sudo tee /etc/sysctl.d/20-apparmor-allow-unprivileged-userns.conf
@@ -44,12 +45,12 @@ function packages() {
 
   # nix
   ain nix-setup-systemd && systemctl enable nix-daemon.service
-  nxi nix nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
+  nxi nix-zsh-completions direnv nix-direnv nix-index nix-tree nh cachix
 
   # basics
+  ain systemd init
   ain wget curl tar unzip software-properties-common ppa-purge dbus-broker dialog linux-generic
-  ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv pipx
-  # TODO: consider installing pipx with nix
+  ppa ppa:deadsnakes/ppa; ain python3 python3-pip python3-venv
 
   ain unminimize; yes | sudo unminimize || true # "yes |" triggers a pipefail
   ain man-db manpages texinfo
@@ -62,8 +63,6 @@ function packages() {
     # .zprofile (which can just point to or source a generic shell profile).
     echo 'export ZDOTDIR=$HOME/.config/zsh' | sudo tee -a /etc/zsh/zshenv >/dev/null
   }
-  ain less
-  ain systemd init
   ain dhcpcd5 iwd network-manager; { # network-manager includes nmtui
     echo '
       [General]
@@ -95,8 +94,8 @@ function packages() {
     sudo systemctl enable NetworkManager.service;
   }
 
-
   ain cifs-utils # tool for mounding temp drives
+  ain less
   nxi jq
   nxi xsel xclip
   nxi fzf ripgrep
@@ -153,8 +152,8 @@ function packages() {
   install_libinput_settings
   nxi arandr autorandr # xrandr caching and gui
   nxi rofi; ghb newmanls/rofi-themes-collection
-  nxi bspwm sxhkd polybar picom dunst
-  nxi polybarFull sxhkd neovim bspwm wget picom
+  ain dunst
+  nxi polybarFull bspwm sxhkd neovim bspwm wget picom
   ain fontconfig; {
     nxi nerd-fonts.hack nerd-fonts.sauce-code-pro nerd-fonts.ubuntu-mono
     fc-cache -rv
@@ -201,8 +200,12 @@ function packages() {
   # gaming/school/work
   ain ubuntu-drivers-common;
     ppa ppa:graphics-drivers/ppa; sudo ubuntu-drivers install
-  # deb https://zoom.us/client/latest/zoom_amd64.deb
-  nxi zoom-us
+  # see: https://forums.linuxmint.com/viewtopic.php?p=2635199#p2635199
+  deb 'https://zoom.us/client/6.7.5.6891/zoom_amd64.deb'
+  # this MIGHT prevent zoom crashing
+  # see: https://askubuntu.com/questions/1471570/how-to-give-camera-access-to-zoom
+  sudo usermod -aG audio,video $USER
+  # nxi zoom-us
   nxi slack
   nxi dmidecode
   nxi jira-cli-go
