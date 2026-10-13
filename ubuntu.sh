@@ -99,7 +99,7 @@ function packages() {
   nxi jq
   nxi xsel xclip
   nxi fzf ripgrep
-  nxi neovim python313Packages.pynvim nodejs-slim xsel xclip calc tree-sitter vim
+  nxi neovim python313Packages.pynvim nodejs xsel xclip calc tree-sitter vim
   nxi calc bc
   nxi tmux
 
